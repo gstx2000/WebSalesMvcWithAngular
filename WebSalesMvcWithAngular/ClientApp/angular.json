@@ -134,6 +134,6 @@
   },
   "defaultProject": "WebSalesMvcWithAngular",
   "cli": {
-    "analytics": false
+    "analytics": true
   }
 }
