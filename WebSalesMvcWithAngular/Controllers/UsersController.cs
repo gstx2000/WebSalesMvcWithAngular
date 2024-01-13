@@ -5,6 +5,7 @@ using WebSalesMvc.Models;
 using System.Text.Encodings.Web;
 
 [Authorize]
+[Route("api/[controller]")]
 public class UsersController : Controller
 {
     private readonly UserManager<User> _userManager;

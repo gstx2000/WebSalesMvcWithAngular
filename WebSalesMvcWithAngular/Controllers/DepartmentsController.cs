@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 
 namespace WebSalesMvc.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
+
     public class DepartmentsController : Controller
     {
         private readonly WebSalesMvcContext _context;
@@ -18,13 +16,16 @@ namespace WebSalesMvc.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+
+        [HttpGet("GetDepartments")]
+        public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
+
             var departments = await _context.Department
                 .Include(d => d.Sellers)
                 .ToListAsync();
 
-            return View(departments);
+            return Ok(departments);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -137,6 +138,7 @@ namespace WebSalesMvc.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet("GetDepartment/{id}")]
         private bool DepartmentExists(int id)
         {
             return _context.Department.Any(e => e.Id == id);

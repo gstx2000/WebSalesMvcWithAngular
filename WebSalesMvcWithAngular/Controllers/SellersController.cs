@@ -6,8 +6,10 @@ using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
 
-namespace WebSalesMvc.Controllers
-{   public class SellersController : Controller
+namespace WebSalesMvc.Controllers 
+{    
+    [Route("api/[controller]")]
+    public class SellersController : Controller
     {
         private readonly SellerService _sellerService;
         private readonly DepartmentService _departmentService;

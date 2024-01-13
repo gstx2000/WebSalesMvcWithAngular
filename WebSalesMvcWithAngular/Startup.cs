@@ -88,6 +88,15 @@ namespace WebSalesMvc
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
+
+            services.AddControllers();
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -186,7 +195,10 @@ namespace WebSalesMvc
                 SupportedUICultures = new List<CultureInfo> { brl }
             };
 
-            app.UseRequestLocalization(localizationOptions);    
+            app.UseRequestLocalization(localizationOptions);
+
+            app.UseCors("AllowAllOrigins");
+
 
             if (env.IsDevelopment())
             {
@@ -220,7 +232,12 @@ namespace WebSalesMvc
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Users}/{action=Login}/{id?}");
+
+                endpoints.MapControllerRoute(
+                name: "Departments",
+                pattern: "api/[controller]/{action=GetDepartments}/{id?}");
             });
+
 
         }
     }

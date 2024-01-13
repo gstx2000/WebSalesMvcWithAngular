@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
@@ -11,6 +8,7 @@ using WebSalesMvc.Services.Exceptions;
 
 namespace WebSalesMvc.Controllers
 {
+    [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
         private readonly WebSalesMvcContext _context;

@@ -8,6 +8,7 @@ using static WebSalesMvc.Models.SalesRecord;
 
 namespace WebSalesMvc.Controllers
 {
+    [Route("api/[controller]")]
     public class SalesRecordsController : Controller
     {
         private readonly WebSalesMvcContext _context;

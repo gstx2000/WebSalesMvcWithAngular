@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Department } from '../Models/Department';
+import { DepartmentService } from '../Services/DepartmentService';
 
 @Component({
   selector: 'app-department',
@@ -8,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 export class DepartmentComponent implements OnInit {
   departments: Department[] = [];
 
+  constructor(private departmentService: DepartmentService) { }
 
   ngOnInit(): void {
-      throw new Error('Method not implemented.');
+    this.loadDepartments();
   }
 
+  loadDepartments(): void {
+    this.departmentService.getDepartments().subscribe(
+      (data) => {
+        this.departments = data;
+      },
+      (error) => {
+        console.error('Error loading departments', error);
+      }
+    );
+  }
 }
