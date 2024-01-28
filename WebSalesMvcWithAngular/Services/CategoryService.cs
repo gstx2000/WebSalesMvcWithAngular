@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services.Exceptions;
@@ -25,7 +24,7 @@ namespace WebSalesMvc.Services
             _context.Add(obj);
             await _context.SaveChangesAsync();
         }
-        public async Task<Category> FindbyIdAsync(int id)
+        public async Task<Category> FindByIdAsync(int id)
         {
             return await _context.Category.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
         }
@@ -48,7 +47,7 @@ namespace WebSalesMvc.Services
             }
 
         }
-        public async Task RemoveAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             try
             {

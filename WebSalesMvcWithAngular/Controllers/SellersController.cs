@@ -31,8 +31,7 @@ namespace WebSalesMvc.Controllers
         {
             var departments =  await _departmentService.FindAllAsync();
 
-            var viewModel = new SellerFormViewModel { Departments = departments };
-            return View(viewModel);
+            return View();
         }
 
         [HttpPost]
@@ -42,15 +41,13 @@ namespace WebSalesMvc.Controllers
             if (!ModelState.IsValid)
             {
                 var departments = await _departmentService.FindAllAsync();
-                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
-                return View(viewModel);
+                return View();
             }
 
             var department = await _departmentService.FindByIdAsync(seller.DepartmentId);
 
             if (department == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Departmento inválido." });
             }
 
             seller.Department = department;
@@ -65,14 +62,12 @@ namespace WebSalesMvc.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não fornecido." });
             }
 
             var obj = await _sellerService.FindbyIdAsync(id.Value);
 
             if (obj == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
             }
             return View(obj);
         }
@@ -81,30 +76,23 @@ namespace WebSalesMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
+            
                 await _sellerService.RemoveAsync(id);
                 return RedirectToAction(nameof(Index));
-            }
-            catch (IntegrityException e)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Não é possível deletar um vendendor que possui vendas." });
-
-            }
+            
+          
         }
 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não fornecido." });
             }
 
             var obj = await _sellerService.FindbyIdAsync(id.Value);
 
             if (obj == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
             }
             return View(obj);
         }
@@ -113,19 +101,16 @@ namespace WebSalesMvc.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não fornecido." });
             }
 
             var obj = await _sellerService.FindbyIdAsync(id.Value);
 
             if (obj == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
             }
 
             List<Department> departments = await _departmentService.FindAllAsync();
-            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
-            return View(viewModel);
+            return View();
         }
 
         [HttpPost]
@@ -135,36 +120,17 @@ namespace WebSalesMvc.Controllers
             if (!ModelState.IsValid)
             {
                 var departments = await _departmentService.FindAllAsync();
-                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
-                return View(viewModel);
+                return View();
             }
 
             if (id != seller.Id)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id incompatível." });
             }
-            try
-            {
+         
                 await _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
-            }
-            catch (NotFoundException e)
-            {
-                return RedirectToAction(nameof(Error), new { message = e.Message });
-            }
-            catch (DbConcurrencyException e)
-            {
-                return RedirectToAction(nameof(Error), new { message = e.Message });
-            }
+    
         }
-        public IActionResult Error(string message)
-        {
-            var viewModel = new ErrorViewModel
-            {
-                Message = message,
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            };
-            return View(viewModel);
-        }
+        
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace WebSalesMvc.Models
 {
     public class Category
-    {    
+    {
+        [Key]
         public int Id { get; set; }
         
         [Display(Name = "Nome")]
@@ -12,13 +15,13 @@ namespace WebSalesMvc.Models
         [Display(Name = "Descrição")]
         public string Description { get; set; }
 
-        [Display(Name = "Departamento")]
-        public Department Department { get; set; }
         public  int DepartmentId { get; set; }
+        public Department? Department { get; set; }
 
         [Display(Name = "Produto")]
+       
+        [JsonIgnore]
         public List<Product> Products { get; set; } = new List<Product>();
-
         public Category()
         {
         }

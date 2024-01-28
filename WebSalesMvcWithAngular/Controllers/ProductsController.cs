@@ -1,15 +1,17 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Exceptions;
+
+
 
 namespace WebSalesMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly WebSalesMvcContext _context;
         private readonly DepartmentService _departmentService;
@@ -26,173 +28,187 @@ namespace WebSalesMvc.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index() 
+        [Route("get-products")]
+        public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            var viewModel = await _productService.FindAllAsync();
+            try
+            { 
+                var products = await _productService.FindAllAsync();
+                if (products == null || products.Count == 0)
+                {
+                    return NoContent();
+                }
 
-            return View(viewModel);
-        }
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                return Ok(products);
             }
-
-            var product = await _context.Product
-                .Include(p => p.Department)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return NotFound("Nenhuma categoria encontrada.");
             }
-
-            return View(product);
-        }
-        
-        [HttpGet]
-        public async Task<IActionResult> Create()
-        {
-            var categories = await _categoryService.FindAllAsync();
-
-            var viewModel = new ProductFormViewModel {  Categories = categories };
-            return View(viewModel);
-          
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        [HttpGet("{id}")]
+        [Route("get-product/{id}")]
+        public async Task<IActionResult> GetProductById(int? id)
         {
-            if (!ModelState.IsValid)
-            {
-                var categories = await _categoryService.FindAllAsync();
-                var viewModel = new ProductFormViewModel { Product = product, Categories = categories };
-                return View(viewModel);
-            }
-
-            var category = await _categoryService.FindbyIdAsync(product.CategoryId);
-            if (category == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Categoria inválida." });
-            }
-
-            product.Category = category;
-            product.Department = category?.Department;
-
-            await _productService.InsertAsync(product);
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int? id, Product product)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var obj = await _productService.FindByIdAsync(id.Value);
-
-            if (obj == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
-            }
-
-            List<Category> categories = await _categoryService.FindAllAsync();
-
-            var viewModel = new ProductFormViewModel
-            {
-                Product = obj,
-                Categories = categories
-            };
-
-            return View(viewModel);
-
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
-        {
-            if (id != product.Id)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id incompatível." });
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var categories = await _categoryService.FindAllAsync();
-                var viewModel = new ProductFormViewModel { Product = product, Categories = categories };
-                return View(viewModel);
-            }
-            
             try
             {
-                Category category = await _categoryService.FindbyIdAsync(product.CategoryId);
-                product.Department = category?.Department;
-                await _productService.UpdateAsync(product);
-                return RedirectToAction(nameof(Index));
+                if (id == null)
+                {
+                    return BadRequest("ID não fornecido.");
+                }
+
+                var product = await _productService.FindByIdAsync(id.Value);
+
+                if (product == null)
+                {
+                    return NotFound($"Produto com o ID {id} não foi encontrado.");
+                }
+
+                return Ok(product);
+
             }
-            catch (NotFoundException e)
+            catch (UnauthorizedException ex)
             {
-                return RedirectToAction(nameof(Error), new { message = e.Message });
+                return Unauthorized("Sem autorização.");
             }
-            catch (DbConcurrencyException e)
+            catch (Exception ex)
             {
-                return RedirectToAction(nameof(Error), new { message = e.Message });
+                return StatusCode(500, "Erro interno da aplicação. ");
             }
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        [Route("post-product")]
+        public async Task<IActionResult> Create([FromBody] Product product)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (product == null)
+                {
+                    return BadRequest("Produto não fornecido" +
+                        ",.");
+                }
 
-            var product = await _context.Product
-                .Include(p => p.Department)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+                var department = await _departmentService.FindByIdAsync(product.DepartmentId);
+                var category = await _categoryService.FindByIdAsync(product.CategoryId);
+
+
+                if (department == null)
+                {
+                    return BadRequest("Departamento não encontrado.");
+                }
+
+                if (category == null)
+                {
+                    return BadRequest("Categoria não encontrada.");
+                }
+
+                product.Category = category;
+
+                product.Department = department;
+
+                if (ModelState.IsValid)
+                {
+                    await _productService.InsertAsync(product);
+                    return CreatedAtAction("Details", new { id = product.Id }, product);
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException ex)
             {
-                return NotFound();
+                return Unauthorized("Sem autorização.");
             }
-
-            return View(product);
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação");
+            }
         }
-
-        [HttpPost, ActionName("Delete")]
+        [HttpPut("{id}")]
+        [Route("edit-product/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Edit(int id, [FromBody] Product product)
         {
-            var product = await _context.Product.FindAsync(id);
-            _context.Product.Remove(product);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                if (id != product.Id)
+                {
+                    return BadRequest("ID fornecido difere do ID que vai ser atualizado.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await _productService.UpdateAsync(product);
+
+                        return Ok();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ProductExists(product.Id))
+                        {
+                            return NotFound("Produto não encontrada.");
+                        }
+                        else
+                        {
+                            return StatusCode(500, "Erro de simultaneidade.");
+                        }
+                    }
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
         }
+        [HttpDelete("{id}")]
+        [Route("confirm-delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            try
+            {
+                await _productService.DeleteAsync(id);
+
+                return NoContent();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound("Produto não encontrada.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
+
         private bool ProductExists(int id)
         {
-            return _context.Product.Any(e => e.Id == id);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> SearchProducts(string searchTerm)
-        {
-            var products = await _productService.FindByNameAsync(searchTerm);
-
-            return PartialView("_ProductSearchResults", products);
-        }
-
-        public IActionResult Error(string message)
-        {
-            var viewModel = new ErrorViewModel
-            {
-                Message = message,
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            };
-            return View(viewModel);
+                return _context.Product.Any(e => e.Id == id);
         }
     }
 }

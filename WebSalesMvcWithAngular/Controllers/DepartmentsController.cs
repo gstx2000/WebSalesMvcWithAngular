@@ -1,147 +1,191 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebSalesMvc.Data;
 using WebSalesMvc.Models;
+using WebSalesMvc.Services;
+using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Exceptions;
 
 namespace WebSalesMvc.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
-    public class DepartmentsController : Controller
+    public class DepartmentsController : ControllerBase
     {
-        private readonly WebSalesMvcContext _context;
-
-        public DepartmentsController(WebSalesMvcContext context)
+        private readonly DepartmentService _departmentService;
+        public DepartmentsController(DepartmentService departmentService)
         {
-            _context = context;
+            _departmentService = departmentService;
         }
 
-        [HttpGet("GetDepartments")]
-        public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
+        [HttpGet]
+        [Route("get-departments")]
+        public async Task<ActionResult<List<Department>>> GetDepartments()
         {
-
-            var departments = await _context.Department
-                .Include(d => d.Sellers)
-                .ToListAsync();
-
-            return Ok(departments);
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            try
             {
-                return NotFound();
+                var departments = await _departmentService.FindAllAsync();
+
+                if (departments == null || departments.Count == 0)
+                {
+                    return NoContent();
+                }
+
+                return Ok(departments);
             }
-
-            var department = await _context.Department
-            .Include(d => d.Sellers) 
-            .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (department == null)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return NotFound("Nenhum departamento encontrado.");
             }
-            var sellersInDepartment = department.GetSellers();
-
-            return View(department);
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
         }
 
-        public IActionResult Create()
+        [HttpGet("{id}")]
+        [Route("get-department/{id}")]
+        public async Task<IActionResult> GetDepartmentsById(int? id)
         {
-            return View();
+            try
+            {
+                if (id == null)
+                {
+                    return BadRequest("ID não fornecido.");
+                }
+
+                var department = await _departmentService.FindByIdAsync(id.Value);
+
+                if (department == null)
+                {
+                    return NotFound($"Departmento com o ID {id} não foi encontrado.");
+                }
+
+                return Ok(department);
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação. ");
+            }
         }
+
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Department department)
+        [Route("post-department")]
+        public async Task<IActionResult> Create([FromBody] Department department)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(department);
-        }
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Department.FindAsync(id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-            return View(department);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
-        {
-            if (id != department.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (department == null)
                 {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
+                    return BadRequest("Departmento não fornecido.");
                 }
-                catch (DbUpdateConcurrencyException)
+
+                if (ModelState.IsValid)
                 {
-                    if (!DepartmentExists(department.Id))
+                    await _departmentService.InsertAsync(department);
+                    return CreatedAtAction("Details", new { id = department.Id }, department);
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação");
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Route("edit-department/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [FromBody] Department department)
+        {
+            try
+            {
+                if (id != department.Id)
+                {
+                    return BadRequest("ID fornecido difere do ID que vai ser atualizado.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
                     {
-                        return NotFound();
+                        await _departmentService.UpdateAsync(department);
+
+                        return Ok();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!DepartmentExists(department.Id))
+                        {
+                            return NotFound("Departamento não encontrado.");
+                        }
+                        else
+                        {
+                            return StatusCode(500, "Erro de simultaneidade.");
+                        }
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
             }
-            return View(department);
-        }
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            catch (UnauthorizedException ex)
             {
-                return NotFound();
+                return Unauthorized("Sem autorização.");
             }
-
-            var department = await _context.Department
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, "Erro interno da aplicação.");
             }
-
-            return View(department);
         }
 
-        [HttpPost, ActionName("Delete")]
+
+        [HttpDelete("{id}")]
+        [Route("confirm-delete/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> ConfirmDelete(int id)
         {
-            var department = await _context.Department.FindAsync(id);
-            _context.Department.Remove(department);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            try
+            {
+                await _departmentService.DeleteAsync(id);
 
-        [HttpGet("GetDepartment/{id}")]
+                return NoContent();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound("Departmento não encontrado.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
         private bool DepartmentExists(int id)
         {
-            return _context.Department.Any(e => e.Id == id);
+            return _departmentService.DepartmentExistsAsync(id);
         }
+
     }
 }
+    

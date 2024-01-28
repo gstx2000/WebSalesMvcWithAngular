@@ -5,6 +5,7 @@ namespace WebSalesMvc.Models
 {
     public class Department
     {
+        [Key]
         public int Id { get; set; }
 
         [Display(Name = "Nome")]
@@ -15,15 +16,17 @@ namespace WebSalesMvc.Models
 
         [NotMapped]
         public int NumberOfSellers => Sellers.Count;
-
-
+        public string Address { get; set; }
+        public string CNPJ { get; set; }
         public Department()
         {
         }
-        public Department(int id, string name)
+        public Department(int id, string name, string address, string cnpj)
         {
             Id = id;
             Name = name;
+            Address = address;
+            CNPJ = cnpj;
         }
 
         public void AddSeller(Seller seller)

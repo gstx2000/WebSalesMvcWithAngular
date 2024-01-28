@@ -1,160 +1,201 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Exceptions;
 
 namespace WebSalesMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class CategoriesController : Controller
+    [ApiController]
+
+    public class CategoriesController : ControllerBase
     {
         private readonly WebSalesMvcContext _context;
-        private readonly DepartmentService _departmentService;
         private readonly CategoryService _categoryService;
-        public CategoriesController(WebSalesMvcContext context, DepartmentService departmentService, CategoryService categoryService)
+        private readonly DepartmentService _departmentService;
+
+        public CategoriesController(WebSalesMvcContext context, CategoryService categoryService, DepartmentService departmentService)
         {
             _context = context;
-            _departmentService = departmentService;
             _categoryService = categoryService;
+            _departmentService = departmentService;
         }
-        public async Task<IActionResult> Index()
-        {
-            return View(await _categoryService.FindAllAsync());
-        }
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
         [HttpGet]
-        public async Task<IActionResult> Create()
+        [Route("get-categories")]
+        public async Task<ActionResult<List<Category>>> GetCategories()
         {
-            var departments = await _departmentService.FindAllAsync();
-            var viewModel = new CategoryFormViewModel { Departments = departments, Category = new Category() };
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category category)
-        {
-            if (ModelState.IsValid)
+            try
             {
-                await _categoryService.InsertAsync(category);
-                return RedirectToAction(nameof(Index));
-            }
+                var categories = await _categoryService.FindAllAsync();
 
-            var departments = await _departmentService.FindAllAsync();
-            var viewModel = new CategoryFormViewModel { Category = category, Departments = departments };
-            return View(viewModel);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var obj = await _categoryService.FindbyIdAsync(id.Value);
-
-            if (obj == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
-            }
-
-            List<Department> departments = await _departmentService.FindAllAsync();
-            CategoryFormViewModel viewModel = new CategoryFormViewModel { Category = obj, Departments = departments };
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Category category)
-        {
-            if (id != category.Id)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id incompatível." });
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var departments = await _departmentService.FindAllAsync();
-                var viewModel = new CategoryFormViewModel { Category = category, Departments = departments };
-                return View(viewModel);
-            }
-                try
+                if (categories == null || categories.Count == 0)
                 {
-                    await _categoryService.UpdateAsync(category);
-                    return RedirectToAction(nameof(Index));
+                    return NoContent();
                 }
-            catch (NotFoundException e)
-            {
-                return RedirectToAction(nameof(Error), new { message = e.Message });
+
+                return Ok(categories);
             }
-            catch (DbConcurrencyException e)
+            catch (NotFoundException ex)
             {
-                return RedirectToAction(nameof(Error), new { message = e.Message });
+                return NotFound("Nenhuma categoria encontrada.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
             }
         }
-        public async Task<IActionResult> Delete(int? id)
+
+        [HttpGet("{id}")]
+        [Route("get-category/{id}")]
+        public async Task<IActionResult> GetCategoriesById(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null)
+                {
+                    return BadRequest("ID não fornecido.");
+                }
 
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+                var category = await _categoryService.FindByIdAsync(id.Value);
+
+                if (category == null)
+                {
+                    return NotFound($"Categoria com o ID {id} não foi encontrado.");
+                }
+
+                return Ok(category);
+
+            }
+            catch (UnauthorizedException ex)
             {
-                return NotFound();
+                return Unauthorized("Sem autorização.");
             }
-
-            return View(category);
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação. ");
+            }
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [Route("post-category")]
+        public async Task<IActionResult> Create([FromBody] Category category)
+        {
+            try
+            {
+                if (category == null)
+                {
+                    return BadRequest("Categoria não fornecida.");
+                }
+                
+                var department = await _departmentService.FindByIdAsync(category.DepartmentId);
+
+                if (department == null)
+                {
+                    return BadRequest("Departamento não encontrado.");
+                }
+                category.Department = department;
+
+                if (ModelState.IsValid)
+                {
+                    await _categoryService.InsertAsync(category);
+                    return CreatedAtAction("Details", new { id = category.Id }, category);
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação");
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Route("edit-category/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Edit(int id, [FromBody] Category category)
         {
-            var category = await _categoryService.FindbyIdAsync(id);
-            await _categoryService.RemoveAsync(id);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                if (id != category.Id)
+                {
+                    return BadRequest("ID fornecido difere do ID que vai ser atualizado.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await _categoryService.UpdateAsync(category);
+
+                        return Ok();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!CategoryExists(category.Id))
+                        {
+                            return NotFound("Categoria não encontrada.");
+                        }
+                        else
+                        {
+                            return StatusCode(500, "Erro de simultaneidade.");
+                        }
+                    }
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
         }
 
+        [HttpDelete("{id}")]
+        [Route("confirm-delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            try
+            {
+                await _categoryService.DeleteAsync(id);
+
+                return NoContent();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound("Categoria não encontrada.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
         private bool CategoryExists(int id)
         {
             return _context.Category.Any(e => e.Id == id);
-        }
-
-        public IActionResult Error(string message)
-        {
-            var viewModel = new ErrorViewModel
-            {
-                Message = message,
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            };
-            return View(viewModel);
-
-        }
+        }  
     }
-
 }

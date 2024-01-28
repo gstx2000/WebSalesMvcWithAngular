@@ -1,0 +1,18 @@
+<h2>Detalhes do produto {{ product?.name }}</h2>
+<tbody>
+  <tr>
+    <td>
+      ID: {{ product?.id }}<br>
+      Preço: {{ product?.price }}<br>
+      Descrição: {{ product?.description }}<br>
+      Imagem: {{ product?.imageUrl }}<br>
+      Categoria: {{ product?.category?.name }}<br>
+      Loja: {{ product?.department?.name }}<br>
+
+      <div class="buttons">
+        <button mat-raised-button class="btn btn-default" (click)="backToIndex()">Voltar</button>
+        <button mat-raised-button [routerLink]="['/products/edit', product?.id]" class="btn btn-default">Editar</button>
+      </div>
+    </td>
+  </tr>
+</tbody>

@@ -1,0 +1,60 @@
+<div>
+  <form class="formedit" method="post" asp-controller="ProductsController" asp-action="Edit" asp-antiforgery="true" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="outline">
+      <mat-label for="id">ID</mat-label>
+      <input matInput type="number" id="id" formControlName="id">
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field appearance="outline">
+      <mat-label for="name">Nome</mat-label>
+      <input matInput type="text" id="name" formControlName="name" required>
+    </mat-form-field>
+
+    <br />
+
+
+    <mat-form-field appearance="outline">
+      <mat-label for="price">Preço</mat-label>
+      <input matInput type="number" id="price" formControlName="price" required>
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field appearance="outline">
+      <mat-label for="description">Descrição</mat-label>
+      <input matInput type="text" id="description" formControlName="description">
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field appearance="outline">
+      <mat-label for="imageUrl">Imagem</mat-label>
+      <input matInput type="text" id="imageUrl" formControlName="imageUrl">
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field appearance="outline" >
+      <mat-label for="department$">Departamento</mat-label>
+      <mat-select id="departments$" formControlName="departmentId">
+        <mat-option *ngFor="let department of departments$ | async" [value]=department.id>{{ department.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field appearance="outline">
+      <mat-label for="categories$">Categoria</mat-label>
+      <mat-select id="categories$" formControlName="categoryId">
+        <mat-option *ngFor="let category of categories$ | async" [value]=category.id>{{ category.name }}</mat-option>
+      </mat-select>
+      <br />
+    </mat-form-field>
+    <br />
+    <button mat-raised-button [disabled]="productForm.invalid" type="submit">Editar</button>
+    <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
+  </form>
+</div>

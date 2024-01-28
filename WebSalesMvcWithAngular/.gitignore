@@ -229,3 +229,5 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+# Ignore specific cache directory
+/.angular/cache/15.2.7/babel-webpack/

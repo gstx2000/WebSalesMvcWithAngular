@@ -1,0 +1,17 @@
+<h2>Detalhes da loja {{ department?.name }}</h2>
+<tbody>
+  <tr>
+    <td>
+      ID: {{ department?.id }}<br>
+      Nome: {{ department?.name }}<br>
+      Número de vendedores: {{ department?.sellers?.length }}<br>
+      Endereço: {{ department?.address }}<br>
+      CNPJ: {{ department?.cnpj }}<br>
+
+      <div class="buttons">
+        <button mat-raised-button class="btn btn-default" (click)="backToIndex()">Voltar</button> 
+        <button mat-raised-button [routerLink]="['/departments/edit', department?.id]" class="btn btn-default">Editar</button> 
+      </div>
+    </td>
+  </tr>
+</tbody>

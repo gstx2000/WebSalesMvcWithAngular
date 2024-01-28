@@ -1,0 +1,30 @@
+<div>
+  <form method="post" asp-controller="CategoriesController" asp-action="Create" asp-antiforgery="true" [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="outline">
+      <label for="name">Nome</label>
+      <input matInput type="text" id="name" formControlName="name" required>
+    </mat-form-field>
+
+    <br />
+    <mat-form-field appearance="outline">
+      <label for="description">Descrição</label>
+      <input matInput type="text" id="description" formControlName="description">
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field appearance="outline">
+      <mat-label for="department$">Departamento</mat-label>
+      <mat-select id="departments$" formControlName="departmentId">
+        <mat-option *ngFor="let department of departments$ | async" [value]=department.id>{{ department.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <br />
+
+      <button type="submit" [disabled]="categoryForm.invalid" class="btn btn-default">Cadastrar</button>
+      <button class="btn btn-default" (click)="cancel()">Cancelar</button>
+
+  </form>
+</div>

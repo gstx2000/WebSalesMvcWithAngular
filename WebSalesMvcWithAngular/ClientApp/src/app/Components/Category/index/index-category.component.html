@@ -1,0 +1,35 @@
+<button mat-raised-button [routerLink]="['/categories/create']" class="btn btn-default">Criar novo</button>
+
+<mat-table class="mat-elevation-z8" [dataSource]="categories">
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.id }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Categoria </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.name }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="department">
+    <mat-header-cell *matHeaderCellDef> Loja </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.department?.name }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+    <mat-cell *matCellDef="let item">
+      <button mat-raised-button [routerLink]="['/category/details', item.id]" class="btn btn-default">Detalhes</button>
+      <button mat-raised-button [routerLink]="['/category/edit', item.id]" class="btn btn-default">Editar</button>
+      <button mat-mini-fab color="warn" [routerLink]="['/category/delete', item.id]" class="btn btn-default">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="['id', 'name', 'department', 'actions']"></mat-header-row>
+
+  <mat-row *matRowDef="let row; columns: ['id', 'name', 'department', 'actions']"></mat-row>
+</mat-table>

@@ -1,0 +1,26 @@
+<div>
+  <form method="post" asp-controller="DepartmentsController" asp-action="Create" asp-antiforgery="true" [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="outline">
+      <label for="name">Nome</label>
+      <input matInput type="text" id="name" formControlName="name" required>
+    </mat-form-field>
+    <br />
+
+    <mat-form-field appearance="outline">
+      <label for="address">Endereço</label>
+      <input matInput type="text" id="address" formControlName="address">
+    </mat-form-field>
+    <br />
+
+    <mat-form-field appearance="outline">
+      <label for="cnpj">CNPJ</label>
+      <input matInput type="text" mask="00.000.-000/0000-00" id="cnpj" formControlName="cnpj" minlength="14" maxlength="14">
+    </mat-form-field>
+    <br />
+
+    <button mat-raised-button type="submit" [disabled]="departmentForm.invalid" class="btn btn-default">Cadastrar</button>
+    <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
+
+  </form>
+</div>

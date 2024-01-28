@@ -1,12 +1,10 @@
 import { Department } from "./Department";
 import { Product } from "./Product";
-
 export interface Category {
-  id: number;
+  id?: number;
   name: string;
   description: string;
-  department: Department;
+  department?: Department;
   departmentId: number;
-  products: Product[];
-
+  products?: Product[];
 }

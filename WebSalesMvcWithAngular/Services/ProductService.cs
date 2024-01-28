@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 
@@ -21,12 +18,13 @@ public class ProductService
                         .Include(x => x.Department)
                         .ToListAsync();
     }
-
     public async Task<Product> FindByIdAsync(int id)
     {
-        return await _context.Product.Include(p => p.Department).FirstOrDefaultAsync(m => m.Id == id);
+        return await _context.Product
+            .Include(p => p.Department)
+            .Include(p => p.Category)  
+            .FirstOrDefaultAsync(m => m.Id == id);
     }
-
     public async Task InsertAsync(Product product)
     {
         _context.Add(product);

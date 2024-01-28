@@ -1,0 +1,44 @@
+<button mat-raised-button [routerLink]="['/products/create']" class="btn btn-default">Criar novo</button>
+
+<mat-table class="mat-elevation-z8" [dataSource]="products">
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.id }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Produto </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.name }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="price">
+    <mat-header-cell *matHeaderCellDef> Preço </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.price }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="category">
+    <mat-header-cell *matHeaderCellDef> Categoria </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.category?.name }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="department">
+    <mat-header-cell *matHeaderCellDef> Loja </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.department?.name }} </mat-cell>
+  </ng-container>
+
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+    <mat-cell *matCellDef="let item" fxLayout="row" fxLayoutAlign="space-between">
+      <button mat-raised-button [routerLink]="['/products/details', item.id]" class="btn btn-default">Detalhes</button>
+      <button mat-raised-button [routerLink]="['/products/edit', item.id]" class="btn btn-default">Editar</button>
+      <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="['id', 'name', 'price', 'category', 'department', 'actions']"></mat-header-row>
+
+  <mat-row *matRowDef="let row; columns: ['id', 'name', 'price', 'category', 'department', 'actions']"></mat-row>
+</mat-table>
