@@ -38,3 +38,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Ignore specific cache directory
+/.angular/cache/15.2.7/babel-webpack/
+/.angular

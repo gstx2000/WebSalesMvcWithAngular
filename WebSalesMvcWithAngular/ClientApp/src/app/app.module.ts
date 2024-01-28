@@ -34,6 +34,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 
@@ -63,13 +64,13 @@ import { DetailsProductComponent } from './Components/Product/details/details-pr
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    HttpClientModule,
-    ReactiveFormsModule,
-    FormsModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'XSRF-TOKEN',
       headerName: 'X-XSRF-TOKEN',
     }),
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
@@ -79,8 +80,8 @@ import { DetailsProductComponent } from './Components/Product/details/details-pr
     MatIconModule,
     MatTableModule,
     MatDialogModule,
-    MatSelectModule
-
+    MatSelectModule,
+    FlexLayoutModule
 
   ],
   providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService],

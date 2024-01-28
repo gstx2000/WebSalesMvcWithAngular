@@ -133,6 +133,7 @@
       }
     }
   },
+  "defaultProject": "WebSalesMvcContext",
   "cli": {
     "analytics": true
   }
