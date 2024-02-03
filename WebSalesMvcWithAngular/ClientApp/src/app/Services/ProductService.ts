@@ -71,7 +71,7 @@ export class ProductService {
 
       const options = await this.auth.getOptions();
 
-      return this.http.delete<Product>(`${environment.apiUrl}/${this.url}/confirm-delete/${id}`, options)
+      return this.http.delete<Product>(`${environment.apiUrl}/${this.url}/delete-product/${id}`, options)
         .pipe(
           catchError((error: any) => {
             console.error('Erro HTTP:', error);

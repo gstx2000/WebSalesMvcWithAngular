@@ -17,7 +17,10 @@ namespace WebSalesMvc.Services
 
         public async Task<List<Category>> FindAllAsync()
         {
-            return await _context.Category.Include(s => s.Department).ToListAsync();
+            return await _context.Category
+                .Include(s => s.Department)
+                .Include(s => s.Products) 
+                .ToListAsync();
         }
         public async Task InsertAsync(Category obj)
         {
@@ -26,7 +29,10 @@ namespace WebSalesMvc.Services
         }
         public async Task<Category> FindByIdAsync(int id)
         {
-            return await _context.Category.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
+            return await _context.Category
+                .Include(obj => obj.Department)
+                .Include(obj => obj.Products)
+                .FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
         public async Task UpdateAsync(Category obj)

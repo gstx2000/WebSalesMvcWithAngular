@@ -158,7 +158,7 @@ namespace WebSalesMvc.Controllers
 
 
         [HttpDelete("{id}")]
-        [Route("confirm-delete/{id}")]
+        [Route("delete-department/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmDelete(int id)
         {

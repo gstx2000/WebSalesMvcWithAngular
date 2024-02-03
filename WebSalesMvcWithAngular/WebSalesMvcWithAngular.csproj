@@ -33,26 +33,38 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
+    <None Remove="ClientApp\src\app\Models\enums\SaleStatus.ts" />
     <None Remove="ClientApp\src\app\Services\AuthService.ts" />
     <None Remove="ClientApp\src\app\Services\CategoryService.ts" />
     <None Remove="ClientApp\src\app\Services\LoadingService.ts" />
     <None Remove="ClientApp\src\app\Services\ProductService.ts" />
+    <None Remove="ClientApp\src\app\Services\SalesRecordService.ts" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\enums\SaleStatus.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\AuthService.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\CategoryService.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\LoadingService.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\ProductService.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Services\SalesRecordService.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ClientApp\src\app\Components\Category\create\" />
+    <Folder Include="ClientApp\src\app\Components\Category\edit\" />
+    <Folder Include="ClientApp\src\app\Components\Category\delete\" />
     <Folder Include="ClientApp\src\app\Components\GlobalLoading\" />
     <Folder Include="ClientApp\src\app\Components\Product\create\" />
     <Folder Include="ClientApp\src\app\Components\Product\edit\" />
     <Folder Include="ClientApp\src\app\Components\Product\delete\" />
     <Folder Include="ClientApp\src\app\Components\Product\details\" />
+    <Folder Include="ClientApp\src\app\Components\SalesRecord\index\" />
+    <Folder Include="ClientApp\src\app\Components\SalesRecord\delete\" />
+    <Folder Include="ClientApp\src\app\Components\SalesRecord\edit\" />
+    <Folder Include="ClientApp\src\app\Components\SalesRecord\details\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

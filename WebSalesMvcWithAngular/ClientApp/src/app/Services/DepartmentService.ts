@@ -65,7 +65,7 @@ export class DepartmentService {
     
       const options = await this.auth.getOptions();
 
-      return this.http.delete<Department>(`${environment.apiUrl}/${this.url}/confirm-delete/${id}`, options)
+      return this.http.delete<Department>(`${environment.apiUrl}/${this.url}/delete-department/${id}`, options)
         .pipe(
           catchError((error: any) => {
             console.error('Erro HTTP:', error);

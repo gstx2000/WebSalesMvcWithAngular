@@ -6,8 +6,6 @@ using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
 using WebSalesMvcWithAngular.Services.Exceptions;
 
-
-
 namespace WebSalesMvc.Controllers
 {
     [Route("api/[controller]")]
@@ -17,8 +15,6 @@ namespace WebSalesMvc.Controllers
         private readonly DepartmentService _departmentService;
         private readonly CategoryService _categoryService;
         private readonly ProductService _productService;
-
-
         public ProductsController(WebSalesMvcContext context, DepartmentService departmentService, CategoryService categoryService, ProductService productService)
         {
             _context = context;
@@ -88,6 +84,7 @@ namespace WebSalesMvc.Controllers
 
         [HttpPost]
         [Route("post-product")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] Product product)
         {
             try
@@ -135,6 +132,7 @@ namespace WebSalesMvc.Controllers
                 return StatusCode(500, "Erro interno da aplicação");
             }
         }
+
         [HttpPut("{id}")]
         [Route("edit-product/{id}")]
         [ValidateAntiForgeryToken]
@@ -181,8 +179,9 @@ namespace WebSalesMvc.Controllers
                 return StatusCode(500, "Erro interno da aplicação.");
             }
         }
+
         [HttpDelete("{id}")]
-        [Route("confirm-delete/{id}")]
+        [Route("delete-product/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmDelete(int id)
         {

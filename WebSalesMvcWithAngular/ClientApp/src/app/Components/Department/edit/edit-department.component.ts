@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ErrorStateMatcher } from '@angular/material/core';
 
-
 @Component({
   selector: 'app-departments/edit',
   templateUrl: './edit-department.component.html',

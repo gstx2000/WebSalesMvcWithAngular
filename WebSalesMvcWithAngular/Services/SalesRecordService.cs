@@ -73,6 +73,19 @@ namespace WebSalesMvc.Services
             _context.SalesRecord.Add(salesRecord);
             await _context.SaveChangesAsync();
         }
-    }
 
+        public async Task UpdateAsync(SalesRecord sale)
+        {
+            _context.SalesRecord.Update(sale);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var sale = await _context.SalesRecord.FindAsync(id);
+            _context.SalesRecord.Remove(sale);
+            await _context.SaveChangesAsync();
+        }
+
+    }
 }

@@ -17,19 +17,24 @@
     <mat-cell *matCellDef="let item"> {{ item.department?.name }} </mat-cell>
   </ng-container>
 
+  <ng-container matColumnDef="products">
+    <mat-header-cell *matHeaderCellDef>Produtos</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{ item.products?.length ?? 0 }}</mat-cell>
+  </ng-container>
+
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
     <mat-cell *matCellDef="let item">
-      <button mat-raised-button [routerLink]="['/category/details', item.id]" class="btn btn-default">Detalhes</button>
-      <button mat-raised-button [routerLink]="['/category/edit', item.id]" class="btn btn-default">Editar</button>
-      <button mat-mini-fab color="warn" [routerLink]="['/category/delete', item.id]" class="btn btn-default">
+      <button mat-raised-button [routerLink]="['/categories/details', item.id]" class="btn btn-default">Detalhes</button>
+      <button mat-raised-button [routerLink]="['/categories/edit', item.id]" class="btn btn-default">Editar</button>
+      <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
         <mat-icon>delete</mat-icon>
       </button>
 
     </mat-cell>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="['id', 'name', 'department', 'actions']"></mat-header-row>
+  <mat-header-row *matHeaderRowDef="['id', 'name', 'department', 'products', 'actions']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['id', 'name', 'department', 'products', 'actions']"></mat-row>
 
-  <mat-row *matRowDef="let row; columns: ['id', 'name', 'department', 'actions']"></mat-row>
 </mat-table>

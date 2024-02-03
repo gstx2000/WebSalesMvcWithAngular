@@ -2,10 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { Department } from '../../../Models/Department';
-import { LoadingService } from '../../../Services/LoadingService';
 
 @Component({
-  selector: 'app-departments-delete',
+  selector: 'app-departments/delete',
   templateUrl: './delete-department.component.html',
   styleUrls: ['./delete-department.component.css']
 })
@@ -15,7 +14,6 @@ export class DeleteDepartmentComponent implements OnInit {
     public dialogRef: MatDialogRef<DeleteDepartmentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { department: Department },
     private departmentService: DepartmentService,
-    private loadingService: LoadingService,
     ) { }
 
   ngOnInit(): void {

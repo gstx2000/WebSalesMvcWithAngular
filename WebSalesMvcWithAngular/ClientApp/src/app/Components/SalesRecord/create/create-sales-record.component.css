@@ -1,0 +1,31 @@
+/* Add this CSS to your component's styles */
+.form-container {
+  display: flex;
+  gap: 15px; /* Adjust the gap as needed */
+}
+
+.mat-form-field {
+  flex: 1;
+  margin-right: 15px; 
+  margin-bottom: 15px;
+}
+
+  .mat-form-field:last-child {
+    margin-right: 0; 
+    margin-bottom: 0;
+  }
+
+.mat-select {
+    7
+  width: 100%;
+}
+
+.mat-input-element {
+  width: 100%;
+}
+
+/* Optional: Adjust styles for buttons */
+    button {
+  width: auto; /* Adjust the width as needed */
+  margin-right: 10px; /* Add margin between buttons */
+}

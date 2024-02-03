@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { LoadingService } from '../../../Services/LoadingService';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 
@@ -14,7 +13,6 @@ export class DeleteProductComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DeleteProductComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { product: Product },
-    private loadingService: LoadingService,
     private productService: ProductService,
 
     ) { }

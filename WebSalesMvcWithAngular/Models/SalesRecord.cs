@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using WebSalesMvc.Models.Enums;
+using WebSalesMvcWithAngular.Models.Enums;
 
 namespace WebSalesMvc.Models
 {
@@ -24,7 +25,11 @@ namespace WebSalesMvc.Models
         [Required]
         [Display(Name = "Status")]
         public SaleStatus Status { get; set; }
-       
+
+        [Required]
+        [Display(Name = "Forma de pagamento")]
+        public PaymentMethod PaymentForm { get; set; }
+
         [Display(Name = "Vendedor")]
         public Seller Seller { get; set; }
         

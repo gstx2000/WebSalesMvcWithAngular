@@ -1,257 +1,232 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
-//using Newtonsoft.Json;
-//using WebSalesMvc.Data;
-//using WebSalesMvc.Models;
-//using WebSalesMvc.Services;
-//using static WebSalesMvc.Models.SalesRecord;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using WebSalesMvc.Data;
+using WebSalesMvc.Models;
+using WebSalesMvc.Services;
+using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Exceptions;
+using static WebSalesMvc.Models.SalesRecord;
 
-//namespace WebSalesMvc.Controllers
-//{
-//    [Route("api/[controller]")]
-//    public class SalesRecordsController : Controller
-//    {
-//        private readonly WebSalesMvcContext _context;
-//        private readonly SalesRecordService _salesRecordService;
-//        private readonly SellerService _sellerService;
-//        private readonly ProductService _productService;
+namespace WebSalesMvc.Controllers
+{
+    [Route("api/[controller]")]
+    public class SalesRecordsController : ControllerBase
+    {
+        private readonly WebSalesMvcContext _context;
+        private readonly SalesRecordService _salesRecordService;
+        private readonly SellerService _sellerService;
+        private readonly ProductService _productService;
 
-//        public SalesRecordsController(WebSalesMvcContext context, SalesRecordService salesRecordService, SellerService sellerService, ProductService productService)
-//        {
-//            _context = context;
-//            _salesRecordService = salesRecordService;
-//            _sellerService = sellerService;
-//            _productService = productService;   
-//        }
-//        public async Task<IActionResult> Index()
-//        {
-//            var list = await _salesRecordService.FindAllAsync();
+        public SalesRecordsController(WebSalesMvcContext context, SalesRecordService salesRecordService, SellerService sellerService, ProductService productService)
+        {
+            _context = context;
+            _salesRecordService = salesRecordService;
+            _sellerService = sellerService;
+            _productService = productService;   
+        }
 
-//            if (list.Count == 0)
-//            {
-//                ViewBag.Message = "Sem registro de venda.";
-//                return View();
-//            }
-//            foreach (var record in list)
-//            {
-//                record.Seller = await _sellerService.FindbyIdAsync(record.SellerId);
-//            }
+        [HttpGet]
+        [Route("get-salesrecords")]
 
-//            return View(list);
-//        }
+        public async Task<ActionResult<List<SalesRecord>>> GetSalesRecords()
+        {
+            var list = await _salesRecordService.FindAllAsync();
+            try
+            {
+                var sales = await _salesRecordService.FindAllAsync();
+                if (sales == null || sales.Count == 0)
+                {
+                    return NoContent();
+                }
 
-//        public async Task<IActionResult> Details(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+                return Ok(sales);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound("Nenhuma categoria encontrada.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
 
-//            var salesRecord = await _context.SalesRecord
-//                .FirstOrDefaultAsync(m => m.Id == id);
-//            if (salesRecord == null)
-//            {
-//                return NotFound();
-//            }
+        [HttpPost]
+        [Route("post-salesrecord")]
+        [ValidateAntiForgeryToken]
 
-//            return View(salesRecord);
-//        }
-//        public async Task<IActionResult> Create()
-//        {
-//            var sellers = await _sellerService.FindAllAsync();
-//            var salesRecord = new SalesRecord();
-//            var products = await _productService.FindAllAsync();
+        public async Task<IActionResult> Create([FromBody] SalesRecord sale)
+        {
+            try
+            {
+                if (sale == null)
+                {
+                    return BadRequest("Produto não fornecido" +
+                        ",.");
+                }
 
-//            var viewModel = new SalesRecordsCreateViewModel
-//            {
-//                SalesRecord = salesRecord,
-//                Sellers = sellers,
-//                Products = products
-//            };
-
-//            return View(viewModel);
-//        }
-
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Create(SalesRecordsCreateViewModel viewModel)
-//        {
-//            if (ModelState.IsValid)
-//            {
-//                var salesRecordview = viewModel.SalesRecord;
-//                var productsToRemove = new List<Product>();
-
-//                if (salesRecordview != null)
-//                {
-//                    var selectedProducts = JsonConvert.DeserializeObject<List<SelectedProduct>>(viewModel.SelectedProductsJson);
-
-//                    salesRecordview.Products = salesRecordview.Products ?? new List<Product>();
-
-//                    foreach (var product in salesRecordview.Products)
-//                    {
-//                        if (!selectedProducts.Any(sp => sp.Id == product.Id))
-//                        {
-//                            productsToRemove.Add(product);
-//                        }
-//                    }
-
-//                    foreach (var productToRemove in productsToRemove)
-//                    {
-//                        salesRecordview.Products.Remove(productToRemove);
-//                    }
-
-//                    foreach (var selectedProduct in selectedProducts)
-//                    {
-//                        var existingProduct = await _productService.FindByIdAsync(selectedProduct.Id);
-
-//                        if (existingProduct != null)
-//                        {
-//                            salesRecordview.Products.Add(existingProduct);
-//                        }
-//                    }
+                var seller = await _sellerService.FindbyIdAsync(sale.Seller.Id);
+                var products = await _productService.FindAllAsync();
 
 
+                if (seller == null)
+                {
+                    return BadRequest("Vendedor não encontrado ou não autorizado.");
+                }
 
-//                    salesRecordview.UpdateAmount();
+                if (products == null)
+                {
+                    return BadRequest("Produtos não encontrados.");
+                }
 
+                sale.Seller = seller;
 
+                if (ModelState.IsValid)
+                {
+                    await _salesRecordService.InsertAsync(sale);
+                    return CreatedAtAction("Details", new { id = sale.Id }, sale);
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação");
+            }
+        }
 
-//                    await _salesRecordService.InsertAsync(salesRecordview);
+        [HttpPut("{id}")]
+        [Route("edit-salesrecord/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [FromBody] SalesRecord sale)
+        {
+            try
+            {
+                if (id != sale.Id)
+                {
+                    return BadRequest("ID fornecido difere do ID que vai ser atualizado.");
+                }
 
-//                    return RedirectToAction(nameof(Index));
-//                }
-//            }
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await _salesRecordService.UpdateAsync(sale);
 
-//            var sellers = await _sellerService.FindAllAsync();
-//            viewModel.Sellers = sellers;
+                        return Ok();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!SalesRecordExists(sale.Id))
+                        {
+                            return NotFound("Venda não encontrada.");
+                        }
+                        else
+                        {
+                            return StatusCode(500, "Erro de simultaneidade.");
+                        }
+                    }
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
 
-//            return View(viewModel);
-//        }
+        [HttpDelete("{id}")]
+        [Route("delete-salesrecord/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            try
+            {
+                await _salesRecordService.DeleteAsync(id);
 
-//        public async Task<IActionResult> Edit(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+                return NoContent();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound("Venda não encontrada.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
 
-//            var salesRecord = await _context.SalesRecord.FindAsync(id);
-//            if (salesRecord == null)
-//            {
-//                return NotFound();
-//            }
+        [HttpGet]
+        [Route("simple-search")]
+        public async Task<ActionResult<List<SalesRecord>>> SimpleSearch(DateTime? minDate, DateTime? maxDate)
+        {
+            if (!minDate.HasValue)
+            {
+                minDate = new DateTime(DateTime.Now.Year, 1, 1);
+            }
 
-//            var viewModel = new SalesRecordsCreateViewModel
-//            {
-//                SalesRecord = salesRecord,
-//                Sellers = await _sellerService.FindAllAsync() 
-//            };
+            if (!maxDate.HasValue)
+            {
+                maxDate = DateTime.Now;
+            }
 
-//            return View(viewModel);
-//        }
+            var result = await _salesRecordService.FindByDateAsync(minDate, maxDate);
 
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Edit(int id, SalesRecordsCreateViewModel viewModel)
-//        {
-//            if (id != viewModel.SalesRecord.Id)
-//            {
-//                return NotFound();
-//            }
+            return Ok(new
+            {
+                MinDate = minDate.Value.ToString("yyyy-MM-dd"),
+                MaxDate = maxDate.Value.ToString("yyyy-MM-dd"),
+                Data = result
+            });
+        }
 
-//            if (ModelState.IsValid)
-//            {
-//                try
-//                {
-//                    _context.Update(viewModel.SalesRecord);
-//                    await _context.SaveChangesAsync();
-//                }
-//                catch (DbUpdateConcurrencyException)
-//                {
-//                    if (!SalesRecordExists(viewModel.SalesRecord.Id))
-//                    {
-//                        return NotFound();
-//                    }
-//                    else
-//                    {
-//                        throw;
-//                    }
-//                }
-//                return RedirectToAction(nameof(Index));
-//            }
+        [HttpGet]
+        [Route("grouping-search")]
+        public async Task<ActionResult<List<SalesRecord>>> GroupingSearch(DateTime? minDate, DateTime? maxDate)
+        {
+            if (!minDate.HasValue)
+            {
+                minDate = new DateTime(DateTime.Now.Year, 1, 1);
+            }
+            if (!maxDate.HasValue)
+            {
+                maxDate = DateTime.Now;
+            }
 
-//            viewModel.Sellers = await _sellerService.FindAllAsync();
-//            return View(viewModel);
-//        }
+            var result = await _salesRecordService.FindByDateGroupingAsync(minDate, maxDate);
 
-//        public async Task<IActionResult> Delete(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
-
-//            var salesRecord = await _context.SalesRecord
-//                .FirstOrDefaultAsync(m => m.Id == id);
-//            if (salesRecord == null)
-//            {
-//                return NotFound();
-//            }
-
-//            return View(salesRecord);
-//        }
-
-//        [HttpPost, ActionName("Delete")]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> DeleteConfirmed(int id)
-//        {
-//            var salesRecord = await _context.SalesRecord.FindAsync(id);
-//            _context.SalesRecord.Remove(salesRecord);
-//            await _context.SaveChangesAsync();
-//            return RedirectToAction(nameof(Index));
-//        }
-
-//        private bool SalesRecordExists(int id)
-//        {
-//            return _context.SalesRecord.Any(e => e.Id == id);
-//        }
-
-//        public async Task<IActionResult> SimpleSearch(DateTime? minDate, DateTime? maxDate)
-//        {
-//            if (!minDate.HasValue)
-//            {
-//                minDate = new DateTime(DateTime.Now.Year, 1, 1);
-//            }
-
-//            if (!maxDate.HasValue)
-//            {
-//                maxDate = DateTime.Now;
-//            }
-
-//            ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
-//            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
-
-//            var result = await _salesRecordService.FindByDateAsync(minDate, maxDate);
-//            return View(result);
-//        }
-
-//        public async Task<IActionResult> GroupingSearch(DateTime? minDate, DateTime? maxDate)
-//        {
-//            if (!minDate.HasValue)
-//            {
-//                minDate = new DateTime(DateTime.Now.Year, 1, 1);
-//            }
-//            if (!maxDate.HasValue)
-//            {
-//                maxDate = DateTime.Now;
-//            }
-
-//            ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
-//            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
-//            var result = await _salesRecordService.FindByDateGroupingAsync(minDate, maxDate);
-//            return View(result);
-//        }
-
-//    }
-//}
+            return Ok(new
+            {
+                MinDate = minDate.Value.ToString("yyyy-MM-dd"),
+                MaxDate = maxDate.Value.ToString("yyyy-MM-dd"),
+                Data = result
+            });
+        }
+        private bool SalesRecordExists(int id)
+        {
+            return _context.SalesRecord.Any(e => e.Id == id);
+        }
+    }
+}

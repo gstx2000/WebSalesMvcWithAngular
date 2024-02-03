@@ -13,7 +13,7 @@ import { MyErrorStateMatcher } from '../../Department/edit/edit-department.compo
 import { LoadingService } from '../../../Services/LoadingService';
 
 @Component({
-  selector: 'app-edit-product',
+  selector: 'app-products/edit',
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.css']
 })
@@ -46,7 +46,7 @@ export class EditProductComponent {
 
   initializeForm(): void {
     this.productForm = this.fb.group({
-      id: '',
+      id: 0,
       name: ['', Validators.required],
       price: [0, Validators.min(0)],
       description: '',

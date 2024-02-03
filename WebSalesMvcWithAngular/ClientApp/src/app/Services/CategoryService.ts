@@ -65,7 +65,7 @@ export class CategoryService {
 
       const options = await this.auth.getOptions();
 
-      return this.http.delete<Category>(`${environment.apiUrl}/${this.url}/confirm-delete/${id}`, options)
+      return this.http.delete<Category>(`${environment.apiUrl}/${this.url}/delete-category/${id}`, options)
         .pipe(
           catchError((error: any) => {
             console.error('Erro HTTP:', error);

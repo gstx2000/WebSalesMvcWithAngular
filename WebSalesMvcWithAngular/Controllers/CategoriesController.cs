@@ -107,7 +107,7 @@ namespace WebSalesMvc.Controllers
                     await _categoryService.InsertAsync(category);
                     return CreatedAtAction("Details", new { id = category.Id }, category);
                 }
-                else
+                else 
                 {
                     return UnprocessableEntity(ModelState);
                 }
@@ -170,7 +170,7 @@ namespace WebSalesMvc.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Route("confirm-delete/{id}")]
+        [Route("delete-category/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmDelete(int id)
         {

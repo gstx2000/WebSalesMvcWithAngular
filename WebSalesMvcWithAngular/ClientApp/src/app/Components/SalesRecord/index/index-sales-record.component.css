@@ -1,0 +1,8 @@
+.custom-mat-table {
+  margin-top: 10px;
+}
+
+  .custom-mat-table .mat-header-cell,
+  .custom-mat-table .mat-cell {
+    text-align: center;
+  }

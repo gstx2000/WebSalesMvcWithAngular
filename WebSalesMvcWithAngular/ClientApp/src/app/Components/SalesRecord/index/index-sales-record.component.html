@@ -1,0 +1,32 @@
+<button mat-raised-button [routerLink]="['/salesRecords/create']" class="btn btn-default">Nova venda</button>
+<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="salesRecords">
+
+  <ng-container matColumnDef="date">
+    <mat-header-cell *matHeaderCellDef>Data</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{ item.date }}</mat-cell>
+  </ng-container>
+  
+  <ng-container matColumnDef="amount">
+    <mat-header-cell *matHeaderCellDef>Valor</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{ item.amount}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{ item.status}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let item">
+      <button mat-raised-button [routerLink]="['/departments/details', item.id]" class="btn btn-default">Detalhes</button>cd
+      <button mat-raised-button [routerLink]="['/departments/edit', item.id]" class="btn btn-default">Editar</button>
+      <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="['date', 'amount', 'status']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['date', 'amount', 'status'];"></mat-row>
+</mat-table>
