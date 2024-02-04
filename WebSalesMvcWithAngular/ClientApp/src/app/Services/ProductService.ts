@@ -83,7 +83,14 @@ export class ProductService {
     }
   }
 
-
-
+  searchProductsByName(searchTerm: string): Observable<Product[]> {
+    return this.http.get<Product[]>(`${environment.apiUrl}/${this.url}/get-product/${searchTerm}`)
+      .pipe(
+        catchError((error: any) => {
+          console.error('HTTP Error:', error);
+          return throwError(error);
+        })
+      );
+  }
 
 }

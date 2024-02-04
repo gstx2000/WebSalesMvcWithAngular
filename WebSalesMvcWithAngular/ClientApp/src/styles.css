@@ -26,6 +26,9 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background: rgb(92,152,164);
   background: linear-gradient(90deg, rgba(92,152,164,1) 20%, rgba(177,177,194,1) 100%);
+
+  zoom: 0.98;
+
 }
 
 .spinner-container {

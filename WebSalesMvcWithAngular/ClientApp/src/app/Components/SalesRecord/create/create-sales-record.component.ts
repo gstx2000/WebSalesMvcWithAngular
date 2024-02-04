@@ -5,20 +5,24 @@ import { Router } from '@angular/router';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 import { DepartmentService } from '../../../Services/DepartmentService';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
 import { SalesRecord } from '../../../Models/SalesRecord';
 import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { PaymentMethod } from '../../../Models/enums/PaymentMethod';
 import { Seller } from '../../../Models/Seller';
+import { CategoryService } from '../../../Services/CategoryService';
+import { Category } from '../../../Models/Category';
+import { MatTableDataSource } from '@angular/material/table';
+
 
 @Component({
   selector: 'app-sales-record/create',
   templateUrl: './create-sales-record.component.html',
   styleUrls: ['./create-sales-record.component.css']
 })
-export class CreateSalesRecordComponent  implements OnInit {
-  products: Product[] = [];
+export class CreateSalesRecordComponent implements OnInit {
   salesForm!: FormGroup;
   salesRecord: SalesRecord;
   departments$: Observable<Department[]> | undefined;
@@ -26,29 +30,43 @@ export class CreateSalesRecordComponent  implements OnInit {
   PaymentMethod = PaymentMethod;
   SaleStatus = SaleStatus;
   sellers$: Observable<Seller[]> | undefined;
+  categories$: Observable<Category[]> | undefined;
+  searchControl: FormControl = new FormControl();
+  filteredProducts: Product[] = [];
+  searchTerm: string = '';
+  selectedProducts: Product[] = [];
+
+  displayedColumns: string[] = ['id', 'name', 'price', 'category', 'actions'];
+  selectedProductsDataSource = new MatTableDataSource<Product>();
 
   saleStatusValues: (keyof typeof SaleStatus)[] = Object.keys(SaleStatus) as (keyof typeof SaleStatus)[];
-
   salePayMethodValues: (keyof typeof PaymentMethod)[] = Object.keys(PaymentMethod) as (keyof typeof PaymentMethod)[];
+
   constructor(
     private SalesService: SalesRecordService,
     private productService: ProductService,
     private departmentService: DepartmentService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private categoryService: CategoryService,
   ) {
     this.salesRecord = {
       amount: 0,
       status: 0,
       paymentMethod: 0,
       date: new Date()
+
     };
   }
 
   ngOnInit(): void {
-    this.initSalesForm();
     this.departments$ = this.departmentService.getDepartments();
     this.products$ = this.productService.getProducts();
+    this.categories$ = this.categoryService.getCategories();
+    this.setupSearchControl();
+    this.initSalesForm();
+    this.selectedProductsDataSource = new MatTableDataSource<Product>(this.selectedProducts);
+
   }
 
   initSalesForm(): void {
@@ -56,8 +74,10 @@ export class CreateSalesRecordComponent  implements OnInit {
       amount: [0, [Validators.required, Validators.min(0.01)]],
       status: [0, Validators.required],
       paymentMethod: [0, Validators.required],
-      date: [new Date()]
-    });
+      date: [new Date()],
+      products: [[]],
+      quantity: [1, Validators.required],
+});
   }
 
   async onSubmit(): Promise<void> {
@@ -65,6 +85,7 @@ export class CreateSalesRecordComponent  implements OnInit {
       if (this.salesForm.valid) {
         const formData: SalesRecord = this.salesForm.value;
         formData.date = new Date();
+        formData.products = this.selectedProducts;
         const createdSales = await (await this.SalesService.createSalesRecord(formData)).toPromise();
         this.router.navigate(['/salesRecords']);
       }
@@ -73,6 +94,7 @@ export class CreateSalesRecordComponent  implements OnInit {
     }
   }
 
+
   getPaymentMethodValues(): number[] {
     return Object.values(PaymentMethod).filter(value => typeof value === 'number') as number[];
   }
@@ -80,6 +102,7 @@ export class CreateSalesRecordComponent  implements OnInit {
   getPaymentMethodName(value: number): string {
     return PaymentMethod[value] as string;
   }
+
   getSaleStatusValues(): number[] {
     return Object.values(SaleStatus).filter(value => typeof value === 'number') as number[];
   }
@@ -88,8 +111,52 @@ export class CreateSalesRecordComponent  implements OnInit {
     return SaleStatus[value] as string;
   }
 
-  cancel() {
+  cancel(): void {
     this.router.navigate(['/salesRecords']);
   }
-}
 
+  RemoveFromOrder(product: Product): void {
+    this.selectedProducts = this.selectedProducts.filter(p => p !== product);
+    if (this.selectedProductsDataSource) {
+      this.selectedProductsDataSource.data = this.selectedProducts;
+      console.log('Filtered Products:', this.selectedProducts);
+
+    }
+  }
+
+
+  private setupSearchControl(): void {
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((searchTerm: string) => {
+        console.log('Search Term:', searchTerm);
+        return this.productService.searchProductsByName(searchTerm).pipe(
+          catchError((error: any) => {
+            console.error('Error during product search:', error);
+            return [];
+          })
+        );
+      })
+    ).subscribe((products: Product[]) => {
+      console.log('Filtered Products:', products);
+      this.filteredProducts = products;
+    });
+  }
+
+
+  selectProduct(product: Product): void {
+    if (!this.selectedProducts.includes(product)) {
+      this.selectedProducts.push(product);
+      this.salesForm.get('products')!.setValue(this.selectedProducts);
+      if (this.selectedProductsDataSource) {
+        this.selectedProductsDataSource.data = this.selectedProducts; 
+      }
+    }
+  }
+
+  private updateQuantityFormControl(): void {
+    const quantity = this.selectedProducts.length;
+    this.salesForm.get('quantity')!.setValue(quantity);
+  }
+}

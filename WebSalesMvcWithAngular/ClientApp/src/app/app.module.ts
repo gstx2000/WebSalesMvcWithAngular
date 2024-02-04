@@ -47,6 +47,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 import { LoadingService } from './Services/LoadingService';
@@ -104,7 +105,8 @@ import { SalesRecordService } from './Services/SalesRecordService';
     FlexLayoutModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatCardModule
+    MatCardModule,
+    MatAutocompleteModule
 
   ],
   providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService, SalesRecordService],

@@ -1,9 +1,78 @@
-<mat-card>
+<mat-card class="search-title">
+
+  <h6 style="margin-top: 3px">Selecionar produtos</h6>
+
+</mat-card>
+
+<mat-card class="search-card">
+  <div class="input-container">
+    <mat-form-field appearance="outline" class="search-input">
+      <div class="search">
+        <input matInput appearance="outline" [matAutocomplete]="auto" type="text"
+               [formControl]="searchControl" placeholder="Digite um nome...">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let product of filteredProducts" [value]="product" (click)="selectProduct(product)">{{ product.name }}</mat-option>
+        </mat-autocomplete>
+      </div>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="qty">
+      <mat-label>Quantidade</mat-label>
+      <div class="qty-input">
+        <input matInput appearance="outline" type="number" formControlName="quantity" placeholder="1"/>
+      </div>
+    </mat-form-field>
+
+        <mat-form-field class="category" appearance="outline">
+          <mat-label for="categories$">Categoria</mat-label>
+          <mat-select id="categories$">
+            <mat-option *ngFor="let category of categories$ | async" [value]=category.id>{{ category.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+</mat-card>
+
+<mat-table class="selected-products" [dataSource]="selectedProductsDataSource">
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.id }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Produto </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.name }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="price">
+    <mat-header-cell *matHeaderCellDef> Preço </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.price }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="qty">
+    <mat-header-cell *matHeaderCellDef> Quantidade </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{ item.qty }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+    <mat-cell *matCellDef="let item" fxLayout="row" fxLayoutAlign="space-between">
+      <button mat-mini-fab color="warn" (click)="RemoveFromOrder(item)" class="btn btn-default">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="['id', 'name', 'price', 'qty', 'actions']"></mat-header-row>
+
+  <mat-row *matRowDef="let row; columns: ['id', 'name', 'price', 'qty', 'actions']"></mat-row>
+</mat-table>
+
+<mat-card class="mcard">
   <mat-card-content>
     <div class="form-container">
       <form method="post" asp-controller="SalesRecordsController" asp-action="Create" asp-antiforgery="true" [formGroup]="salesForm" (ngSubmit)="onSubmit()">
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="input">
           <mat-label for="paymentMethod">Forma de pagamento</mat-label>
           <mat-select id="paymentMethod" formControlName="paymentMethod">
             <mat-option *ngFor="let method of getPaymentMethodValues()" [value]="method">
@@ -13,7 +82,7 @@
           <mat-error *ngIf="salesForm.get('paymentMethod')?.hasError('required')">Campo obrigatório</mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="input">
           <mat-label for="status">Status</mat-label>
           <mat-select id="status" formControlName="status">
             <mat-option *ngFor="let status of getSaleStatusValues()" [value]="status">
@@ -22,9 +91,9 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="input">
           <mat-label for="amount">Valor total</mat-label>
-          <input matInput type="number" id="amount" formControlName="amount" placeholder="0" readonly>
+          <input matInput type="number" id="amount" formControlName="amount" placeholder="0" readonly currency>
           <mat-error *ngIf="salesForm.get('amount')?.hasError('required')">Campo obrigatório</mat-error>
         </mat-form-field>
 
@@ -35,10 +104,10 @@
           </mat-select>
         </mat-form-field>
 
-        <br />
-
-        <button type="submit" [disabled]="salesForm.invalid" class="btn btn-default">Nova venda</button>
-        <button class="btn btn-default" (click)="cancel()">Cancelar</button>
+        <div class="buttons">
+          <button type="submit" [disabled]="salesForm.invalid" class="btn btn-default">Nova venda</button>
+          <button class="btn btn-default" (click)="cancel()">Cancelar</button>
+        </div>
 
       </form>
     </div>

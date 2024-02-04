@@ -205,6 +205,19 @@ namespace WebSalesMvc.Controllers
             }
         }
 
+        [HttpGet("get-product/{productName}")]
+        public async Task<IActionResult> GetProductByName(string productName)
+        {
+            var products = await _productService.FindByNameAsync(productName);
+
+            if (products == null || products.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(products);
+        }
+
         private bool ProductExists(int id)
         {
                 return _context.Product.Any(e => e.Id == id);
