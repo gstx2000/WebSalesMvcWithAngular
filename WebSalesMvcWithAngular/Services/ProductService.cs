@@ -44,12 +44,15 @@ public class ProductService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Product>> FindByNameAsync(string productName)
+    public async Task<List<Product>> FindByNameAsync(string productName, int? categoryId)
     {
-        return await _context.Product
-            .Where(p => EF.Functions.Like(p.Name, $"%{productName}%"))
-            .ToListAsync();
-    }
+        var query = _context.Product.Where(p => EF.Functions.Like(p.Name, $"%{productName}%"));
 
-  
+        if (categoryId.HasValue)
+        {
+            query = query.Where(p => p.CategoryId == categoryId.Value);
+        }
+
+        return await query.ToListAsync();
+    }
 }

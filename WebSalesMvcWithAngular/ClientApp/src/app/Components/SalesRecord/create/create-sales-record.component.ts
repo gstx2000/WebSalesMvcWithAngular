@@ -15,7 +15,8 @@ import { Seller } from '../../../Models/Seller';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Category } from '../../../Models/Category';
 import { MatTableDataSource } from '@angular/material/table';
-
+import { LoadingService } from '../../../Services/LoadingService';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-sales-record/create',
@@ -36,7 +37,6 @@ export class CreateSalesRecordComponent implements OnInit {
   searchTerm: string = '';
   selectedProducts: Product[] = [];
 
-  displayedColumns: string[] = ['id', 'name', 'price', 'category', 'actions'];
   selectedProductsDataSource = new MatTableDataSource<Product>();
 
   saleStatusValues: (keyof typeof SaleStatus)[] = Object.keys(SaleStatus) as (keyof typeof SaleStatus)[];
@@ -49,13 +49,14 @@ export class CreateSalesRecordComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private categoryService: CategoryService,
+    private loadingService: LoadingService
+
   ) {
     this.salesRecord = {
       amount: 0,
       status: 0,
       paymentMethod: 0,
-      date: new Date()
-
+      date: new Date(),
     };
   }
 
@@ -76,8 +77,11 @@ export class CreateSalesRecordComponent implements OnInit {
       paymentMethod: [0, Validators.required],
       date: [new Date()],
       products: [[]],
-      quantity: [1, Validators.required],
-});
+      category: [null] 
+    });
+
+    this.searchControl.setValue('');
+
   }
 
   async onSubmit(): Promise<void> {
@@ -91,6 +95,10 @@ export class CreateSalesRecordComponent implements OnInit {
       }
     } catch (error) {
       console.error('Erro ao criar:', error);
+      this.loadingService.hideLoading();
+    }
+    () => {
+      this.loadingService.hideLoading();
     }
   }
 
@@ -124,39 +132,53 @@ export class CreateSalesRecordComponent implements OnInit {
     }
   }
 
-
   private setupSearchControl(): void {
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((searchTerm: string) => {
-        console.log('Search Term:', searchTerm);
-        return this.productService.searchProductsByName(searchTerm).pipe(
-          catchError((error: any) => {
-            console.error('Error during product search:', error);
-            return [];
-          })
-        );
+        const categoryId = this.salesForm.get('category')?.value;
+
+        if (searchTerm.trim() !== '') {
+
+          return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
+            catchError((error: any) => {
+              if (error instanceof HttpErrorResponse && error.status === 404) {
+                console.warn();
+                  return [];
+              } else {
+                console.error('Error during product search:', error);
+                throw error;
+              }
+            })
+          );
+        } else {
+          return new Observable<Product[]>(); // Return an empty observable for null or empty searchTerm
+        }
       })
     ).subscribe((products: Product[]) => {
       console.log('Filtered Products:', products);
-      this.filteredProducts = products;
+
+      this.filteredProducts = products.filter(p => !this.selectedProducts.includes(p));
     });
   }
 
-
   selectProduct(product: Product): void {
-    if (!this.selectedProducts.includes(product)) {
+    const existingProduct = this.selectedProducts.find(p => p.id === product.id);
+
+    if (!existingProduct) {
       this.selectedProducts.push(product);
       this.salesForm.get('products')!.setValue(this.selectedProducts);
+
       if (this.selectedProductsDataSource) {
-        this.selectedProductsDataSource.data = this.selectedProducts; 
+        this.selectedProductsDataSource.data = this.selectedProducts;
+        this.searchControl.setValue('');
       }
+
+      this.searchControl.setValue('');
+    } else {
+      this.searchControl.setValue('');
     }
   }
 
-  private updateQuantityFormControl(): void {
-    const quantity = this.selectedProducts.length;
-    this.salesForm.get('quantity')!.setValue(quantity);
-  }
 }

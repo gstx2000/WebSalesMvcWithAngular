@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteCategoryComponent } from '../delete/delete-category.component';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-categories',
@@ -28,29 +29,35 @@ export class IndexCategoryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadCategories();
-  }
+    forkJoin([
+      this.departmentService.getDepartments(),
+      this.productService.getProducts(),
+      this.categoryService.getCategories()
+    ]).subscribe(
+      ([departments, products, categories]) => {
+        this.departments = departments;
+        this.products = products;
+        this.categories = categories;
 
-  loadDepartments(): void {
-    this.loadingService.showLoading();
+        this.categories.forEach(category => {
+          category.products = this.products.filter(product => product.categoryId === category.id);
+        });
 
-    this.departmentService.getDepartments().subscribe(
-      (result: Department[]) => {
-        this.departments = result;
+        this.departments = this.departments.filter(department =>
+          this.categories.some(category => category.departmentId === department.id)
+        );
 
-        this.loadCategories();
         this.loadingService.hideLoading();
-
       },
       (error) => {
-        console.error('Erro ao carregar departamentos:', error);
+        console.error('Error loading data:', error);
         this.loadingService.hideLoading();
       }
     );
   }
 
+
   loadProducts(): void {
-    this.loadingService.showLoading();
 
     this.productService.getProducts().subscribe(
       (result: Product[]) => {
@@ -62,12 +69,13 @@ export class IndexCategoryComponent implements OnInit {
       },
       (error) => {
         console.error('Erro ao carregar departamentos:', error);
-        this.loadingService.hideLoading();
       }
     );
   }
 
   loadCategories(): void {
+    this.loadingService.showLoading();
+
     this.categoryService.getCategories().subscribe(
       (result: Category[]) => {
         this.categories = result;

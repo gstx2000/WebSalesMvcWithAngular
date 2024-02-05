@@ -5,7 +5,6 @@ import { DepartmentService } from '../../../Services/DepartmentService';
 import { Router } from '@angular/router';
 import { LoadingService } from '../../../Services/LoadingService';
 
-
 @Component({
   selector: 'app-departments/create',
   templateUrl: './create-department.component.html',
@@ -45,9 +44,9 @@ export class CreateDepartmentComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
+    this.loadingService.showLoading();
 
     try {
-      this.loadingService.showLoading();
       if (this.departmentForm.valid) {
         const formData: Department = this.departmentForm.value;
         const createdDepartment = await (await this.departmentService.createDepartment(formData)).toPromise();

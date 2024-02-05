@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Category } from '../../../Models/Category';
 import { Observable } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
+import { LoadingService } from '../../../Services/LoadingService';
 
 @Component({
   selector: 'app-create-category',
@@ -21,6 +22,7 @@ export class CreateCategoryComponent implements OnInit {
     private departmentService: DepartmentService,
     private fb: FormBuilder,
     private router: Router,
+    private loadingService: LoadingService,
 
   ) {
     this.category = {
@@ -44,6 +46,7 @@ export class CreateCategoryComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
+    this.loadingService.showLoading();
 
     try {
       if (this.categoryForm.valid) {
@@ -53,6 +56,10 @@ export class CreateCategoryComponent implements OnInit {
       }
     } catch (error) {
       console.error('Erro ao criar:', error);
+      this.loadingService.hideLoading();
+    }
+    () => {
+      this.loadingService.hideLoading();
     }
   }
 

@@ -8,6 +8,7 @@ import { Category } from '../../../Models/Category';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { Observable } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
+import { LoadingService } from '../../../Services/LoadingService';
 
 @Component({
   selector: 'app-products/create',
@@ -25,7 +26,9 @@ export class CreateProductComponent implements OnInit {
     private departmentService: DepartmentService,
     private categoryService: CategoryService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private loadingService: LoadingService,
+
   ) {
     this.product = {
       price: 0,
@@ -45,7 +48,7 @@ export class CreateProductComponent implements OnInit {
 
   initProductForm(): void {
     this.productForm = this.fb.group({
-      price: [0, Validators.min(0)],
+      price: [1, Validators.min(0.1)],
       name: ['', Validators.required],
       description: '',
       categoryId: [0],
@@ -55,7 +58,7 @@ export class CreateProductComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-
+    this.loadingService.showLoading();
     try {
       if (this.productForm.valid) {
         const formData: Product = this.productForm.value;
@@ -64,6 +67,10 @@ export class CreateProductComponent implements OnInit {
       }
     } catch (error) {
       console.error('Erro ao criar:', error);
+      this.loadingService.hideLoading();
+    }
+    () => {
+      this.loadingService.hideLoading();
     }
   }
 

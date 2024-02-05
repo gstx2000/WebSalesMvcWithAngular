@@ -83,8 +83,10 @@ export class ProductService {
     }
   }
 
-  searchProductsByName(searchTerm: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${environment.apiUrl}/${this.url}/get-product/${searchTerm}`)
+  searchProductsByName(searchTerm: string, categoryId?: number | null): Observable<Product[]> {
+    const url = `${environment.apiUrl}/${this.url}/get-product/${searchTerm}${categoryId !== null && categoryId !== undefined ? `/${categoryId}` : ''}`;
+
+    return this.http.get<Product[]>(url)
       .pipe(
         catchError((error: any) => {
           console.error('HTTP Error:', error);
@@ -92,5 +94,6 @@ export class ProductService {
         })
       );
   }
+
 
 }

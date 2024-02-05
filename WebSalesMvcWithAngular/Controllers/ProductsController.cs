@@ -205,10 +205,10 @@ namespace WebSalesMvc.Controllers
             }
         }
 
-        [HttpGet("get-product/{productName}")]
-        public async Task<IActionResult> GetProductByName(string productName)
+        [HttpGet("get-product/{productName}/{categoryId?}")]
+        public async Task<IActionResult> GetProductByName(string productName, int? categoryId)
         {
-            var products = await _productService.FindByNameAsync(productName);
+            var products = await _productService.FindByNameAsync(productName, categoryId);
 
             if (products == null || products.Count == 0)
             {

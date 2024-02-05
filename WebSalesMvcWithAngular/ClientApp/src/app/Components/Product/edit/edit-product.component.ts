@@ -48,7 +48,7 @@ export class EditProductComponent {
     this.productForm = this.fb.group({
       id: 0,
       name: ['', Validators.required],
-      price: [0, Validators.min(0)],
+      price: [1, Validators.min(0.1)],
       description: '',
       categoryId: 0,
       departmentId: 0,

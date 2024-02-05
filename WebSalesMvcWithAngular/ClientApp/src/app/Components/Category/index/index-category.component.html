@@ -19,7 +19,9 @@
 
   <ng-container matColumnDef="products">
     <mat-header-cell *matHeaderCellDef>Produtos</mat-header-cell>
-    <mat-cell *matCellDef="let item">{{ item.products?.length ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let item">
+      {{ item.products ? item.products.length : 0 }}
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="actions">
