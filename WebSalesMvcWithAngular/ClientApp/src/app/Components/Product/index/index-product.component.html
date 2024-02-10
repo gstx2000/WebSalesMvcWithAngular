@@ -1,6 +1,6 @@
 <button mat-raised-button [routerLink]="['/products/create']" class="btn btn-default">Criar novo</button>
 
-<mat-table class="mat-elevation-z8" [dataSource]="products">
+<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="products">
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
     <mat-cell *matCellDef="let item"> {{ item.id }} </mat-cell>
@@ -13,7 +13,7 @@
 
   <ng-container matColumnDef="price">
     <mat-header-cell *matHeaderCellDef> Preço </mat-header-cell>
-    <mat-cell *matCellDef="let item"> {{ item.price }} </mat-cell>
+    <mat-cell *matCellDef="let item">{{ item.price | currency:'BRL':'symbol':'1.2-2' }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="category">

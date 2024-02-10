@@ -36,6 +36,7 @@ export class CreateSalesRecordComponent implements OnInit {
   filteredProducts: Product[] = [];
   searchTerm: string = '';
   selectedProducts: Product[] = [];
+  quantity!: number;
 
   selectedProductsDataSource = new MatTableDataSource<Product>();
 
@@ -56,18 +57,18 @@ export class CreateSalesRecordComponent implements OnInit {
       amount: 0,
       status: 0,
       paymentMethod: 0,
-      date: new Date(),
+      date: new Date()
     };
   }
 
   ngOnInit(): void {
+
     this.departments$ = this.departmentService.getDepartments();
     this.products$ = this.productService.getProducts();
     this.categories$ = this.categoryService.getCategories();
     this.setupSearchControl();
     this.initSalesForm();
-    this.selectedProductsDataSource = new MatTableDataSource<Product>(this.selectedProducts);
-
+    this.selectedProductsDataSource = new MatTableDataSource<Product>(this.selectedProducts); 
   }
 
   initSalesForm(): void {
@@ -77,11 +78,22 @@ export class CreateSalesRecordComponent implements OnInit {
       paymentMethod: [0, Validators.required],
       date: [new Date()],
       products: [[]],
-      category: [null] 
+      category: [null], 
+      search: this.searchControl,
     });
 
-    this.searchControl.setValue('');
+    this.searchControl?.setValue('');
 
+    this.searchControl?.disable({ onlySelf: true, emitEvent: false });
+
+    this.salesForm.get('category')?.valueChanges.subscribe(value => {
+      if (value === null) {
+        this.searchControl?.disable({ onlySelf: true, emitEvent: false });
+      } else {
+        this.searchControl.enable({ onlySelf: true, emitEvent: false });
+      }
+    });
+  
   }
 
   async onSubmit(): Promise<void> {
@@ -89,6 +101,7 @@ export class CreateSalesRecordComponent implements OnInit {
       if (this.salesForm.valid) {
         const formData: SalesRecord = this.salesForm.value;
         formData.date = new Date();
+
         formData.products = this.selectedProducts;
         const createdSales = await (await this.SalesService.createSalesRecord(formData)).toPromise();
         this.router.navigate(['/salesRecords']);
@@ -101,7 +114,6 @@ export class CreateSalesRecordComponent implements OnInit {
       this.loadingService.hideLoading();
     }
   }
-
 
   getPaymentMethodValues(): number[] {
     return Object.values(PaymentMethod).filter(value => typeof value === 'number') as number[];
@@ -139,12 +151,12 @@ export class CreateSalesRecordComponent implements OnInit {
       switchMap((searchTerm: string) => {
         const categoryId = this.salesForm.get('category')?.value;
 
-        if (searchTerm.trim() !== '') {
+        if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
 
           return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
             catchError((error: any) => {
               if (error instanceof HttpErrorResponse && error.status === 404) {
-                console.warn();
+                console.warn('Nada encontrado');
                   return [];
               } else {
                 console.error('Error during product search:', error);
@@ -153,7 +165,7 @@ export class CreateSalesRecordComponent implements OnInit {
             })
           );
         } else {
-          return new Observable<Product[]>(); // Return an empty observable for null or empty searchTerm
+          return new Observable<Product[]>();
         }
       })
     ).subscribe((products: Product[]) => {
@@ -168,16 +180,15 @@ export class CreateSalesRecordComponent implements OnInit {
 
     if (!existingProduct) {
       this.selectedProducts.push(product);
-      this.salesForm.get('products')!.setValue(this.selectedProducts);
+
+      this.salesForm.get('products')?.setValue(this.selectedProducts);
 
       if (this.selectedProductsDataSource) {
         this.selectedProductsDataSource.data = this.selectedProducts;
-        this.searchControl.setValue('');
       }
-
-      this.searchControl.setValue('');
+      this.searchControl?.setValue('');
     } else {
-      this.searchControl.setValue('');
+      this.searchControl?.setValue('');
     }
   }
 

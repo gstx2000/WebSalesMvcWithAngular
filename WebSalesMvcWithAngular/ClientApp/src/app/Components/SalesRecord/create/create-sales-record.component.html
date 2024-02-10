@@ -2,8 +2,8 @@
 
   <h6 style="margin-top: 3px">Selecionar produtos</h6>
 
-</mat-card>
 
+</mat-card>
 <form method="post" asp-controller="SalesRecordsController" asp-action="Create" asp-antiforgery="true" [formGroup]="salesForm" (ngSubmit)="onSubmit()">
 
   <mat-card class="search-card">
@@ -12,15 +12,19 @@
 
       <mat-form-field class="category" appearance="outline">
         <mat-label for="categories$">Categoria</mat-label>
-        <mat-select formControlName="category">
+        <mat-select formControlName="category" >
           <mat-option *ngFor="let category of categories$ | async" [value]="category.id">{{ category.name }}</mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="search-input">
         <div class="search">
-          <input matInput appearance="outline" [matAutocomplete]="auto" type="text"
-                 [formControl]="searchControl" placeholder="Digite um nome...">
+          <input matInput
+                 appearance="outline"
+                 [matAutocomplete]="auto"
+                 type="text"
+                 [formControl]="searchControl"
+                 placeholder="Digite um nome...">
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let product of filteredProducts" [value]="product.name" (click)="selectProduct(product)">
               {{ product.name }}
@@ -32,10 +36,9 @@
       <mat-form-field appearance="outline" class="qty">
         <mat-label>Quantidade</mat-label>
         <div class="qty-input">
-          <input [formControl]="searchControl" matInput appearance="outline" type="number" />
+          <input matInput appearance="outline" type="number" />
         </div>
       </mat-form-field>
-
 
     </div>
   </mat-card>
@@ -53,7 +56,7 @@
 
     <ng-container matColumnDef="price">
       <mat-header-cell *matHeaderCellDef> Preço </mat-header-cell>
-      <mat-cell *matCellDef="let item"> {{ item.price }} </mat-cell>
+      <mat-cell *matCellDef="let item"> {{ item.price | currency:'BRL':'symbol':'1.2-2' }} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="actions">

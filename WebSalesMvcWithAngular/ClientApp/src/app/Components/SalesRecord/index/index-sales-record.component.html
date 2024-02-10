@@ -5,10 +5,10 @@
     <mat-header-cell *matHeaderCellDef>Data</mat-header-cell>
     <mat-cell *matCellDef="let item">{{ item.date }}</mat-cell>
   </ng-container>
-  
+
   <ng-container matColumnDef="amount">
     <mat-header-cell *matHeaderCellDef>Valor</mat-header-cell>
-    <mat-cell *matCellDef="let item">{{ item.amount}}</mat-cell>
+    <mat-cell *matCellDef="let item">{{ item.amount | currency:'BRL':'symbol':'1.2-2'}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="status">

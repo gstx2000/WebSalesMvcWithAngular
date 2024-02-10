@@ -58,6 +58,27 @@
 
 .qty {
   max-width: 100px;
-} 
+}
 
+.selected-products {
+  margin-top: 10px;
+  border-spacing: 0;
+  border-collapse: collapse;
+  text-indent: initial;
+}
 
+selected-products .mat-header-cell .custom-mat-table .mat-cell {
+  text-align: center;
+}
+
+.selected-products mat-header-row {
+  background-color: #e0e0e0;
+  color: #333;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.selected-products mat-header-cell:hover {
+  background-color: #ccc;
+  cursor: pointer;
+}

@@ -11,4 +11,6 @@ export interface SalesRecord {
   sellerid?: number;
   products?: Product[];
   paymentMethod: number;
+
+
 }
