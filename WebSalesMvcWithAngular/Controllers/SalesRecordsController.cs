@@ -66,25 +66,27 @@ namespace WebSalesMvc.Controllers
             {
                 if (sale == null)
                 {
-                    return BadRequest("Produto não fornecido" +
+                    return BadRequest("Venda não fornecida" +
                         ",.");
                 }
 
-                var seller = await _sellerService.FindbyIdAsync(sale.Seller.Id);
+
+                //var seller = await _sellerService.FindbyIdAsync(sale.Seller.Id);
+
+                //if (seller == null)
+                //{
+                //    return BadRequest("Vendedor não encontrado ou não autorizado.");
+                //}
+
                 var products = await _productService.FindAllAsync();
-
-
-                if (seller == null)
-                {
-                    return BadRequest("Vendedor não encontrado ou não autorizado.");
-                }
 
                 if (products == null)
                 {
                     return BadRequest("Produtos não encontrados.");
                 }
 
-                sale.Seller = seller;
+                sale.Seller.Id = 1;
+                sale.Date = DateTime.Now;
 
                 if (ModelState.IsValid)
                 {

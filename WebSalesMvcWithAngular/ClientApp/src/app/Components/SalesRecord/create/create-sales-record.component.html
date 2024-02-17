@@ -2,9 +2,9 @@
 
   <h6 style="margin-top: 3px">Selecionar produtos</h6>
 
-
 </mat-card>
-<form method="post" asp-controller="SalesRecordsController" asp-action="Create" asp-antiforgery="true" [formGroup]="salesForm" (ngSubmit)="onSubmit()">
+
+<form [formGroup]="searchForm" >
 
   <mat-card class="search-card">
 
@@ -12,7 +12,7 @@
 
       <mat-form-field class="category" appearance="outline">
         <mat-label for="categories$">Categoria</mat-label>
-        <mat-select formControlName="category" >
+        <mat-select formControlName="category">
           <mat-option *ngFor="let category of categories$ | async" [value]="category.id">{{ category.name }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -42,6 +42,9 @@
 
     </div>
   </mat-card>
+</form>
+<form method="post" asp-controller="SalesRecordsController" asp-action="Create" asp-antiforgery="true" [formGroup]="salesForm" (ngSubmit)="onSubmit()">
+
 
   <mat-table class="selected-products" [dataSource]="selectedProductsDataSource">
     <ng-container matColumnDef="id">

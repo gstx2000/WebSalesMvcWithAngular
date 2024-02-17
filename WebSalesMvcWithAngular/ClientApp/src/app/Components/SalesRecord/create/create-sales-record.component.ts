@@ -25,6 +25,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class CreateSalesRecordComponent implements OnInit {
   salesForm!: FormGroup;
+  searchForm!: FormGroup;
   salesRecord: SalesRecord;
   departments$: Observable<Department[]> | undefined;
   products$: Observable<Product[]> | undefined;
@@ -57,7 +58,7 @@ export class CreateSalesRecordComponent implements OnInit {
       amount: 0,
       status: 0,
       paymentMethod: 0,
-      date: new Date()
+      sellerid: 1
     };
   }
 
@@ -68,6 +69,7 @@ export class CreateSalesRecordComponent implements OnInit {
     this.categories$ = this.categoryService.getCategories();
     this.setupSearchControl();
     this.initSalesForm();
+    this.initsearchForm();
     this.selectedProductsDataSource = new MatTableDataSource<Product>(this.selectedProducts); 
   }
 
@@ -76,37 +78,43 @@ export class CreateSalesRecordComponent implements OnInit {
       amount: [0, [Validators.required, Validators.min(0.01)]],
       status: [0, Validators.required],
       paymentMethod: [0, Validators.required],
-      date: [new Date()],
       products: [[]],
-      category: [null], 
-      search: this.searchControl,
+    });
+  }
+
+  initsearchForm(): void {
+    this.searchForm = this.fb.group({
+      category: [null],
+      search: this.searchControl
     });
 
     this.searchControl?.setValue('');
 
     this.searchControl?.disable({ onlySelf: true, emitEvent: false });
 
-    this.salesForm.get('category')?.valueChanges.subscribe(value => {
+    this.searchForm.get('category')?.valueChanges.subscribe(value => {
       if (value === null) {
         this.searchControl?.disable({ onlySelf: true, emitEvent: false });
       } else {
         this.searchControl.enable({ onlySelf: true, emitEvent: false });
       }
     });
-  
   }
 
   async onSubmit(): Promise<void> {
     try {
+      this.loadingService.showLoading();
+
       if (this.salesForm.valid) {
         const formData: SalesRecord = this.salesForm.value;
-        formData.date = new Date();
-
         formData.products = this.selectedProducts;
         const createdSales = await (await this.SalesService.createSalesRecord(formData)).toPromise();
+        console.log('venda:', createdSales);
+
         this.router.navigate(['/salesRecords']);
       }
-    } catch (error) {
+    } catch (error){ 
+      console.log('venda:', this.salesForm.value);
       console.error('Erro ao criar:', error);
       this.loadingService.hideLoading();
     }
@@ -139,7 +147,10 @@ export class CreateSalesRecordComponent implements OnInit {
     this.selectedProducts = this.selectedProducts.filter(p => p !== product);
     if (this.selectedProductsDataSource) {
       this.selectedProductsDataSource.data = this.selectedProducts;
-      console.log('Filtered Products:', this.selectedProducts);
+
+      const totalAmount = this.selectedProducts.reduce((sum, p) => sum + p.price, 0);
+
+      this.salesForm.get('amount')?.setValue(totalAmount);
 
     }
   }
@@ -149,14 +160,13 @@ export class CreateSalesRecordComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((searchTerm: string) => {
-        const categoryId = this.salesForm.get('category')?.value;
+        const categoryId = this.searchForm.get('category')?.value;
 
         if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
 
           return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
             catchError((error: any) => {
               if (error instanceof HttpErrorResponse && error.status === 404) {
-                console.warn('Nada encontrado');
                   return [];
               } else {
                 console.error('Error during product search:', error);
@@ -169,8 +179,6 @@ export class CreateSalesRecordComponent implements OnInit {
         }
       })
     ).subscribe((products: Product[]) => {
-      console.log('Filtered Products:', products);
-
       this.filteredProducts = products.filter(p => !this.selectedProducts.includes(p));
     });
   }
@@ -182,6 +190,10 @@ export class CreateSalesRecordComponent implements OnInit {
       this.selectedProducts.push(product);
 
       this.salesForm.get('products')?.setValue(this.selectedProducts);
+
+      const totalAmount = this.selectedProducts.reduce((sum, p) => sum + p.price, 0);
+
+      this.salesForm.get('amount')?.setValue(totalAmount);
 
       if (this.selectedProductsDataSource) {
         this.selectedProductsDataSource.data = this.selectedProducts;

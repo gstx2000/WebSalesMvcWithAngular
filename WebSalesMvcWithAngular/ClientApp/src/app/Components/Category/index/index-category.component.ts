@@ -27,8 +27,10 @@ export class IndexCategoryComponent implements OnInit {
 
     private dialog: MatDialog
   ) { }
-
+    
   ngOnInit(): void {
+    this.loadingService.showLoading();
+
     forkJoin([
       this.departmentService.getDepartments(),
       this.productService.getProducts(),
@@ -74,7 +76,6 @@ export class IndexCategoryComponent implements OnInit {
   }
 
   loadCategories(): void {
-    this.loadingService.showLoading();
 
     this.categoryService.getCategories().subscribe(
       (result: Category[]) => {

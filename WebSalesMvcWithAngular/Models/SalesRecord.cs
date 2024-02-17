@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using WebSalesMvc.Models.Enums;
 using WebSalesMvcWithAngular.Models.Enums;
 
@@ -42,12 +39,7 @@ namespace WebSalesMvc.Models
 
     [Display(Name = "Nome do cliente")]
         public string CustomerName { get; set; }
-        public class SelectedProduct
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public double Price { get; set; }
-        }
+
 
         public void UpdateAmount()
         {
