@@ -29,8 +29,6 @@ export class SalesRecordService {
 
   async createSalesRecordAsync(salesRecord: SalesRecord): Promise<Observable<HttpEvent<SalesRecord>>> {
     try {
-      console.log('Payload:', salesRecord);
-
       const options = await this.auth.getOptions();
 
       return this.http.post<SalesRecord>(`${environment.apiUrl}/${this.url}/post-salesrecord`, salesRecord, options)

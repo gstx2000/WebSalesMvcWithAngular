@@ -3,7 +3,7 @@
 
   <ng-container matColumnDef="date">
     <mat-header-cell *matHeaderCellDef>Data</mat-header-cell>
-    <mat-cell *matCellDef="let item">{{ item.date }}</mat-cell>
+    <mat-cell *matCellDef="let item">{{ item.date | date:'dd/MM/yyyy HH:mm':'UTC' }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="amount">
@@ -13,13 +13,13 @@
 
   <ng-container matColumnDef="status">
     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-    <mat-cell *matCellDef="let item">{{ item.status}}</mat-cell>
+    <mat-cell *matCellDef="let item">{{ getSaleStatusName(item.status) }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let item">
-      <button mat-raised-button [routerLink]="['/departments/details', item.id]" class="btn btn-default">Detalhes</button>cd
+      <button mat-raised-button [routerLink]="['/departments/details', item.id]" class="btn btn-default">Detalhes</button>
       <button mat-raised-button [routerLink]="['/departments/edit', item.id]" class="btn btn-default">Editar</button>
       <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
         <mat-icon>delete</mat-icon>
@@ -27,6 +27,6 @@
     </mat-cell>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="['date', 'amount', 'status']"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: ['date', 'amount', 'status'];"></mat-row>
+  <mat-header-row *matHeaderRowDef="['date', 'amount', 'status', 'actions']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['date', 'amount', 'status', 'actions'];"></mat-row>
 </mat-table>

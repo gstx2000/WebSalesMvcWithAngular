@@ -74,8 +74,6 @@ namespace WebSalesMvc.Controllers
                     return BadRequest("Venda não fornecida ou produtos não especificados.");
                 }
 
-                _logger.LogInformation($"Incoming SalesRecord: {JsonConvert.SerializeObject(salesRecord)}");
-
                 salesRecord.SellerId = 1;
                 salesRecord.Id = 0;
                 salesRecord.Date = DateTime.Now;

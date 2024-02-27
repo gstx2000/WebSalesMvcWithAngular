@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SalesRecord } from '../../../Models/SalesRecord';
 import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { DeleteSalesRecordComponent } from '../delete/delete-sales-record.component';
+import { SaleStatus } from '../../../Models/enums/SaleStatus';
 
 @Component({
   selector: 'app-sales-records',
@@ -42,6 +43,10 @@ export class IndexSalesRecordComponent implements OnInit {
         this.loadingService.hideLoading();
       }
     );
+  }
+
+  getSaleStatusName(value: number): string {
+    return SaleStatus[value] as string;
   }
 
   openDeleteDialog(salesRecord: SalesRecord): void {

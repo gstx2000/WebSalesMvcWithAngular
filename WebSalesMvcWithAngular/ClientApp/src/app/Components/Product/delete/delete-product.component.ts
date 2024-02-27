@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
+import { SaleStatus } from '../../../Models/enums/SaleStatus';
+import { PaymentMethod } from '../../../Models/enums/PaymentMethod';
 
 @Component({
   selector: 'app-delete-product',
@@ -38,4 +40,6 @@ export class DeleteProductComponent implements OnInit {
   cancel() {
     this.dialogRef.close({ deleted: false });
   }
+
+
 }

@@ -17,7 +17,7 @@ namespace WebSalesMvc.Services
         public async Task<List<Department>> FindAllAsync()
         {
             return await _context.Department.OrderBy(x => x.Name)
-                .Include(d => d.Sellers)
+                //.Include(d => d.Sellers)
                 .ToListAsync();
         }
         public async Task<Department> FindByIdAsync(int id)

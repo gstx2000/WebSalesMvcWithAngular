@@ -18,6 +18,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LoadingService } from '../../../Services/LoadingService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SoldProduct } from '../../../Models/SoldProduct';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-sales-record/create',
@@ -27,24 +28,27 @@ import { SoldProduct } from '../../../Models/SoldProduct';
 export class CreateSalesRecordComponent implements OnInit {
   salesForm!: FormGroup;
   searchForm!: FormGroup;
+
+  selectedProducts: SoldProduct[] = [];
+
+  filteredProducts: Product[] = [];
   salesRecord: SalesRecord;
-  departments$: Observable<Department[]> | undefined;
-  products$: Observable<Product[]> | undefined;
   PaymentMethod = PaymentMethod;
   SaleStatus = SaleStatus;
-  sellers$: Observable<Seller[]> | undefined;
-  categories$: Observable<Category[]> | undefined;
+
   searchControl: FormControl = new FormControl();
-  filteredProducts: Product[] = [];
   searchTerm: string = '';
-  selectedProducts: SoldProduct[] = [];
-  quantity!: number;
+  quantity = new FormControl();
+
+  departments$: Observable<Department[]> | undefined;
+  sellers$: Observable<Seller[]> | undefined;
+  products$: Observable<Product[]> | undefined;
+  categories$: Observable<Category[]> | undefined;
 
   selectedProductsDataSource = new MatTableDataSource<SoldProduct>(this.selectedProducts);
 
   saleStatusValues: (keyof typeof SaleStatus)[] = Object.keys(SaleStatus) as (keyof typeof SaleStatus)[];
   salePayMethodValues: (keyof typeof PaymentMethod)[] = Object.keys(PaymentMethod) as (keyof typeof PaymentMethod)[];
-
   constructor(
     private SalesService: SalesRecordService,
     private productService: ProductService,
@@ -65,13 +69,12 @@ export class CreateSalesRecordComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadingService.showLoading();
-
-    this.departments$ = this.departmentService.getDepartments();
-    this.products$ = this.productService.getProducts();
-    this.categories$ = this.categoryService.getCategories();
     this.setupSearchControl();
     this.initSalesForm();
     this.initsearchForm();
+    this.departments$ = this.departmentService.getDepartments();
+    this.products$ = this.productService.getProducts();
+    this.categories$ = this.categoryService.getCategories();
     this.selectedProductsDataSource = new MatTableDataSource<SoldProduct>(this.selectedProducts);
     this.loadingService.hideLoading();
 
@@ -89,16 +92,22 @@ export class CreateSalesRecordComponent implements OnInit {
     this.searchForm = this.fb.group({
       category: [null],
       search: this.searchControl,
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      quantity: 1
 
     });
-
-    this.searchControl?.setValue('');
 
     this.searchControl?.disable({ onlySelf: true, emitEvent: false });
 
     this.searchForm.get('category')?.valueChanges.subscribe(value => {
       if (value === null) {
+        this.searchControl?.disable({ onlySelf: true, emitEvent: false });
+      } else {
+        this.searchControl.enable({ onlySelf: true, emitEvent: false });
+      }
+    });
+
+    this.searchForm.get('quantity')?.valueChanges.subscribe(value => {
+      if (value === null || value == 0) {
         this.searchControl?.disable({ onlySelf: true, emitEvent: false });
       } else {
         this.searchControl.enable({ onlySelf: true, emitEvent: false });
@@ -114,19 +123,11 @@ export class CreateSalesRecordComponent implements OnInit {
 
         const formData: SalesRecord = this.salesForm.value;
         formData.sellerid = 1;
-        formData.soldProducts = this.selectedProducts;
-        console.log('selected products:', this.selectedProducts);
-
+        formData.soldProducts = this.selectedProducts
         const createdSales = await (await this.SalesService.createSalesRecordAsync(formData)).toPromise();
-        console.log('venda:', createdSales);
-        console.log('selected products:', this.selectedProducts);
-
-
         this.router.navigate(['/salesRecords']);
       }
     } catch (error) {
-      console.log('venda:', this.salesForm.value);
-      console.error('Erro ao criar:', error);
       this.loadingService.hideLoading();
     } finally {
       this.loadingService.hideLoading();

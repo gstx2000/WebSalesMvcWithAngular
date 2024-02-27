@@ -18,8 +18,8 @@ namespace WebSalesMvc.Services
         public async Task<List<SalesRecord>> FindAllAsync()
         {
             return await _context.SalesRecord
-                .Include(x => x.Seller)
-                .Include(x => x.Seller.Department)
+                //.Include(x => x.Seller)
+                //.Include(x => x.Seller.Department)
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
         }
