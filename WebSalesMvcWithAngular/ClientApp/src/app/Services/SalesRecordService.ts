@@ -27,8 +27,9 @@ export class SalesRecordService {
       );
   }
 
-  async createSalesRecord(salesRecord: SalesRecord): Promise<Observable<HttpEvent<SalesRecord>>> {
+  async createSalesRecordAsync(salesRecord: SalesRecord): Promise<Observable<HttpEvent<SalesRecord>>> {
     try {
+      console.log('Payload:', salesRecord);
 
       const options = await this.auth.getOptions();
 

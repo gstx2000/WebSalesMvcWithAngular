@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Models;
+using WebSalesMvcWithAngular.Models;
 
 namespace WebSalesMvc.Data
 {
@@ -17,6 +18,12 @@ namespace WebSalesMvc.Data
         public DbSet<SalesRecord> SalesRecord { get; set; }
         public DbSet<WebSalesMvc.Models.Category> Category { get; set; }
         public DbSet<WebSalesMvc.Models.Product> Product { get; set; }
-
+        public DbSet<SoldProduct> SoldProducts { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SalesRecord>()
+                .Property(s => s.Date)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        }
     }
 }

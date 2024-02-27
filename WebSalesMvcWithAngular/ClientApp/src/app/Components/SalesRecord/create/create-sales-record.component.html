@@ -36,20 +36,20 @@
       <mat-form-field appearance="outline" class="qty">
         <mat-label>Quantidade</mat-label>
         <div class="qty-input">
-          <input matInput appearance="outline" type="number" />
+          <input matInput appearance="outline" type="number" formControlName="quantity" />
         </div>
       </mat-form-field>
 
     </div>
   </mat-card>
 </form>
-<form method="post" asp-controller="SalesRecordsController" asp-action="Create" asp-antiforgery="true" [formGroup]="salesForm" (ngSubmit)="onSubmit()">
 
+<form method="post" asp-controller="SalesRecordsController" asp-action="Create" asp-antiforgery="true" [formGroup]="salesForm" (ngSubmit)="onSubmit()">
 
   <mat-table class="selected-products" [dataSource]="selectedProductsDataSource">
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
-      <mat-cell *matCellDef="let item"> {{ item.id }} </mat-cell>
+      <mat-cell *matCellDef="let item"> {{ item.productId }} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="name">
@@ -62,18 +62,28 @@
       <mat-cell *matCellDef="let item"> {{ item.price | currency:'BRL':'symbol':'1.2-2' }} </mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="quantity">
+      <mat-header-cell *matHeaderCellDef> Quantidade </mat-header-cell>
+      <mat-cell *matCellDef="let item">
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <span>{{ item.quantity }}</span>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let item" fxLayout="row" fxLayoutAlign="space-between">
-        <button mat-mini-fab color="warn" (click)="RemoveFromOrder(item)" class="btn btn-default">
+        <button mat-mini-fab color="warn" (click)="removeFromOrder(item)" class="btn btn-default">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="['id', 'name', 'price', 'actions']"></mat-header-row>
+    <mat-header-row *matHeaderRowDef="['id', 'name', 'price', 'quantity', 'actions']"></mat-header-row>
 
-    <mat-row *matRowDef="let row; columns: ['id', 'name', 'price', 'actions']"></mat-row>
+    <mat-row *matRowDef="let row; columns: ['id', 'name', 'price', 'quantity', 'actions']"></mat-row>
   </mat-table>
 
   <mat-card class="mcard">

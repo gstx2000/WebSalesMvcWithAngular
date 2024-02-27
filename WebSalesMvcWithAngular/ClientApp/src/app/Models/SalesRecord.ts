@@ -1,4 +1,4 @@
-import { Product } from "./Product";
+import { SoldProduct } from "./SoldProduct";
 import { Seller } from "./Seller";
 
 
@@ -8,7 +8,7 @@ export interface SalesRecord {
   status: number;
   seller?: Seller;
   sellerid?: number;
-  products?: Product[];
+  soldProducts?: SoldProduct[];
   paymentMethod: number;
 
 

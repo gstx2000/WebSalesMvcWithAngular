@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebSalesMvc.Data;
 
@@ -10,9 +11,11 @@ using WebSalesMvc.Data;
 namespace WebSalesMvcWithAngular.Migrations
 {
     [DbContext(typeof(WebSalesMvcContext))]
-    partial class WebSalesMvcContextModelSnapshot : ModelSnapshot
+    [Migration("20240218202811_fixingPOST2")]
+    partial class fixingPOST2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,14 +113,13 @@ namespace WebSalesMvcWithAngular.Migrations
                         .HasColumnType("double");
 
                     b.Property<string>("CustomerName")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("PaymentMethod")
+                    b.Property<int>("PaymentForm")
                         .HasColumnType("int");
 
                     b.Property<int>("SellerId")

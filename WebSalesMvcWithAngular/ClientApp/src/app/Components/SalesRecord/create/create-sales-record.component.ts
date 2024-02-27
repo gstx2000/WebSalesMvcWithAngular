@@ -17,6 +17,7 @@ import { Category } from '../../../Models/Category';
 import { MatTableDataSource } from '@angular/material/table';
 import { LoadingService } from '../../../Services/LoadingService';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SoldProduct } from '../../../Models/SoldProduct';
 
 @Component({
   selector: 'app-sales-record/create',
@@ -36,10 +37,10 @@ export class CreateSalesRecordComponent implements OnInit {
   searchControl: FormControl = new FormControl();
   filteredProducts: Product[] = [];
   searchTerm: string = '';
-  selectedProducts: Product[] = [];
+  selectedProducts: SoldProduct[] = [];
   quantity!: number;
 
-  selectedProductsDataSource = new MatTableDataSource<Product>();
+  selectedProductsDataSource = new MatTableDataSource<SoldProduct>(this.selectedProducts);
 
   saleStatusValues: (keyof typeof SaleStatus)[] = Object.keys(SaleStatus) as (keyof typeof SaleStatus)[];
   salePayMethodValues: (keyof typeof PaymentMethod)[] = Object.keys(PaymentMethod) as (keyof typeof PaymentMethod)[];
@@ -63,6 +64,7 @@ export class CreateSalesRecordComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadingService.showLoading();
 
     this.departments$ = this.departmentService.getDepartments();
     this.products$ = this.productService.getProducts();
@@ -70,7 +72,9 @@ export class CreateSalesRecordComponent implements OnInit {
     this.setupSearchControl();
     this.initSalesForm();
     this.initsearchForm();
-    this.selectedProductsDataSource = new MatTableDataSource<Product>(this.selectedProducts); 
+    this.selectedProductsDataSource = new MatTableDataSource<SoldProduct>(this.selectedProducts);
+    this.loadingService.hideLoading();
+
   }
 
   initSalesForm(): void {
@@ -78,14 +82,15 @@ export class CreateSalesRecordComponent implements OnInit {
       amount: [0, [Validators.required, Validators.min(0.01)]],
       status: [0, Validators.required],
       paymentMethod: [0, Validators.required],
-      products: [[]],
     });
   }
 
   initsearchForm(): void {
     this.searchForm = this.fb.group({
       category: [null],
-      search: this.searchControl
+      search: this.searchControl,
+      quantity: [1, [Validators.required, Validators.min(1)]]
+
     });
 
     this.searchControl?.setValue('');
@@ -100,25 +105,30 @@ export class CreateSalesRecordComponent implements OnInit {
       }
     });
   }
-
+  
   async onSubmit(): Promise<void> {
     try {
       this.loadingService.showLoading();
 
       if (this.salesForm.valid) {
+
         const formData: SalesRecord = this.salesForm.value;
-        formData.products = this.selectedProducts;
-        const createdSales = await (await this.SalesService.createSalesRecord(formData)).toPromise();
+        formData.sellerid = 1;
+        formData.soldProducts = this.selectedProducts;
+        console.log('selected products:', this.selectedProducts);
+
+        const createdSales = await (await this.SalesService.createSalesRecordAsync(formData)).toPromise();
         console.log('venda:', createdSales);
+        console.log('selected products:', this.selectedProducts);
+
 
         this.router.navigate(['/salesRecords']);
       }
-    } catch (error){ 
+    } catch (error) {
       console.log('venda:', this.salesForm.value);
       console.error('Erro ao criar:', error);
       this.loadingService.hideLoading();
-    }
-    () => {
+    } finally {
       this.loadingService.hideLoading();
     }
   }
@@ -143,15 +153,15 @@ export class CreateSalesRecordComponent implements OnInit {
     this.router.navigate(['/salesRecords']);
   }
 
-  RemoveFromOrder(product: Product): void {
-    this.selectedProducts = this.selectedProducts.filter(p => p !== product);
+  removeFromOrder(soldProduct: SoldProduct): void {
+    this.selectedProducts = this.selectedProducts.filter(p => p !== soldProduct);
+
     if (this.selectedProductsDataSource) {
       this.selectedProductsDataSource.data = this.selectedProducts;
 
-      const totalAmount = this.selectedProducts.reduce((sum, p) => sum + p.price, 0);
+      const totalAmount = this.selectedProducts.reduce((sum, sp) => sum + sp.price * sp.quantity, 0);
 
       this.salesForm.get('amount')?.setValue(totalAmount);
-
     }
   }
 
@@ -163,11 +173,10 @@ export class CreateSalesRecordComponent implements OnInit {
         const categoryId = this.searchForm.get('category')?.value;
 
         if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
-
           return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
             catchError((error: any) => {
               if (error instanceof HttpErrorResponse && error.status === 404) {
-                  return [];
+                return [];
               } else {
                 console.error('Error during product search:', error);
                 throw error;
@@ -179,27 +188,41 @@ export class CreateSalesRecordComponent implements OnInit {
         }
       })
     ).subscribe((products: Product[]) => {
-      this.filteredProducts = products.filter(p => !this.selectedProducts.includes(p));
+      this.filteredProducts = products.filter(p => !this.isProductSelected(p));
     });
   }
 
+  private isProductSelected(product: Product): boolean {
+    return this.selectedProducts.some(soldProduct => soldProduct.productId === product.id);
+  }
+
   selectProduct(product: Product): void {
-    const existingProduct = this.selectedProducts.find(p => p.id === product.id);
+
+    const existingProduct = this.selectedProducts.find(sp => sp.productId === product.id);
 
     if (!existingProduct) {
-      this.selectedProducts.push(product);
 
+      var price = product.price;
+      var name = product.name;
+      var id = product.id;
+
+      const soldProduct: SoldProduct = {
+        productId: id!,
+        quantity: this.searchForm.get('quantity')?.value,
+        name: name,
+        price: price
+      };
+
+      this.selectedProducts.push(soldProduct);
       this.salesForm.get('products')?.setValue(this.selectedProducts);
 
-      const totalAmount = this.selectedProducts.reduce((sum, p) => sum + p.price, 0);
-
+      const totalAmount = this.selectedProducts.reduce((sum, sp) => sum + sp.price * sp.quantity, 0);
       this.salesForm.get('amount')?.setValue(totalAmount);
 
       if (this.selectedProductsDataSource) {
         this.selectedProductsDataSource.data = this.selectedProducts;
       }
-      this.searchControl?.setValue('');
-    } else {
+
       this.searchControl?.setValue('');
     }
   }

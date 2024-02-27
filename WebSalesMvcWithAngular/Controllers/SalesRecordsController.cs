@@ -5,8 +5,10 @@ using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Exceptions;
-using static WebSalesMvc.Models.SalesRecord;
+using Microsoft.Extensions.Logging;
+
 
 namespace WebSalesMvc.Controllers
 {
@@ -17,13 +19,17 @@ namespace WebSalesMvc.Controllers
         private readonly SalesRecordService _salesRecordService;
         private readonly SellerService _sellerService;
         private readonly ProductService _productService;
+        private readonly ILogger<SalesRecordsController> _logger;
 
-        public SalesRecordsController(WebSalesMvcContext context, SalesRecordService salesRecordService, SellerService sellerService, ProductService productService)
+
+        public SalesRecordsController(WebSalesMvcContext context, SalesRecordService salesRecordService, SellerService sellerService, ProductService productService, ILogger<SalesRecordsController> logger)
         {
             _context = context;
             _salesRecordService = salesRecordService;
             _sellerService = sellerService;
-            _productService = productService;   
+            _productService = productService;
+            _logger = logger;
+
         }
 
         [HttpGet]
@@ -59,42 +65,48 @@ namespace WebSalesMvc.Controllers
         [HttpPost]
         [Route("post-salesrecord")]
         [ValidateAntiForgeryToken]
-
-        public async Task<IActionResult> Create([FromBody] SalesRecord sale)
+        public async Task<IActionResult> Create([FromBody] SalesRecord salesRecord)
         {
             try
             {
-                if (sale == null)
+                if (salesRecord == null || salesRecord.SoldProducts == null || salesRecord.SoldProducts.Count == 0)
                 {
-                    return BadRequest("Venda não fornecida" +
-                        ",.");
+                    return BadRequest("Venda não fornecida ou produtos não especificados.");
                 }
 
+                _logger.LogInformation($"Incoming SalesRecord: {JsonConvert.SerializeObject(salesRecord)}");
 
-                //var seller = await _sellerService.FindbyIdAsync(sale.Seller.Id);
-
-                //if (seller == null)
-                //{
-                //    return BadRequest("Vendedor não encontrado ou não autorizado.");
-                //}
-
-                var products = await _productService.FindAllAsync();
-
-                if (products == null)
-                {
-                    return BadRequest("Produtos não encontrados.");
-                }
-
-                sale.Seller.Id = 1;
-                sale.Date = DateTime.Now;
+                salesRecord.SellerId = 1;
+                salesRecord.Id = 0;
+                salesRecord.Date = DateTime.Now;
 
                 if (ModelState.IsValid)
                 {
-                    await _salesRecordService.InsertAsync(sale);
-                    return CreatedAtAction("Details", new { id = sale.Id }, sale);
+                    foreach (var soldProduct in salesRecord.SoldProducts)
+                    {
+                        soldProduct.Id = 0;
+                        soldProduct.SalesRecordId = salesRecord.Id;
+
+                        _context.SoldProducts.Add(soldProduct);
+                    }
+                    await _salesRecordService.InsertAsync(salesRecord);
+
+                    return CreatedAtAction("Details", new { id = salesRecord.Id }, salesRecord);
                 }
                 else
                 {
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Any())
+                        .Select(x => new { x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+
+                    foreach (var error in errors)
+                    {
+                        foreach (var errorMessage in error.Errors)
+                        {
+                            _logger.LogError($"ModelState error for {error.Key}: {errorMessage}");
+                        }
+                    }
+
                     return UnprocessableEntity(ModelState);
                 }
             }
@@ -107,6 +119,8 @@ namespace WebSalesMvc.Controllers
                 return StatusCode(500, "Erro interno da aplicação");
             }
         }
+
+
 
         [HttpPut("{id}")]
         [Route("edit-salesrecord/{id}")]

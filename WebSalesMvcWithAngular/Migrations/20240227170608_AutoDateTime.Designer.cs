@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebSalesMvc.Data;
 
@@ -10,9 +11,11 @@ using WebSalesMvc.Data;
 namespace WebSalesMvcWithAngular.Migrations
 {
     [DbContext(typeof(WebSalesMvcContext))]
-    partial class WebSalesMvcContextModelSnapshot : ModelSnapshot
+    [Migration("20240227170608_AutoDateTime")]
+    partial class AutoDateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

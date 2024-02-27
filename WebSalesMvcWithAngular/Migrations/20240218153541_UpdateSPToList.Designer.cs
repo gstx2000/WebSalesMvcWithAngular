@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebSalesMvc.Data;
 
@@ -10,9 +11,11 @@ using WebSalesMvc.Data;
 namespace WebSalesMvcWithAngular.Migrations
 {
     [DbContext(typeof(WebSalesMvcContext))]
-    partial class WebSalesMvcContextModelSnapshot : ModelSnapshot
+    [Migration("20240218153541_UpdateSPToList")]
+    partial class UpdateSPToList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,14 +113,13 @@ namespace WebSalesMvcWithAngular.Migrations
                         .HasColumnType("double");
 
                     b.Property<string>("CustomerName")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("PaymentMethod")
+                    b.Property<int>("PaymentForm")
                         .HasColumnType("int");
 
                     b.Property<int>("SellerId")
@@ -181,7 +183,7 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SalesRecordId")
+                    b.Property<int>("SalesRecordId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -247,15 +249,21 @@ namespace WebSalesMvcWithAngular.Migrations
 
             modelBuilder.Entity("WebSalesMvcWithAngular.Models.SoldProduct", b =>
                 {
-                    b.HasOne("WebSalesMvc.Models.Product", null)
+                    b.HasOne("WebSalesMvc.Models.Product", "Product")
                         .WithMany("SoldProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebSalesMvc.Models.SalesRecord", null)
+                    b.HasOne("WebSalesMvc.Models.SalesRecord", "SalesRecord")
                         .WithMany("SoldProducts")
-                        .HasForeignKey("SalesRecordId");
+                        .HasForeignKey("SalesRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("SalesRecord");
                 });
 
             modelBuilder.Entity("WebSalesMvc.Models.Category", b =>

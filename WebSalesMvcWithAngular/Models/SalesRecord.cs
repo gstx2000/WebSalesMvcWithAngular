@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using WebSalesMvc.Models.Enums;
+using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Models.Enums;
 
 namespace WebSalesMvc.Models
@@ -10,13 +10,13 @@ namespace WebSalesMvc.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
         [Display(Name = "Data")]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
+        public Seller? Seller { get; set; }
+       
         [Required]
         [Display(Name = "Valor")]
-
         public double Amount { get; set; }
 
         [Required]
@@ -25,41 +25,28 @@ namespace WebSalesMvc.Models
 
         [Required]
         [Display(Name = "Forma de pagamento")]
-        public PaymentMethod PaymentForm { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
-        [Display(Name = "Vendedor")]
-        public Seller Seller { get; set; }
-        
         public int SellerId { get; set; }
 
-        [NotMapped]
-
         [Display(Name = "Produtos")]
-        public ICollection<Product> Products { get; set; }
+        public List<SoldProduct>? SoldProducts { get; set; }
 
-    [Display(Name = "Nome do cliente")]
-        public string CustomerName { get; set; }
-
-
-        public void UpdateAmount()
-        {
-            Amount = Products.Sum(product => product.Price);
-        }
-
+        [Display(Name = "Nome do cliente")]
+        public string? CustomerName { get; set; }
 
         public SalesRecord()
         {
-            Products = new List<Product>();
+            SoldProducts = new List<SoldProduct>();
 
         }
-        public SalesRecord(int id, DateTime date, SaleStatus status, Seller seller, int sellerId, ICollection<Product> products, string customerName)
+        public SalesRecord(int id, DateTime date, SaleStatus status, int sellerId, List<SoldProduct> soldProducts, string customerName)
         {
             Id = id;
             Date = date;
             Status = status;
-            Seller = seller;
             SellerId = sellerId;
-            Products = products ?? new List<Product>(); 
+            SoldProducts = soldProducts ?? new List<SoldProduct>();
             CustomerName = customerName;
         }
     }

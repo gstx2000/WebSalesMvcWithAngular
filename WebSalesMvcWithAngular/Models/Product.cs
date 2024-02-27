@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using WebSalesMvcWithAngular.Models;
 
 namespace WebSalesMvc.Models
 {
@@ -13,6 +15,9 @@ namespace WebSalesMvc.Models
 
         [Display(Name = "Descrição")]
         public string? Description { get; set; }
+        public int CategoryId { get; set; }
+
+        [ForeignKey("CategoryId")]
 
         [Display(Name = "Categoria")]
         public Category? Category { get; set; }
@@ -20,16 +25,17 @@ namespace WebSalesMvc.Models
         [Display(Name = "Preço")]
         public double Price { get; set; }
 
-        public int CategoryId { get; set; }
-
         [Display(Name = "Departamento")]
+        public int DepartmentId { get; set; }
+
+        [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
        
-        public int DepartmentId { get; set; }
-      
         [Display(Name = "Imagem")]
         public string? ImageUrl { get; set; }
 
+        [Display(Name = "Venda")]
+        public List<SoldProduct> SoldProducts { get; set; }
 
     }
 

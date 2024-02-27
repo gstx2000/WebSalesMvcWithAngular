@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using WebSalesMvc.Controllers;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 
@@ -12,12 +8,13 @@ namespace WebSalesMvc.Services
     public class SalesRecordService
     {
         private readonly WebSalesMvcContext _context;
+        private readonly ILogger<SalesRecordsController> _logger;
 
-        public SalesRecordService(WebSalesMvcContext context)
+        public SalesRecordService(WebSalesMvcContext context, ILogger<SalesRecordsController> logger)
         {
             _context = context;
+            _logger = logger;   
         }
-
         public async Task<List<SalesRecord>> FindAllAsync()
         {
             return await _context.SalesRecord
@@ -26,7 +23,6 @@ namespace WebSalesMvc.Services
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
         }
-
         public async Task<List<SalesRecord>> FindByDateAsync(DateTime? minDate, DateTime? maxDate)
         {
             var result = from obj in _context.SalesRecord select obj;
@@ -68,12 +64,18 @@ namespace WebSalesMvc.Services
                 .ToListAsync();
         }
 
-        public async Task InsertAsync(SalesRecord salesRecord)
+        public async Task<int> InsertAsync(SalesRecord salesRecord)
         {
             _context.SalesRecord.Add(salesRecord);
-            await _context.SaveChangesAsync();
-        }
+            _context.ChangeTracker.Entries().ToList().ForEach(e => Console.WriteLine($"Entity: {e.Entity.GetType().Name}, State: {e.State}"));
 
+            await _context.SaveChangesAsync();
+                _logger.LogInformation($"SalesRecord inserted. ID: {salesRecord.Id}, Date: {salesRecord.Date}, Amount: {salesRecord.Amount}");
+
+                _logger.LogInformation("Transaction committed successfully.");
+            return salesRecord.Id;
+
+        }
         public async Task UpdateAsync(SalesRecord sale)
         {
             _context.SalesRecord.Update(sale);
