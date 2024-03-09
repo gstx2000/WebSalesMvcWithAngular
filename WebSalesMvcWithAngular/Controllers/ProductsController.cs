@@ -15,12 +15,16 @@ namespace WebSalesMvc.Controllers
         private readonly DepartmentService _departmentService;
         private readonly CategoryService _categoryService;
         private readonly ProductService _productService;
-        public ProductsController(WebSalesMvcContext context, DepartmentService departmentService, CategoryService categoryService, ProductService productService)
+        private readonly ILogger<SalesRecordsController> _logger;
+
+        public ProductsController(WebSalesMvcContext context, DepartmentService departmentService, ILogger<SalesRecordsController> logger, CategoryService categoryService, ProductService productService)
         {
             _context = context;
             _departmentService = departmentService;
             _categoryService = categoryService;
             _productService = productService;
+            _logger = logger;
+
         }
 
         [HttpGet]
@@ -96,6 +100,7 @@ namespace WebSalesMvc.Controllers
                 }
 
                 var department = await _departmentService.FindByIdAsync(product.DepartmentId);
+
                 var category = await _categoryService.FindByIdAsync(product.CategoryId);
 
 
@@ -113,6 +118,20 @@ namespace WebSalesMvc.Controllers
 
                 product.Department = department;
 
+
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogInformation("Erro produto zika: ");
+                    foreach (var modelState in ModelState.Values)
+                    {
+                        foreach (var error in modelState.Errors)
+                        {
+                            _logger.LogError(error.ErrorMessage);
+                        }
+                    }
+
+                    return UnprocessableEntity(ModelState);
+                }
                 if (ModelState.IsValid)
                 {
                     await _productService.InsertAsync(product);

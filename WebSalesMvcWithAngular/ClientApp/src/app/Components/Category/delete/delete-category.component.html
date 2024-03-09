@@ -1,18 +1,18 @@
-<div class="mat-dialog-header">
-  <h2>Tem certeza que deseja deletar {{ category?.name }}?</h2>
-</div>
+<div #dialogContent>
 
-<div class="center-container">
+  <div class="center-container">
 
-  <br />
+    <h2>Tem certeza que deseja deletar {{ category?.name }}?</h2>
 
-  <p><strong>ID:</strong> {{ category?.id }}</p>
-  <p><strong>Departamento:</strong> {{ category?.department?.name }}</p>
-  <p><strong>Produtos:</strong> {{ category?.products?.length ?? 0 }}</p>
+    <p><strong>ID:</strong> {{ category?.id }}</p>
+    <p><strong>Departamento:</strong> {{ category?.department?.name }}</p>
+    <p><strong>Produtos:</strong> {{ category?.products?.length ?? 0 }}</p>
 
-</div>
+  </div>
 
-<div class="buttons-container">
-  <button mat-raised-button (click)="onDeleteClick()">Deletar</button>
-  <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
+  <div class="buttons-container">
+    <button mat-raised-button (click)="onDeleteClick()">Deletar</button>
+    <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
+  </div>
+
 </div>

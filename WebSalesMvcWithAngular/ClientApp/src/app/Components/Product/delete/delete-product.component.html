@@ -1,16 +1,20 @@
-<div class="center-container">
-  <h2>Tem certeza que deseja deletar {{ product?.name }}?</h2>
+<div #dialogContent>
 
-  <p><strong>ID:</strong> {{ product?.id }}</p>
-  <p><strong>Nome:</strong> {{ product?.name }}</p>
-  <p><strong>Preço:</strong> {{ product?.price }}</p>
-  <p><strong>Descrição:</strong> {{ product?.description }}</p>
-  <p><strong>Loja:</strong> {{ product?.department?.name }}</p>
-  <p><strong>Categoria:</strong> {{ product?.category?.name }}</p>
+  <div class="center-container">
+    <h2>Tem certeza que deseja deletar {{ product?.name }}?</h2>
 
-</div>
+    <p><strong>ID:</strong> {{ product?.id }}</p>
+    <p><strong>Nome:</strong> {{ product?.name }}</p>
+    <p><strong>Preço:</strong> {{ product?.price }}</p>
+    <p><strong>Descrição:</strong> {{ product?.description }}</p>
+    <p><strong>Loja:</strong> {{ product?.department?.name }}</p>
+    <p><strong>Categoria:</strong> {{ product?.category?.name }}</p>
 
-<div class="buttons-container">
-  <button mat-raised-button (click)="onDeleteClick()">Deletar</button>
-  <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
-</div>
+  </div>
+
+  <div class="buttons-container">
+    <button mat-raised-button (click)="onDeleteClick()">Deletar</button>
+    <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
+  </div>
+
+</div>  

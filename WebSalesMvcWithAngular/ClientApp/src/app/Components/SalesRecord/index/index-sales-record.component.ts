@@ -52,7 +52,8 @@ export class IndexSalesRecordComponent implements OnInit {
   openDeleteDialog(salesRecord: SalesRecord): void {
     const dialogRef = this.dialog.open(DeleteSalesRecordComponent, {
       data: { salesRecord },
-      width: '350px',
+      width: '550px',
+      height: '350px'
 
     });
 

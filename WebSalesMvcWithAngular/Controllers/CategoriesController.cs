@@ -93,7 +93,7 @@ namespace WebSalesMvc.Controllers
                 {
                     return BadRequest("Categoria não fornecida.");
                 }
-                
+
                 var department = await _departmentService.FindByIdAsync(category.DepartmentId);
 
                 if (department == null)
@@ -107,7 +107,7 @@ namespace WebSalesMvc.Controllers
                     await _categoryService.InsertAsync(category);
                     return CreatedAtAction("Details", new { id = category.Id }, category);
                 }
-                else 
+                else
                 {
                     return UnprocessableEntity(ModelState);
                 }
@@ -196,6 +196,6 @@ namespace WebSalesMvc.Controllers
         private bool CategoryExists(int id)
         {
             return _context.Category.Any(e => e.Id == id);
-        }  
+        }
     }
 }

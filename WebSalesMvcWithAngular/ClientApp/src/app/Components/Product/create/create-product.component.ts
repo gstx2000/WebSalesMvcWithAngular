@@ -60,6 +60,7 @@ export class CreateProductComponent implements OnInit {
   async onSubmit(): Promise<void> {
     this.loadingService.showLoading();
     try {
+      console.log(this.productForm.value)
       if (this.productForm.valid) {
         const formData: Product = this.productForm.value;
         const createdProduct = await (await this.productService.createProduct(formData)).toPromise();

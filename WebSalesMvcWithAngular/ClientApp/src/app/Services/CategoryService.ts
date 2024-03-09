@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './AuthService';
 import { Category } from '../Models/Category';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -31,7 +32,7 @@ export class CategoryService {
     try {
 
       const options = await this.auth.getOptions();
-    
+
       return this.http.post<Category>(`${environment.apiUrl}/${this.url}/post-category`, category, options)
         .pipe(
           catchError((error: any) => {
@@ -43,6 +44,7 @@ export class CategoryService {
       return throwError(error);
     }
   }
+
 
   async updateCategory(id: number, category: Category): Promise<Observable<HttpEvent<Category>>> {
     try {

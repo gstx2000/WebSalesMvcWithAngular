@@ -52,7 +52,7 @@ export class IndexCategoryComponent implements OnInit {
         this.loadingService.hideLoading();
       },
       (error) => {
-        console.error('Error loading data:', error);
+        console.error('Erro ao carregar os dados:', error);
         this.loadingService.hideLoading();
       }
     );
@@ -70,7 +70,7 @@ export class IndexCategoryComponent implements OnInit {
 
       },
       (error) => {
-        console.error('Erro ao carregar departamentos:', error);
+        console.error('Erro ao carregar produtos:', error);
       }
     );
   }
@@ -101,14 +101,16 @@ export class IndexCategoryComponent implements OnInit {
   openDeleteDialog(category: Category): void {
     const dialogRef = this.dialog.open(DeleteCategoryComponent, {
       data: { category },
-      width: '350px',
+      width: '550px',
+      height: '350px', 
 
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.deleted) {
-        this.categories = this.categories.filter(p => p.id !== category.id);
+        this.categories = this.categories.filter(p => p.id !== category.id).slice();
         this.loadCategories();
+        this.loadProducts();
       }
     });
   }

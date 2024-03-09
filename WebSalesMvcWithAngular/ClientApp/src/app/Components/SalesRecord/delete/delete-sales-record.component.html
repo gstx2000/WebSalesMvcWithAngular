@@ -1,15 +1,16 @@
+<app-alert></app-alert>
+
 <div class="center-container">
   <h2>Tem certeza que deseja deletar a venda {{ salesRecord?.id }}?</h2>
 
   <p><strong>Total:</strong> {{ salesRecord?.amount }}</p>
   <p><strong>Status:</strong> {{  getSaleStatusName(salesRecord?.status ?? 0) }}</p>
   <p><strong>Pagamento:</strong> {{ getPaymentMethodName(salesRecord?.paymentMethod?? 0) }}</p>
-  <p><strong>Vendedor:</strong> {{ salesRecord?.sellerid }}</p>
-  <p><strong>Produtos:</strong> {{ salesRecord?.soldProducts }}</p>
-
 </div>
 
 <div class="buttons-container">
-  <button mat-raised-button (click)="onDeleteClick()">Deletar</button>
+  <button mat-raised-button class="btn btn-default" (click)="onDeleteClick()">Deletar</button>
   <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
 </div>
+
+

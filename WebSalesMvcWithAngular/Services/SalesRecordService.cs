@@ -85,7 +85,13 @@ namespace WebSalesMvc.Services
         public async Task DeleteAsync(int id)
         {
             var sale = await _context.SalesRecord.FindAsync(id);
+            var soldProducts = await _context.SoldProducts
+            .Where(p => p.SalesRecordId == sale.Id)
+            .ToListAsync();
+           
             _context.SalesRecord.Remove(sale);
+            _context.SoldProducts.RemoveRange(soldProducts);
+
             await _context.SaveChangesAsync();
         }
 

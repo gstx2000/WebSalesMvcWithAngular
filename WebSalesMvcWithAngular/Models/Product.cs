@@ -35,7 +35,7 @@ namespace WebSalesMvc.Models
         public string? ImageUrl { get; set; }
 
         [Display(Name = "Venda")]
-        public List<SoldProduct> SoldProducts { get; set; }
+        public List<SoldProduct>? SoldProducts { get; set; }
 
     }
 

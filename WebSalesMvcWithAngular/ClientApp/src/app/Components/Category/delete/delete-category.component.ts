@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Category } from '../../../Models/Category';
 import { LoadingService } from '../../../Services/LoadingService';
 import { CategoryService } from '../../../Services/CategoryService';
+import { AlertService } from '../../../Services/AlertService';
 
 @Component({
   selector: 'app-categories/delete',
@@ -16,6 +17,8 @@ export class DeleteCategoryComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { category: Category },
     private categoryService: CategoryService,
     private loadingService: LoadingService,
+    private alertService: AlertService
+
   ) { }
 
   ngOnInit(): void {
@@ -27,11 +30,20 @@ export class DeleteCategoryComponent implements OnInit {
   async onDeleteClick(): Promise<void> {
 
     try {
+      this.loadingService.showLoading();
       if (this.category && this.category.id) {
-        await (await this.categoryService.deleteCategory(this.category.id)).toPromise();
-        this.dialogRef.close({ deleted: true });
-      }
+        if (this.category.products?.length === 0) {
+          await (await this.categoryService.deleteCategory(this.category.id)).toPromise();
+          this.dialogRef.close({ deleted: true });
+        } else {
+          this.loadingService.hideLoading();
+          this.alertService.error('Esta categoria possui produtos cadastrados. Delete os produtos associados primeiro.');
+        }
+      } 
+        
+      
     } catch (error) {
+     
       console.error('Erro ao deletar categoria:', error);
     }
   }

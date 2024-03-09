@@ -21,7 +21,7 @@ namespace WebSalesMvc.Models
         [Display(Name = "Produto")]
        
         [JsonIgnore]
-        public List<Product> Products { get; set; } = new List<Product>();
+        public List<Product>? Products { get; set; } = new List<Product>();
         public Category()
         {
         }

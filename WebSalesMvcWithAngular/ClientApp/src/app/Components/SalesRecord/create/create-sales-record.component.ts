@@ -19,6 +19,7 @@ import { LoadingService } from '../../../Services/LoadingService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SoldProduct } from '../../../Models/SoldProduct';
 import { forkJoin } from 'rxjs';
+import { AlertService } from '../../../Services/AlertService';
 
 @Component({
   selector: 'app-sales-record/create',
@@ -56,7 +57,8 @@ export class CreateSalesRecordComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private categoryService: CategoryService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private alertService: AlertService
 
   ) {
     this.salesRecord = {
@@ -115,25 +117,6 @@ export class CreateSalesRecordComponent implements OnInit {
     });
   }
   
-  async onSubmit(): Promise<void> {
-    try {
-      this.loadingService.showLoading();
-
-      if (this.salesForm.valid) {
-
-        const formData: SalesRecord = this.salesForm.value;
-        formData.sellerid = 1;
-        formData.soldProducts = this.selectedProducts
-        const createdSales = await (await this.SalesService.createSalesRecordAsync(formData)).toPromise();
-        this.router.navigate(['/salesRecords']);
-      }
-    } catch (error) {
-      this.loadingService.hideLoading();
-    } finally {
-      this.loadingService.hideLoading();
-    }
-  }
-
   getPaymentMethodValues(): number[] {
     return Object.values(PaymentMethod).filter(value => typeof value === 'number') as number[];
   }
@@ -225,6 +208,28 @@ export class CreateSalesRecordComponent implements OnInit {
       }
 
       this.searchControl?.setValue('');
+    }
+  }
+
+  async onSubmit(): Promise<void> {
+    try {
+      this.loadingService.showLoading();
+
+      if (this.salesForm.valid) {
+
+        const formData: SalesRecord = this.salesForm.value;
+        formData.sellerid = 1;
+        formData.soldProducts = this.selectedProducts
+        const createdSales = await (await this.SalesService.createSalesRecordAsync(formData)).toPromise();
+        this.alertService.success('A venda foi registrada com sucesso.')
+        setTimeout(() => {
+          this.router.navigate(['/salesRecords']);
+        }, 2000);
+      }
+    } catch (error) {
+      this.loadingService.hideLoading();
+    } finally {
+      this.loadingService.hideLoading();
     }
   }
 

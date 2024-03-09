@@ -1,0 +1,12 @@
+export class Alert {
+  id: string;
+  message: string;
+  alertType: string;
+  constructor(init?: Partial<Alert>) {
+    Object.assign(this, init);
+    this.id = init?.id || '';
+    this.message = init?.message || '';
+    this.alertType = init?.alertType || '';
+
+  }
+}

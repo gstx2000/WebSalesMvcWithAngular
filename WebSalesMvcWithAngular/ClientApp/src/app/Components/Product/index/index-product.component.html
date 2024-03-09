@@ -1,28 +1,28 @@
 <button mat-raised-button [routerLink]="['/products/create']" class="btn btn-default">Criar novo</button>
 
-<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="products">
+<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="productsDataSource" matSort>
   <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
     <mat-cell *matCellDef="let item"> {{ item.id }} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef> Produto </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Produto </mat-header-cell>
     <mat-cell *matCellDef="let item"> {{ item.name }} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="price">
-    <mat-header-cell *matHeaderCellDef> Preço </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Preço </mat-header-cell>
     <mat-cell *matCellDef="let item">{{ item.price | currency:'BRL':'symbol':'1.2-2' }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="category">
-    <mat-header-cell *matHeaderCellDef> Categoria </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Categoria </mat-header-cell>
     <mat-cell *matCellDef="let item"> {{ item.category?.name }} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="department">
-    <mat-header-cell *matHeaderCellDef> Loja </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Loja </mat-header-cell>
     <mat-cell *matCellDef="let item"> {{ item.department?.name }} </mat-cell>
   </ng-container>
 

@@ -8,6 +8,7 @@ import { LoadingService } from '../../../Services/LoadingService';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Observable } from 'rxjs';
 import { Category } from '../../../Models/Category';
+import { AlertService } from '../../../Services/AlertService';
 
 @Component({
   selector: 'app-categories/edit',
@@ -23,7 +24,9 @@ export class EditCategoryComponent implements OnInit {
     private activedroute: ActivatedRoute,
     private router: Router,
     private loadingService: LoadingService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private alertService: AlertService
+
   ) { }
 
   ngOnInit(): void {
@@ -80,14 +83,15 @@ export class EditCategoryComponent implements OnInit {
             if (categoryId.id) {
               const updatedCategory = await (await this.categoryService.updateCategory(categoryId.id, formData)).toPromise();
               this.loadingService.hideLoading();
-
+              this.alertService.success(`Categoria ${formData.name} alterada com sucesso.`);
               this.router.navigate(['/categories']);
 
             }
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar categoria:', error);
       this.loadingService.hideLoading();
     }

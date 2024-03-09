@@ -22,19 +22,19 @@ namespace WebSalesMvc.Controllers
         private readonly ILogger<SalesRecordsController> _logger;
 
 
-        public SalesRecordsController(WebSalesMvcContext context, SalesRecordService salesRecordService, SellerService sellerService, ProductService productService, ILogger<SalesRecordsController> logger)
+        public SalesRecordsController(WebSalesMvcContext context, 
+            SalesRecordService salesRecordService, SellerService sellerService, ProductService productService, 
+            ILogger<SalesRecordsController> logger)
         {
             _context = context;
             _salesRecordService = salesRecordService;
             _sellerService = sellerService;
             _productService = productService;
             _logger = logger;
-
         }
 
         [HttpGet]
         [Route("get-salesrecords")]
-
         public async Task<ActionResult<List<SalesRecord>>> GetSalesRecords()
         {
             var list = await _salesRecordService.FindAllAsync();

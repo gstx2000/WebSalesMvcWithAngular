@@ -42,8 +42,8 @@ export class IndexDepartmentComponent implements OnInit {
   openDeleteDialog(department: Department): void {
     const dialogRef = this.dialog.open(DeleteDepartmentComponent, {
       data: { department },
-      width: '350px',
-
+      width: '550px',
+      height: '350px'
     });
 
     dialogRef.afterClosed().subscribe(result => {

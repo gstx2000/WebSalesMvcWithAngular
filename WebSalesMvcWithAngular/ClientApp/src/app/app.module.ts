@@ -3,16 +3,14 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientXsrfModule } from '@angular/common/http';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 
 import { AppRoutingModule } from './app-routing.module';
-import { DepartmentService } from './Services/DepartmentService';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './Components/home/home.component';
 import { NavMenuComponent } from './Components/nav-menu/nav-menu.component';
 import { GlobalLoadingComponent } from './Components/GlobalLoading/global-loading.component';
+import { GlobalAlertComponent } from './Components/GlobalAlert/global-alert.component';
 
 import { IndexDepartmentComponent } from './Components/Department/index/index-department.component';
 import { CreateDepartmentComponent } from './Components/Department/create/create-department.component';
@@ -48,6 +46,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSortModule } from '@angular/material/sort';
 
 
 import { LoadingService } from './Services/LoadingService';
@@ -55,8 +57,9 @@ import { ProductService } from './Services/ProductService';
 import { CategoryService } from './Services/CategoryService';
 import { AuthService } from './Services/AuthService';
 import { SalesRecordService } from './Services/SalesRecordService';
-
-//import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { DepartmentService } from './Services/DepartmentService';
+import { AlertService } from './Services/AlertService';
+import { AlertDialogComponent } from './Components/GlobalAlert/alert-dialog/alert-dialog.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +85,8 @@ import { SalesRecordService } from './Services/SalesRecordService';
     IndexSalesRecordComponent,
     DeleteSalesRecordComponent,
     EditSalesRecordComponent,
+    GlobalAlertComponent,
+    AlertDialogComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -106,12 +111,11 @@ import { SalesRecordService } from './Services/SalesRecordService';
     MatDatepickerModule,
     MatNativeDateModule,
     MatCardModule,
-    MatAutocompleteModule
-
+    MatAutocompleteModule,
+    MatProgressBarModule,
+    MatSortModule
   ],
-  providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService, SalesRecordService],
-    /*  { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }*/
-
+  providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService, SalesRecordService, AlertService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

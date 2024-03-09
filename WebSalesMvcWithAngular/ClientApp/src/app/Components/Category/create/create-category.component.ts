@@ -7,6 +7,7 @@ import { Category } from '../../../Models/Category';
 import { Observable } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
+import { AlertService } from '../../../Services/AlertService';
 
 @Component({
   selector: 'app-create-category',
@@ -23,6 +24,7 @@ export class CreateCategoryComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private loadingService: LoadingService,
+    private alertService: AlertService
 
   ) {
     this.category = {
@@ -46,19 +48,19 @@ export class CreateCategoryComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    this.loadingService.showLoading();
-
     try {
       if (this.categoryForm.valid) {
         const formData: Category = this.categoryForm.value;
         const createdCategory = await (await this.categoryService.createCategory(formData)).toPromise();
+        this.alertService.success(`Categoria ${formData.name} criada com sucesso.`);
         this.router.navigate(['/categories']);
+
       }
-    } catch (error) {
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao criar:', error);
       this.loadingService.hideLoading();
-    }
-    () => {
+    } finally {
       this.loadingService.hideLoading();
     }
   }
