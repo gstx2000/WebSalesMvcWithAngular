@@ -9,6 +9,7 @@ import { DepartmentService } from '../../../Services/DepartmentService';
 import { Observable } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
+import { AlertService } from '../../../Services/AlertService';
 
 @Component({
   selector: 'app-products/create',
@@ -28,6 +29,7 @@ export class CreateProductComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private loadingService: LoadingService,
+    private alertService: AlertService
 
   ) {
     this.product = {
@@ -64,9 +66,12 @@ export class CreateProductComponent implements OnInit {
       if (this.productForm.valid) {
         const formData: Product = this.productForm.value;
         const createdProduct = await (await this.productService.createProduct(formData)).toPromise();
+        this.alertService.success(`Produto ${formData.name} criado com sucesso.`);
         this.router.navigate(['/products']);
       }
-    } catch (error) {
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+
       console.error('Erro ao criar:', error);
       this.loadingService.hideLoading();
     }

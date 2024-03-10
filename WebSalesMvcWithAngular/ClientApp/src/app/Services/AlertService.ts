@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, filter } from 'rxjs';
 import { Alert } from '../Models/Alert/Alert';
@@ -8,6 +8,7 @@ import { AlertDialogComponent } from '../Components/GlobalAlert/alert-dialog/ale
 export class AlertService {
   private subject = new BehaviorSubject<Alert | null>(null);
   private defaultId = 'default-alert';
+  htmlAlertEmitter = new EventEmitter<string>();
 
   constructor(private dialog: MatDialog) { }
 
@@ -23,6 +24,10 @@ export class AlertService {
       height: '350px', 
       data: alert
     });
+  }
+
+  showHtmlAlert(message: string, htmlContent: string) {
+    this.htmlAlertEmitter.emit(htmlContent);
   }
 
   success(message: string, options?: any) {

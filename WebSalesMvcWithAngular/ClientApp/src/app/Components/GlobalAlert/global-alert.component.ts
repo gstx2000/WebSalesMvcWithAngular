@@ -1,27 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../Services/AlertService';
-import { Alert } from '../../Models/Alert/Alert';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-alert',
   templateUrl: './global-alert.component.html',
   styleUrls: ['./global-alert.component.css']
 })
 export class GlobalAlertComponent implements OnInit {
-  alerts: Alert[] = [];
+  htmlContent!: SafeHtml;
 
-  constructor(private alertService: AlertService) { }
+  constructor(private alertService: AlertService, private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-    this.alertService.onAlert().subscribe(alert => {
-      if (!alert) {
-        this.alerts = [];
-        return;
-      }
-      this.alerts.push(alert);
+    this.alertService.htmlAlertEmitter.subscribe(htmlContent => {
+      this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(htmlContent);
     });
-  }
-
-  closeAlert(alert: Alert) {
-    this.alerts = this.alerts.filter(x => x !== alert);
   }
 }

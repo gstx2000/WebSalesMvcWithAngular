@@ -28,12 +28,12 @@ export class DeleteCategoryComponent implements OnInit {
   }
 
   async onDeleteClick(): Promise<void> {
-
     try {
       this.loadingService.showLoading();
       if (this.category && this.category.id) {
         if (this.category.products?.length === 0) {
           await (await this.categoryService.deleteCategory(this.category.id)).toPromise();
+          this.alertService.success(`Categoria ${this.category.name} deletada com sucesso.`);
           this.dialogRef.close({ deleted: true });
         } else {
           this.loadingService.hideLoading();
@@ -41,9 +41,8 @@ export class DeleteCategoryComponent implements OnInit {
         }
       } 
         
-      
-    } catch (error) {
-     
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao deletar categoria:', error);
     }
   }

@@ -6,13 +6,16 @@ import { DepartmentService } from '../../../Services/DepartmentService';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Category } from '../../../Models/Category';
 import { LoadingService } from '../../../Services/LoadingService';
-import { forkJoin } from 'rxjs';
+import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteProductComponent } from '../delete/delete-product.component';
 import { NgZone } from '@angular/core';
-import { finalize } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertService } from '../../../Services/AlertService';
 
 @Component({
   selector: 'app-products',
@@ -26,7 +29,14 @@ export class IndexProductComponent implements OnInit, OnDestroy {
   productsDataSource: MatTableDataSource<Product>;
   departments: Department[] = [];
   categories: Category[] = [];
-  loadingCounter: number = 0;
+
+  filteredProducts: Product[] = [];
+  searchControl: FormControl = new FormControl();
+  searchForm!: FormGroup;
+  searchedProducts: Product[] = [];
+  categories$!: Observable<Category[]>;
+  private destroy$ = new Subject<void>();
+  isMessageVisible: boolean = false;
 
   constructor(
     private productService: ProductService,
@@ -34,21 +44,35 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     private loadingService: LoadingService,
     private dialog: MatDialog,
-    private zone: NgZone
-
+    private zone: NgZone,
+    private fb: FormBuilder,
+    private alertService: AlertService
   ) {
     this.productsDataSource = new MatTableDataSource<Product>(this.products);
 }
 
   ngOnInit(): void {
-
     this.loadProducts();
+    this.initsearchForm();
+    this.setupSearchControl();
   }
 
   ngAfterViewInit() {
     this.productsDataSource.sort = this.sort;
-    console.log('Sorting state:', this.productsDataSource.sort);
+  }
 
+  ngOnDestroy() {
+    this.productsDataSource.sort = null;
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+
+  initsearchForm(): void {
+    this.searchForm = this.fb.group({
+      category: [null],
+      search: this.searchControl,
+    });
   }
 
   loadProducts(): void {
@@ -69,6 +93,7 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     ).subscribe(
       ([categories, departments, products]) => {
         this.categories = categories;
+        this.categories$ = this.categoryService.getCategories();
         this.departments = departments;
         this.products = products;
         this.productsDataSource.data = this.products;
@@ -103,6 +128,45 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     }
   }
 
+  private setupSearchControl(): void {
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((searchTerm: string) => {
+        const categoryId = this.searchForm.get('category')?.value;
+        if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
+          return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
+            takeUntil(this.destroy$),
+            catchError((error: any) => {
+              if (error instanceof HttpErrorResponse && error.status === 404) {
+                return of([]);
+              } else {
+                console.error('Erro ao buscar produtos:', error);
+                throw error;
+              }
+            })
+          );
+        } else {
+          return of(this.products);
+        }
+      })
+    ).subscribe((products: Product[]) => {
+      this.isMessageVisible = false;
+      if (products.length !== 0) {
+        this.productsDataSource.data = products;
+      } else {
+        this.isMessageVisible = true;
+        const htmlContent = `<p style="color: red;">Nenhum resultado encontrado para "${this.searchControl.value}".</p>`;
+        this.alertService.showHtmlAlert('Resultados', htmlContent);
+      }
+    });
+  }
+  resetFilter(): void {
+    this.productsDataSource.data = this.products;
+    this.searchControl.setValue('');
+    this.searchForm.get('category')?.setValue(null);
+  }
+
   openDeleteDialog(product: Product): void {
     const dialogRef = this.dialog.open(DeleteProductComponent, {
       data: { product },
@@ -117,10 +181,6 @@ export class IndexProductComponent implements OnInit, OnDestroy {
         this.loadProducts();
       }
     });
-  }
-
-  ngOnDestroy() {
-    this.productsDataSource.sort = null;
   }
  }
 

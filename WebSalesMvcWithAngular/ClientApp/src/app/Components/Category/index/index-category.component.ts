@@ -60,17 +60,19 @@ export class IndexCategoryComponent implements OnInit {
 
 
   loadProducts(): void {
-
     this.productService.getProducts().subscribe(
       (result: Product[]) => {
         this.products = result;
 
-        this.loadCategories();
-        this.loadingService.hideLoading();
+        this.products = this.products.filter(product =>
+          this.categories.some(category => category.id === product.categoryId)
+        );
 
+        this.loadingService.hideLoading();
       },
       (error) => {
         console.error('Erro ao carregar produtos:', error);
+        this.loadingService.hideLoading();
       }
     );
   }
@@ -108,9 +110,8 @@ export class IndexCategoryComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.deleted) {
-        this.categories = this.categories.filter(p => p.id !== category.id).slice();
-        this.loadCategories();
         this.loadProducts();
+        this.categories = this.categories.filter(p => p.id !== category.id).slice();
       }
     });
   }

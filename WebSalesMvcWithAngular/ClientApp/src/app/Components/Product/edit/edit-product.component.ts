@@ -11,6 +11,7 @@ import { CategoryService } from '../../../Services/CategoryService';
 import { Product } from '../../../Models/Product';
 import { MyErrorStateMatcher } from '../../Department/edit/edit-department.component';
 import { LoadingService } from '../../../Services/LoadingService';
+import { AlertService } from '../../../Services/AlertService';
 
 @Component({
   selector: 'app-products/edit',
@@ -27,7 +28,7 @@ export class EditProductComponent {
     private productService: ProductService,
     private categoryService: CategoryService,
     private loadingService: LoadingService,
-
+    private alertService: AlertService,
     private fb: FormBuilder,
     private activedroute: ActivatedRoute,
     private router: Router
@@ -92,18 +93,20 @@ export class EditProductComponent {
       if (productId) {
         if (productId.id) {
           const updatedDepartment = await (await this.productService.updateProduct(productId.id, formData)).toPromise();
+          this.alertService.success(`Produto ${formData.name} alterado com sucesso.`);
           this.router.navigate(['/products']);
 
         }
       }
     }
   }
-} catch (error) {
-  console.error('Erro ao atualizar produto:', error);
-}
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      console.error('Erro ao atualizar produto:', error);
   }
+    }
 
-cancel() {
-  this.router.navigate(['/products']);
-}
+  cancel() {
+    this.router.navigate(['/products']);
+  }
 }

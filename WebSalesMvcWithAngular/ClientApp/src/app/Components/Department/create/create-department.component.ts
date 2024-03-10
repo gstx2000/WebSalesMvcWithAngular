@@ -4,6 +4,8 @@ import { Department } from '../../../Models/Department';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { Router } from '@angular/router';
 import { LoadingService } from '../../../Services/LoadingService';
+import { AlertService } from '../../../Services/AlertService';
+
 
 @Component({
   selector: 'app-departments/create',
@@ -19,7 +21,9 @@ export class CreateDepartmentComponent implements OnInit {
     private departmentService: DepartmentService,
     private fb: FormBuilder,
     private router: Router,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private alertService: AlertService
+
   ) {
     this.department = {
       name: '',
@@ -50,9 +54,11 @@ export class CreateDepartmentComponent implements OnInit {
       if (this.departmentForm.valid) {
         const formData: Department = this.departmentForm.value;
         const createdDepartment = await (await this.departmentService.createDepartment(formData)).toPromise();
+        this.alertService.success(`Loja ${formData.name} criada com sucesso.`);
         this.router.navigate(['/departments']);
       }
-    } catch (error) {
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao criar:', error);
       this.loadingService.hideLoading();
     }

@@ -24,3 +24,13 @@
   background-color: #ccc;
   cursor: pointer;
 }
+
+.category {
+    margin-right: 10px;
+}
+
+
+.searchForm {
+  margin-top: 20px;
+  justify-content: space-between;
+}

@@ -34,14 +34,15 @@ export class DeleteSalesRecordComponent implements OnInit {
         this.loadingService.showLoading();
         if (this.salesRecord.status !== 1) {
           await (await this.salesRecordService.deleteSalesRecord(this.salesRecord.id)).toPromise();
+          this.alertService.success(`Venda deletada com sucesso.`);
           this.dialogRef.close({ deleted: true });
         } else {
           this.alertService.error('Vendas faturadas não podem ser deletadas, somente canceladas.');
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao deletar venda:', error);
-      this.alertService.error('Erro ao deletar venda:', error);
     } finally {
       this.loadingService.hideLoading();
     }

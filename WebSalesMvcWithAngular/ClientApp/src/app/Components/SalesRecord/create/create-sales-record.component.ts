@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Department } from '../../../Models/Department';
 import { Router } from '@angular/router';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 import { DepartmentService } from '../../../Services/DepartmentService';
-import { Observable, catchError } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable, Subject, catchError } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
 import { SalesRecord } from '../../../Models/SalesRecord';
 import { SalesRecordService } from '../../../Services/SalesRecordService';
@@ -18,7 +18,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LoadingService } from '../../../Services/LoadingService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SoldProduct } from '../../../Models/SoldProduct';
-import { forkJoin } from 'rxjs';
 import { AlertService } from '../../../Services/AlertService';
 
 @Component({
@@ -26,7 +25,7 @@ import { AlertService } from '../../../Services/AlertService';
   templateUrl: './create-sales-record.component.html',
   styleUrls: ['./create-sales-record.component.css']
 })
-export class CreateSalesRecordComponent implements OnInit {
+export class CreateSalesRecordComponent implements OnInit, OnDestroy {
   salesForm!: FormGroup;
   searchForm!: FormGroup;
 
@@ -41,15 +40,18 @@ export class CreateSalesRecordComponent implements OnInit {
   searchTerm: string = '';
   quantity = new FormControl();
 
-  departments$: Observable<Department[]> | undefined;
-  sellers$: Observable<Seller[]> | undefined;
-  products$: Observable<Product[]> | undefined;
-  categories$: Observable<Category[]> | undefined;
+  departments$!: Observable<Department[]>;
+  sellers$!: Observable<Seller[]>;
+  products$!: Observable<Product[]>;
+  categories$!: Observable<Category[]>;
 
   selectedProductsDataSource = new MatTableDataSource<SoldProduct>(this.selectedProducts);
 
   saleStatusValues: (keyof typeof SaleStatus)[] = Object.keys(SaleStatus) as (keyof typeof SaleStatus)[];
   salePayMethodValues: (keyof typeof PaymentMethod)[] = Object.keys(PaymentMethod) as (keyof typeof PaymentMethod)[];
+
+  private destroy$ = new Subject<void>();
+
   constructor(
     private SalesService: SalesRecordService,
     private productService: ProductService,
@@ -77,9 +79,13 @@ export class CreateSalesRecordComponent implements OnInit {
     this.departments$ = this.departmentService.getDepartments();
     this.products$ = this.productService.getProducts();
     this.categories$ = this.categoryService.getCategories();
-    this.selectedProductsDataSource = new MatTableDataSource<SoldProduct>(this.selectedProducts);
     this.loadingService.hideLoading();
 
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   initSalesForm(): void {
@@ -158,11 +164,12 @@ export class CreateSalesRecordComponent implements OnInit {
 
         if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
           return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
+            takeUntil(this.destroy$),
             catchError((error: any) => {
               if (error instanceof HttpErrorResponse && error.status === 404) {
                 return [];
               } else {
-                console.error('Error during product search:', error);
+                console.error('Erro ao buscar produtos:', error);
                 throw error;
               }
             })
@@ -226,7 +233,8 @@ export class CreateSalesRecordComponent implements OnInit {
           this.router.navigate(['/salesRecords']);
         }, 2000);
       }
-    } catch (error) {
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
       this.loadingService.hideLoading();
     } finally {
       this.loadingService.hideLoading();

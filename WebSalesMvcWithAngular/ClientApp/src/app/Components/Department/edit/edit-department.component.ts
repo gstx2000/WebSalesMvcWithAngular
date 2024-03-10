@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { AlertService } from '../../../Services/AlertService';
+
 
 @Component({
   selector: 'app-departments/edit',
@@ -22,7 +24,9 @@ export class EditDepartmentComponent implements OnInit {
     private fb: FormBuilder,
     private activedroute: ActivatedRoute,
     private router: Router,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private alertService: AlertService
+
   ) { }
 
   ngOnInit(): void {
@@ -79,14 +83,14 @@ export class EditDepartmentComponent implements OnInit {
             if (departmentId.id) {
               const updatedDepartment = await (await this.departmentService.updateDepartment(departmentId.id, formData)).toPromise();
               this.loadingService.hideLoading();
-
-            this.router.navigate(['/departments']);
-
+              this.alertService.success(`Loja ${formData.name} alterada com sucesso.`);
+              this.router.navigate(['/departments']);
             }
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar departamento:', error);
       this.loadingService.hideLoading();
     }
@@ -105,7 +109,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
         return isSubmitted || (control.dirty || control.touched);
       }
 
-      // Default behavior for other errors
       return control.dirty || control.touched || isSubmitted;
     }
     return false;
