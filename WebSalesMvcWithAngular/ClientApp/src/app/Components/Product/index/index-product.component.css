@@ -7,6 +7,7 @@
   border-spacing: 0;
   border-collapse: collapse;
   text-indent: initial;
+   zoom: 0.85;
 }
 
 .custom-mat-table .mat-header-cell .custom-mat-table .mat-cell {
@@ -33,4 +34,9 @@
 .searchForm {
   margin-top: 20px;
   justify-content: space-between;
+}
+.mat-cell, .mat-header-cell {
+  display: flex;
+  align-items: center; /* This will vertically center the content */
+  justify-content: center; /* This will horizontally center the content */
 }

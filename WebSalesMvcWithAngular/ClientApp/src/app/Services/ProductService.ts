@@ -1,9 +1,10 @@
-import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, map, shareReplay, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './AuthService';
 import { Product } from '../Models/Product';
+import { PagedResult } from '../Models/PagedResult';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ export class ProductService {
   private url = 'Products';
   applicationUrl = 'https://localhost:7135/api';
   constructor(private http: HttpClient, private auth: AuthService) { }
+
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${environment.apiUrl}/${this.url}/get-products`)
@@ -23,6 +25,19 @@ export class ProductService {
       );
   }
 
+  getProductsPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<Product>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+    return this.http.get<PagedResult<Product>>(`${environment.apiUrl}/${this.url}/get-products-paginated`, { params })
+      .pipe(
+        catchError((error: any) => {
+          console.error('Erro HTTP:', error);
+          return throwError(error);
+        }),
+        shareReplay(1) 
+      );
+  }
   async getProductById(id: number): Promise<Observable<Product>> {
     return this.http.get<Product>(`${environment.apiUrl}/${this.url}/get-product/${id}`)
       .pipe(

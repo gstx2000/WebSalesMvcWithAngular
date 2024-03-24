@@ -5,8 +5,7 @@ import { Department } from '../../../Models/Department';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { LoadingService } from '../../../Services/LoadingService';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { AlertService } from '../../../Services/AlertService';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -17,15 +16,13 @@ import { AlertService } from '../../../Services/AlertService';
 export class EditDepartmentComponent implements OnInit {
   departments: Department[] = [];
   departmentForm!: FormGroup;
-  matcher = new MyErrorStateMatcher();
-
   constructor(
     private departmentService: DepartmentService,
     private fb: FormBuilder,
     private activedroute: ActivatedRoute,
     private router: Router,
     private loadingService: LoadingService,
-    private alertService: AlertService
+    private toastr: ToastrService
 
   ) { }
 
@@ -64,7 +61,8 @@ export class EditDepartmentComponent implements OnInit {
       this.departmentForm.get('id')!.disable();
       this.loadingService.hideLoading();
 
-    } catch (error) {
+    } catch (error: any) {
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao buscar departamento', error);
       this.loadingService.hideLoading();
     }
@@ -83,14 +81,14 @@ export class EditDepartmentComponent implements OnInit {
             if (departmentId.id) {
               const updatedDepartment = await (await this.departmentService.updateDepartment(departmentId.id, formData)).toPromise();
               this.loadingService.hideLoading();
-              this.alertService.success(`Loja ${formData.name} alterada com sucesso.`);
+              this.toastr.success(`Loja ${formData.name} alterada com sucesso.`);
               this.router.navigate(['/departments']);
             }
           }
         }
       }
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar departamento:', error);
       this.loadingService.hideLoading();
     }
@@ -98,20 +96,6 @@ export class EditDepartmentComponent implements OnInit {
 
   cancel() {
     this.router.navigate(['/departments']);
-  }
-}
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: any, form: any): boolean {
-    const isSubmitted = form && form.submitted;
-
-    if (control && control.invalid) {
-      if (control.hasError('required')) {
-        return isSubmitted || (control.dirty || control.touched);
-      }
-
-      return control.dirty || control.touched || isSubmitted;
-    }
-    return false;
   }
 }
 

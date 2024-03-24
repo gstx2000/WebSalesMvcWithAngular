@@ -9,6 +9,8 @@ import { DeleteCategoryComponent } from '../delete/delete-category.component';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 import { forkJoin } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-categories',
@@ -19,16 +21,20 @@ export class IndexCategoryComponent implements OnInit {
   departments: Department[] = [];
   categories: Category[] = [];
   products: Product[] = [];
+  categoriesDataSource = new MatTableDataSource<Category>();
+
   constructor(
     private departmentService: DepartmentService,
     private categoryService: CategoryService,
     private loadingService: LoadingService,
     private productService: ProductService,
-
+    private toastr: ToastrService,
     private dialog: MatDialog
-  ) { }
-    
+  ) {
+  }
+
   ngOnInit(): void {
+
     this.loadingService.showLoading();
 
     forkJoin([
@@ -40,6 +46,7 @@ export class IndexCategoryComponent implements OnInit {
         this.departments = departments;
         this.products = products;
         this.categories = categories;
+        this.categoriesDataSource.data = this.categories;
 
         this.categories.forEach(category => {
           category.products = this.products.filter(product => product.categoryId === category.id);
@@ -52,27 +59,26 @@ export class IndexCategoryComponent implements OnInit {
         this.loadingService.hideLoading();
       },
       (error) => {
+        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
         console.error('Erro ao carregar os dados:', error);
         this.loadingService.hideLoading();
       }
     );
   }
 
-
   loadProducts(): void {
+
     this.productService.getProducts().subscribe(
       (result: Product[]) => {
         this.products = result;
 
-        this.products = this.products.filter(product =>
-          this.categories.some(category => category.id === product.categoryId)
-        );
-
+        this.loadCategories();
         this.loadingService.hideLoading();
+
       },
       (error) => {
+        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
         console.error('Erro ao carregar produtos:', error);
-        this.loadingService.hideLoading();
       }
     );
   }
@@ -91,11 +97,12 @@ export class IndexCategoryComponent implements OnInit {
           this.categories.some(category => category.id === product.categoryId)
         );
 
-        this.loadingService.hideLoading(); 
+        this.loadingService.hideLoading();
       },
       (error) => {
+        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
         console.error('Erro ao carregar categorias:', error);
-        this.loadingService.hideLoading(); 
+        this.loadingService.hideLoading();
       }
     );
   }
@@ -104,14 +111,16 @@ export class IndexCategoryComponent implements OnInit {
     const dialogRef = this.dialog.open(DeleteCategoryComponent, {
       data: { category },
       width: '550px',
-      height: '350px', 
+      height: '350px',
 
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.deleted) {
+        this.categories = this.categories.filter(p => p.id !== category.id);
+        this.categoriesDataSource.data = [...this.categories];
+        this.loadCategories();
         this.loadProducts();
-        this.categories = this.categories.filter(p => p.id !== category.id).slice();
       }
     });
   }

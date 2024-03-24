@@ -1,21 +1,22 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 import { Department } from '../../../Models/Department';
-import { DepartmentService } from '../../../Services/DepartmentService';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Category } from '../../../Models/Category';
 import { LoadingService } from '../../../Services/LoadingService';
-import { Observable, Subject, forkJoin, of } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteProductComponent } from '../delete/delete-product.component';
-import { NgZone } from '@angular/core';
-import { catchError, debounceTime, distinctUntilChanged, finalize, switchMap, takeUntil } from 'rxjs/operators';
-import { MatSort } from '@angular/material/sort';
+import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../../../Services/AlertService';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { PagedResult } from '../../../Models/PagedResult';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-products',
@@ -23,9 +24,9 @@ import { AlertService } from '../../../Services/AlertService';
   styleUrls: ['./index-product.component.css']
 })
 export class IndexProductComponent implements OnInit, OnDestroy {
-  @ViewChild(MatSort) sort!: MatSort;
+  private paginator!: MatPaginator;
+  private sort!: MatSort;
 
-  products: Product[] = []; 
   productsDataSource: MatTableDataSource<Product>;
   departments: Department[] = [];
   categories: Category[] = [];
@@ -38,27 +39,79 @@ export class IndexProductComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   isMessageVisible: boolean = false;
 
+  currentPage = 1;
+  pageSize = 10;
+  totalItems = 0;
+  totalPages = 0;
+  products: Product[] = []; 
+
+  @ViewChild(MatSort) set matSort(ms: MatSort) {
+    this.sort = ms;
+    this.setDataSourceAttributes();
+  }
+  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+    this.paginator = mp;
+    this.setDataSourceAttributes();
+  }
+  setDataSourceAttributes() {
+    if (this.productsDataSource && this.paginator && this.sort) {
+      this.productsDataSource.paginator = this.paginator;
+      this.productsDataSource.sort = this.sort;
+    }
+  }
   constructor(
     private productService: ProductService,
-    private departmentService: DepartmentService,
     private categoryService: CategoryService,
     private loadingService: LoadingService,
     private dialog: MatDialog,
-    private zone: NgZone,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private toastr: ToastrService
+
   ) {
-    this.productsDataSource = new MatTableDataSource<Product>(this.products);
-}
+    this.productsDataSource = new MatTableDataSource<Product>;
+  }
 
   ngOnInit(): void {
-    this.loadProducts();
     this.initsearchForm();
     this.setupSearchControl();
+    this.categories$ = this.categoryService.getCategories();
   }
 
   ngAfterViewInit() {
-    this.productsDataSource.sort = this.sort;
+
+    this.productsDataSource.paginator = this.paginator;
+    this.paginator.page
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.loadingService.showLoading();
+          return this.productService.getProductsPaginated(
+            this.paginator.pageIndex + 1,
+            this.paginator.pageSize
+          ).pipe(
+            catchError((error) => {
+              this.loadingService.hideLoading();
+              return of(null);
+            }),
+            takeUntil(this.destroy$) 
+          );
+        }),
+        map((Data) => {
+          if (Data == null) return [];
+          this.totalItems = Data.totalItems;
+          this.loadingService.hideLoading();
+          return Data.items;
+        })
+      )
+      .subscribe((empData) => {
+        this.products = empData;
+        this.productsDataSource = new MatTableDataSource(this.products);
+        this.productsDataSource.sort = this.sort;
+
+      }, null, () => {
+      });
   }
 
   ngOnDestroy() {
@@ -67,65 +120,11 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-
   initsearchForm(): void {
     this.searchForm = this.fb.group({
       category: [null],
       search: this.searchControl,
     });
-  }
-
-  loadProducts(): void {
-    this.zone.run(() => {
-      this.loadingService.showLoading();
-    });
-
-    forkJoin([
-      this.categoryService.getCategories(),
-      this.departmentService.getDepartments(),
-      this.productService.getProducts()
-    ]).pipe(
-      finalize(() => {
-        this.zone.run(() => {
-          this.loadingService.hideLoading();
-        });
-      })
-    ).subscribe(
-      ([categories, departments, products]) => {
-        this.categories = categories;
-        this.categories$ = this.categoryService.getCategories();
-        this.departments = departments;
-        this.products = products;
-        this.productsDataSource.data = this.products;
-        this.filterCategories();
-        this.filterDepartments();
-      },
-      (error) => {
-        console.error('Erro:', error);
-      }
-    );
-  }
-
-  filterCategories(): void {
-    if (this.categories && this.products) {
-      this.categories = this.categories.filter(category =>
-        this.products.some(product => product.categoryId === category.id)
-      );
-      this.productsDataSource.data = this.products; 
-    } else {
-      console.warn('Departmentos ou produtos estão nulos ou indefinidos.');
-    }
-  }
-
-  filterDepartments(): void {
-    if (this.departments && this.products) {
-      this.departments = this.departments.filter(department =>
-        this.products.some(product => product.departmentId === department.id)
-      );
-      this.productsDataSource.data = this.products;
-    } else {
-      console.warn('Departmentos ou produtos estão nulos ou indefinidos.');
-    }
   }
 
   private setupSearchControl(): void {
@@ -143,6 +142,8 @@ export class IndexProductComponent implements OnInit, OnDestroy {
               } else {
                 console.error('Erro ao buscar produtos:', error);
                 throw error;
+                this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
+
               }
             })
           );
@@ -178,7 +179,6 @@ export class IndexProductComponent implements OnInit, OnDestroy {
       if (result && result.deleted) {
         this.products = this.products.filter(p => p.id !== product.id);
         this.productsDataSource.data = this.products; 
-        this.loadProducts();
       }
     });
   }

@@ -4,6 +4,7 @@ using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Exceptions;
 
 namespace WebSalesMvc.Controllers
@@ -24,7 +25,6 @@ namespace WebSalesMvc.Controllers
             _categoryService = categoryService;
             _productService = productService;
             _logger = logger;
-
         }
 
         [HttpGet]
@@ -32,7 +32,7 @@ namespace WebSalesMvc.Controllers
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
             try
-            { 
+            {
                 var products = await _productService.FindAllAsync();
                 if (products == null || products.Count == 0)
                 {
@@ -44,6 +44,46 @@ namespace WebSalesMvc.Controllers
             catch (NotFoundException ex)
             {
                 return NotFound("Nenhuma categoria encontrada.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
+
+        [HttpGet]
+        [Route("get-products-paginated")]
+        public async Task<ActionResult<PagedResult<Product>>> GetProductsPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var products = await _productService.FindAllPaginatedAsync(page, pageSize);
+                var totalItems = await _productService.CountAllAsync(); 
+                var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+                var result = new PagedResult<Product>
+                {
+                    items = products,
+                    page = page,
+                    pageSize = pageSize,
+                    totalItems = totalItems,
+                    totalPages = totalPages
+                };
+
+                if (result.items.Count == 0)
+                {
+                    return NoContent();
+                }
+
+                return Ok(result);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound("Nenhum produto encontrada.");
             }
             catch (UnauthorizedException ex)
             {
@@ -121,7 +161,7 @@ namespace WebSalesMvc.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogInformation("Erro produto zika: ");
+                    _logger.LogInformation("Erro produto: ");
                     foreach (var modelState in ModelState.Values)
                     {
                         foreach (var error in modelState.Errors)

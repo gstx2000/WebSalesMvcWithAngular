@@ -18,6 +18,10 @@ export class CategoryService {
     return this.http.get<Category[]>(`${environment.apiUrl}/${this.url}/get-categories`);
   }
 
+  getCategoriesByProductIds(productIds: number[]): Observable<Category[]> {
+    return this.http.post<Category[]>(`${environment.apiUrl}/${this.url}/get-categories-by-product-ids`, productIds);
+  }
+
   async getCategoryById(id: number): Promise<Observable<Category>> {
     return this.http.get<Category>(`${environment.apiUrl}/${this.url}/get-category/${id}`)
       .pipe(
@@ -78,4 +82,6 @@ export class CategoryService {
       return throwError(error);
     }
   }
+
+
 }

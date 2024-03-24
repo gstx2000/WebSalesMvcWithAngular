@@ -5,10 +5,10 @@ import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
 import { PaymentMethod } from '../../../Models/enums/PaymentMethod';
-import { AlertService } from '../../../Services/AlertService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-delete-sales-record',
+  selector: 'app-salesrecords/delete-sales-record',
   templateUrl: './delete-sales-record.component.html',
   styleUrls: ['./delete-sales-record.component.css']
 })
@@ -19,7 +19,7 @@ export class DeleteSalesRecordComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { salesRecord: SalesRecord },
     private salesRecordService: SalesRecordService,
     private loadingService: LoadingService,
-    private alertService: AlertService
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -34,14 +34,14 @@ export class DeleteSalesRecordComponent implements OnInit {
         this.loadingService.showLoading();
         if (this.salesRecord.status !== 1) {
           await (await this.salesRecordService.deleteSalesRecord(this.salesRecord.id)).toPromise();
-          this.alertService.success(`Venda deletada com sucesso.`);
+          this.toastr.success(`Venda deletada com sucesso.`);
           this.dialogRef.close({ deleted: true });
         } else {
-          this.alertService.error('Vendas faturadas não podem ser deletadas, somente canceladas.');
+          this.toastr.error('Vendas faturadas não podem ser deletadas, somente canceladas.');
         }
       }
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao deletar venda:', error);
     } finally {
       this.loadingService.hideLoading();

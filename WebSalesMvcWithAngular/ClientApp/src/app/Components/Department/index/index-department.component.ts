@@ -4,6 +4,7 @@ import { DepartmentService } from '../../../Services/DepartmentService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDepartmentComponent } from '../delete/delete-department.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-departments',
@@ -14,7 +15,9 @@ export class IndexDepartmentComponent implements OnInit {
   departments: Department[] = [];
   constructor(private departmentService: DepartmentService,
     private loadingService: LoadingService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.loadDepartments();
@@ -31,6 +34,8 @@ export class IndexDepartmentComponent implements OnInit {
       },
       (error) => {
         console.error('Erro ao carregar departamentos:', error);
+        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
+
         this.loadingService.hideLoading();
       },
       () => {

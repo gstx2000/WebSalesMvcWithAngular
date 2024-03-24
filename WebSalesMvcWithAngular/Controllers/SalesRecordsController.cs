@@ -9,7 +9,6 @@ using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Exceptions;
 using Microsoft.Extensions.Logging;
 
-
 namespace WebSalesMvc.Controllers
 {
     [Route("api/[controller]")]
@@ -20,8 +19,6 @@ namespace WebSalesMvc.Controllers
         private readonly SellerService _sellerService;
         private readonly ProductService _productService;
         private readonly ILogger<SalesRecordsController> _logger;
-
-
         public SalesRecordsController(WebSalesMvcContext context, 
             SalesRecordService salesRecordService, SellerService sellerService, ProductService productService, 
             ILogger<SalesRecordsController> logger)
@@ -47,6 +44,47 @@ namespace WebSalesMvc.Controllers
                 }
 
                 return Ok(sales);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound("Nenhuma categoria encontrada.");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
+
+        [HttpGet]
+        [Route("get-salesrecords-paginated")]
+        public async Task<ActionResult<PagedResult<SalesRecord>>> GetSalesRecordPaginated([FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var salesRecords = await _salesRecordService.FindAllPaginatedAsync(page, pageSize);
+                var totalItems = await _salesRecordService.CountAllAsync();
+                var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+                var result = new PagedResult<SalesRecord>
+                {
+                    items = salesRecords,
+                    page = page,
+                    pageSize = pageSize,
+                    totalItems = totalItems,
+                    totalPages = totalPages
+                };
+
+                if (result.items.Count == 0)
+                {
+                    return NoContent();
+                }
+
+                return Ok(result);
             }
             catch (NotFoundException ex)
             {

@@ -18,7 +18,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LoadingService } from '../../../Services/LoadingService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SoldProduct } from '../../../Models/SoldProduct';
-import { AlertService } from '../../../Services/AlertService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sales-record/create',
@@ -60,7 +60,7 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
     private router: Router,
     private categoryService: CategoryService,
     private loadingService: LoadingService,
-    private alertService: AlertService
+    private toastr: ToastrService
 
   ) {
     this.salesRecord = {
@@ -170,6 +170,7 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
                 return [];
               } else {
                 console.error('Erro ao buscar produtos:', error);
+                this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
                 throw error;
               }
             })
@@ -228,13 +229,13 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
         formData.sellerid = 1;
         formData.soldProducts = this.selectedProducts
         const createdSales = await (await this.SalesService.createSalesRecordAsync(formData)).toPromise();
-        this.alertService.success('A venda foi registrada com sucesso.')
+        this.toastr.success('A venda foi registrada com sucesso.')
         setTimeout(() => {
           this.router.navigate(['/salesRecords']);
         }, 2000);
       }
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       this.loadingService.hideLoading();
     } finally {
       this.loadingService.hideLoading();

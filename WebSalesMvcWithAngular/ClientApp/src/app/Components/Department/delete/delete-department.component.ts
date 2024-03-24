@@ -2,10 +2,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { Department } from '../../../Models/Department';
-import { AlertService } from '../../../Services/AlertService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-departments/delete',
+  selector: 'app-departments/delete-department',
   templateUrl: './delete-department.component.html',
   styleUrls: ['./delete-department.component.css']
 })
@@ -15,7 +15,7 @@ export class DeleteDepartmentComponent implements OnInit {
     public dialogRef: MatDialogRef<DeleteDepartmentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { department: Department },
     private departmentService: DepartmentService,
-    private alertService: AlertService
+    private toastr: ToastrService
     ) { }
 
   ngOnInit(): void {
@@ -29,11 +29,11 @@ export class DeleteDepartmentComponent implements OnInit {
     try {
       if (this.department && this.department.id) {
         await (await this.departmentService.deleteDepartment(this.department.id)).toPromise();
-        this.alertService.success(`Loja ${this.department.name} deletada com sucesso.`);
+        this.toastr.success(`Loja ${this.department.name} deletada com sucesso.`);
         this.dialogRef.close({ deleted: true });
       }
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao deletar departamento:', error);
     }
   }

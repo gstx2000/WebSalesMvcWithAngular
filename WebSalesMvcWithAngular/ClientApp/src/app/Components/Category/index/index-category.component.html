@@ -1,6 +1,6 @@
 <button mat-raised-button [routerLink]="['/categories/create']" class="btn btn-default">Criar novo</button>
 
-<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="categories">
+<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="categoriesDataSource">
 
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>

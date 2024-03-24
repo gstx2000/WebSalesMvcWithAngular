@@ -8,7 +8,7 @@ import { LoadingService } from '../../../Services/LoadingService';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Observable } from 'rxjs';
 import { Category } from '../../../Models/Category';
-import { AlertService } from '../../../Services/AlertService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-categories/edit',
@@ -25,8 +25,7 @@ export class EditCategoryComponent implements OnInit {
     private router: Router,
     private loadingService: LoadingService,
     private categoryService: CategoryService,
-    private alertService: AlertService
-
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +63,8 @@ export class EditCategoryComponent implements OnInit {
       this.categoryForm.get('id')!.disable();
       this.loadingService.hideLoading();
 
-    } catch (error) {
+    } catch (error: any) {
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao buscar categoria:', error);
       this.loadingService.hideLoading();
     }
@@ -83,7 +83,7 @@ export class EditCategoryComponent implements OnInit {
             if (categoryId.id) {
               const updatedCategory = await (await this.categoryService.updateCategory(categoryId.id, formData)).toPromise();
               this.loadingService.hideLoading();
-              this.alertService.success(`Categoria ${formData.name} alterada com sucesso.`);
+              this.toastr.success(`Categoria ${formData.name} alterada com sucesso.`);
               this.router.navigate(['/categories']);
 
             }
@@ -91,7 +91,7 @@ export class EditCategoryComponent implements OnInit {
         }
       }
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar categoria:', error);
       this.loadingService.hideLoading();
     }

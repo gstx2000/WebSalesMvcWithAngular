@@ -50,6 +50,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { ToastrModule } from 'ngx-toastr';
 
 
 import { LoadingService } from './Services/LoadingService';
@@ -113,7 +115,9 @@ import { AlertDialogComponent } from './Components/GlobalAlert/alert-dialog/aler
     MatCardModule,
     MatAutocompleteModule,
     MatProgressBarModule,
-    MatSortModule
+    MatSortModule,
+    MatPaginatorModule,
+    ToastrModule.forRoot()
   ],
   providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService, SalesRecordService, AlertService],
   bootstrap: [AppComponent]

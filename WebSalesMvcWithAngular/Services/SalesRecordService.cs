@@ -23,6 +23,22 @@ namespace WebSalesMvc.Services
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
         }
+        public async Task<List<SalesRecord>> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber <= 0 || pageSize <= 0)
+                throw new ArgumentException("Número de página deve ser maior que 0");
+
+            return await _context.SalesRecord
+                                  .OrderByDescending(x => x.Date)
+                                  .Skip((pageNumber - 1) * pageSize)
+                                  .Take(pageSize)
+                                  .ToListAsync();
+        }
+        public async Task<int> CountAllAsync()
+        {
+            return await _context.SalesRecord.CountAsync();
+        }
+
         public async Task<List<SalesRecord>> FindByDateAsync(DateTime? minDate, DateTime? maxDate)
         {
             var result = from obj in _context.SalesRecord select obj;

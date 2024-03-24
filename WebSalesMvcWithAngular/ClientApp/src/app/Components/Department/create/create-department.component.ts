@@ -4,8 +4,7 @@ import { Department } from '../../../Models/Department';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { Router } from '@angular/router';
 import { LoadingService } from '../../../Services/LoadingService';
-import { AlertService } from '../../../Services/AlertService';
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-departments/create',
@@ -16,13 +15,13 @@ export class CreateDepartmentComponent implements OnInit {
   departments: Department[] = [];
   departmentForm!: FormGroup;
   department: Department;
-
   constructor(
     private departmentService: DepartmentService,
     private fb: FormBuilder,
     private router: Router,
     private loadingService: LoadingService,
-    private alertService: AlertService
+    private toastr: ToastrService
+
 
   ) {
     this.department = {
@@ -54,11 +53,11 @@ export class CreateDepartmentComponent implements OnInit {
       if (this.departmentForm.valid) {
         const formData: Department = this.departmentForm.value;
         const createdDepartment = await (await this.departmentService.createDepartment(formData)).toPromise();
-        this.alertService.success(`Loja ${formData.name} criada com sucesso.`);
+        this.toastr.success(`Loja ${formData.name} criada com sucesso.`);
         this.router.navigate(['/departments']);
       }
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao criar:', error);
       this.loadingService.hideLoading();
     }

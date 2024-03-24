@@ -3,10 +3,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Category } from '../../../Models/Category';
 import { LoadingService } from '../../../Services/LoadingService';
 import { CategoryService } from '../../../Services/CategoryService';
-import { AlertService } from '../../../Services/AlertService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-categories/delete',
+  selector: 'app-categories/delete-category',
   templateUrl: './delete-category.component.html',
   styleUrls: ['./delete-category.component.css']
 })
@@ -17,8 +17,7 @@ export class DeleteCategoryComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { category: Category },
     private categoryService: CategoryService,
     private loadingService: LoadingService,
-    private alertService: AlertService
-
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -33,16 +32,16 @@ export class DeleteCategoryComponent implements OnInit {
       if (this.category && this.category.id) {
         if (this.category.products?.length === 0) {
           await (await this.categoryService.deleteCategory(this.category.id)).toPromise();
-          this.alertService.success(`Categoria ${this.category.name} deletada com sucesso.`);
+          this.toastr.success(`Categoria ${this.category.name} deletada com sucesso.`);
           this.dialogRef.close({ deleted: true });
         } else {
           this.loadingService.hideLoading();
-          this.alertService.error('Esta categoria possui produtos cadastrados. Delete os produtos associados primeiro.');
+          this.toastr.error(`Esta categoria possui ${this.category.products?.length} produto(s) cadastrados. Delete o(s) produto(s) associado(s) primeiro.`);
         }
       } 
         
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao deletar categoria:', error);
     }
   }

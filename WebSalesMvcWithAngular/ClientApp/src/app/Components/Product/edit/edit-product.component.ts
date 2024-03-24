@@ -9,9 +9,8 @@ import { Observable } from 'rxjs';
 import { Category } from '../../../Models/Category';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Product } from '../../../Models/Product';
-import { MyErrorStateMatcher } from '../../Department/edit/edit-department.component';
 import { LoadingService } from '../../../Services/LoadingService';
-import { AlertService } from '../../../Services/AlertService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-products/edit',
@@ -22,16 +21,15 @@ export class EditProductComponent {
   departments$: Observable<Department[]> | undefined;
   productForm!: FormGroup;
   categories$: Observable<Category[]> | undefined;
-  matcher = new MyErrorStateMatcher();
   constructor(
     private departmentService: DepartmentService,
     private productService: ProductService,
     private categoryService: CategoryService,
     private loadingService: LoadingService,
-    private alertService: AlertService,
     private fb: FormBuilder,
     private activedroute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -76,8 +74,9 @@ export class EditProductComponent {
 
       this.productForm.get('id')!.disable();
 
-    } catch(error) {
+    } catch(error: any) {
       console.error('Erro ao buscar produto:', error);
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       this.loadingService.hideLoading();
     }
     this.loadingService.hideLoading();
@@ -93,7 +92,7 @@ export class EditProductComponent {
       if (productId) {
         if (productId.id) {
           const updatedDepartment = await (await this.productService.updateProduct(productId.id, formData)).toPromise();
-          this.alertService.success(`Produto ${formData.name} alterado com sucesso.`);
+          this.toastr.success(`Produto ${formData.name} alterado com sucesso.`);
           this.router.navigate(['/products']);
 
         }
@@ -101,7 +100,7 @@ export class EditProductComponent {
     }
   }
     } catch (error: any) {
-      this.alertService.error(error.message || 'Erro interno da aplicação, tente novamente.');
+      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar produto:', error);
   }
     }

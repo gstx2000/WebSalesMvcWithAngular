@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Department } from '../../../Models/Department';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,42 +6,97 @@ import { SalesRecord } from '../../../Models/SalesRecord';
 import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { DeleteSalesRecordComponent } from '../delete/delete-sales-record.component';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
+import { MatSort } from '@angular/material/sort';
+import { AlertService } from '../../../Services/AlertService';
+import { MatTableDataSource } from '@angular/material/table';
+import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { MatPaginator } from '@angular/material/paginator';
+import { Subject, of } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sales-records',
   templateUrl: './index-sales-record.component.html',
   styleUrls: ['./index-sales-record.component.css']
 })
-export class IndexSalesRecordComponent implements OnInit {
-  salesRecords: SalesRecord[] = [];
-  departments: Department[] = [];
+export class IndexSalesRecordComponent implements OnInit, OnDestroy {
+  private paginator!: MatPaginator;
+  private sort!: MatSort;
 
+  salesRecords: SalesRecord[] = [];
+  salesRecordsDataSource: MatTableDataSource<SalesRecord>;
+  private destroy$ = new Subject<void>();
+  currentPage = 1;
+  pageSize = 10;
+  totalItems = 0;
+  totalPages = 0;
+  @ViewChild(MatSort) set matSort(ms: MatSort) {
+    this.sort = ms;
+    this.setDataSourceAttributes();
+  }
+  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+    this.paginator = mp;
+    this.setDataSourceAttributes();
+  }
+  setDataSourceAttributes() {
+    if (this.salesRecordsDataSource && this.paginator && this.sort) {
+      this.salesRecordsDataSource.paginator = this.paginator;
+      this.salesRecordsDataSource.sort = this.sort;
+    }
+  }
   constructor(private departmentService: DepartmentService,
     private loadingService: LoadingService,
     private dialog: MatDialog,
-    private salesService: SalesRecordService) { }
+    private salesService: SalesRecordService,
+    private alertService: AlertService,
+    private changeDetectorRef: ChangeDetectorRef
+
+  ){
+    this.salesRecordsDataSource = new MatTableDataSource<SalesRecord>(this.salesRecords);
+   }
 
   ngOnInit(): void {
-    this.loadSalesRecords();
   }
 
-  loadSalesRecords(): void {
-    this.loadingService.showLoading();
+  ngAfterViewInit() {
 
-    this.salesService.getSalesRecords().subscribe(
-      (result: SalesRecord[]) => {
-        if (Array.isArray(result)) {
-          this.salesRecords = result;
-        }
-      },
-      (error) => {
-        console.error('Erro ao carregar departamentos:', error);
-        this.loadingService.hideLoading();
-      },
-      () => {
-        this.loadingService.hideLoading();
-      }
-    );
+    this.salesRecordsDataSource.paginator = this.paginator;
+    this.paginator.page
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.loadingService.showLoading();
+          return this.salesService.getSalesRecordsPaginated(
+            this.paginator.pageIndex + 1,
+            this.paginator.pageSize
+          ).pipe(
+            catchError((error) => {
+              this.loadingService.hideLoading();
+              return of(null);
+            }),
+            takeUntil(this.destroy$)
+          );
+        }),
+        map((Data) => {
+          if (Data == null) return [];
+          this.totalItems = Data.totalItems;
+          this.loadingService.hideLoading();
+          return Data.items;
+        })
+      )
+      .subscribe((empData) => {
+        this.salesRecords = empData;
+        this.salesRecordsDataSource = new MatTableDataSource(this.salesRecords);
+        this.salesRecordsDataSource.sort = this.sort;
+
+      }, null, () => {
+      });
+  }
+
+  ngOnDestroy() {
+    this.salesRecordsDataSource.sort = null;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getSaleStatusName(value: number): string {
@@ -60,8 +114,10 @@ export class IndexSalesRecordComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.deleted) {
         this.salesRecords = this.salesRecords.filter(p => p.id !== salesRecord.id);
-        this.loadSalesRecords();
+        this.salesRecordsDataSource.data = this.salesRecords; 
       }
     });
+
+
   }
 }

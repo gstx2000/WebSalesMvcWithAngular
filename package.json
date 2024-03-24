@@ -1,5 +1,9 @@
 {
   "devDependencies": {
+    "@angular/cli": "^17.3.1",
     "rimraf": "^5.0.5"
+  },
+  "dependencies": {
+    "ngx-toastr": "^18.0.0"
   }
 }
