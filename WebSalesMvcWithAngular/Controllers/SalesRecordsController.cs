@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.DTOs;
 using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Exceptions;
-using Microsoft.Extensions.Logging;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Controllers
 {
@@ -15,12 +15,12 @@ namespace WebSalesMvc.Controllers
     public class SalesRecordsController : ControllerBase
     {
         private readonly WebSalesMvcContext _context;
-        private readonly SalesRecordService _salesRecordService;
+        private readonly ISalesRecordService _salesRecordService;
         private readonly SellerService _sellerService;
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
         private readonly ILogger<SalesRecordsController> _logger;
-        public SalesRecordsController(WebSalesMvcContext context, 
-            SalesRecordService salesRecordService, SellerService sellerService, ProductService productService, 
+        public SalesRecordsController(WebSalesMvcContext context,
+            ISalesRecordService salesRecordService, SellerService sellerService, IProductService productService, 
             ILogger<SalesRecordsController> logger)
         {
             _context = context;
@@ -58,6 +58,38 @@ namespace WebSalesMvc.Controllers
                 return StatusCode(500, "Erro interno da aplicação.");
             }
         }
+       
+        [HttpGet("{id}")]
+        [Route("get-salesrecord/{id}")]
+        public async Task<ActionResult> GetSaleById(int? id)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return BadRequest("ID não fornecido.");
+                }
+
+                var sale = await _salesRecordService.FindByIdAsync(id.Value);
+
+                if (sale == null)
+                {
+                    return NotFound($"Produto com o ID {id} não foi encontrado.");
+                }
+
+                return Ok(sale);
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação. ");
+            }
+        }
+    
 
         [HttpGet]
         [Route("get-salesrecords-paginated")]
@@ -70,9 +102,17 @@ namespace WebSalesMvc.Controllers
                 var totalItems = await _salesRecordService.CountAllAsync();
                 var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-                var result = new PagedResult<SalesRecord>
+                var salesRecordDtos = salesRecords.Select(p => new SalesRecordDTO
                 {
-                    items = salesRecords,
+                    Id = p.Id,
+                    Status = p.Status,
+                    Amount = p.Amount,
+                    Date = p.Date
+                }).ToList();
+
+                var result = new PagedResult<SalesRecordDTO>
+                {
+                    items = salesRecordDtos,
                     page = page,
                     pageSize = pageSize,
                     totalItems = totalItems,

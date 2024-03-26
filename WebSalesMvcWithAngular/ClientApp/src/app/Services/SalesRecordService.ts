@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './AuthService';
 import { SalesRecord } from '../Models/SalesRecord';
 import { PagedResult } from '../Models/PagedResult';
+import { SalesRecordDTO } from '../DTOs/SalesRecordDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -23,11 +24,11 @@ export class SalesRecordService {
     );
   }
 
-  getSalesRecordsPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<SalesRecord>> {
+  getSalesRecordsPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<SalesRecordDTO>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
-    return this.http.get<PagedResult<SalesRecord>>(`${environment.apiUrl}/${this.url}/get-salesrecords-paginated`, { params })
+    return this.http.get<PagedResult<SalesRecordDTO>>(`${environment.apiUrl}/${this.url}/get-salesrecords-paginated`, { params })
       .pipe(
         catchError((error: any) => {
           console.error('Erro HTTP:', error);
@@ -36,7 +37,7 @@ export class SalesRecordService {
       );
   }
 
-  async getSalesRecordtById(id: number): Promise<Observable<SalesRecord>> {
+  async getSalesRecordById(id: number): Promise<Observable<SalesRecord>> {
     return this.http.get<SalesRecord>(`${environment.apiUrl}/${this.url}/get-salesrecord/${id}`)
       .pipe(
         catchError((error: any) => {

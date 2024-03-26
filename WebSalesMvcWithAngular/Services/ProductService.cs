@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
-
-public class ProductService
+using WebSalesMvcWithAngular.Services.Interfaces;
+public class ProductService: IProductService
 {
     private readonly WebSalesMvcContext _context;
 
@@ -10,7 +10,6 @@ public class ProductService
     {
         _context = context;
     }
-
     public async Task<List<Product>> FindAllAsync()
     {
         return await _context.Product
@@ -18,7 +17,6 @@ public class ProductService
                         .Include(x => x.Department)
                         .ToListAsync();
     }
-
     public async Task<List<Product>> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
     {
         if (pageNumber <= 0 || pageSize <= 0)
@@ -80,5 +78,4 @@ public class ProductService
         }
         return await query.ToListAsync();
     }
-
 }

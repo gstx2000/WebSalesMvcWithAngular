@@ -1,0 +1,40 @@
+<div class="center-content">
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Detalhes da venda {{ salesRecord?.id }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      ID: {{ salesRecord?.id }}<br>
+      Total: {{ salesRecord?.amount }}<br>
+      Forma de pagamento: {{ getPaymentMethodName(salesRecord?.paymentMethod ?? 0) }} <br>
+      Status da venda: {{ getSaleStatusName(salesRecord?.status ?? 0) }}
+    </mat-card-content>
+  </mat-card>
+  <br>
+
+  <h2>Produtos Vendidos:</h2>
+
+  <div class="container">
+    <mat-table [dataSource]="salesRecordDataSource" class="custom-mat-table">
+      <ng-container matColumnDef="productName">
+        <mat-header-cell *matHeaderCellDef>Produto</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.product?.name}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef>Quantidade</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.quantity}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef>Preço unitário</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.product?.price}}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="['productName', 'quantity', 'price']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['productName', 'quantity', 'price'];"></mat-row>
+    </mat-table>
+  </div>
+
+  <div class="buttons">
+    <button mat-raised-button class="btn btn-default" (click)="backToIndex()">Voltar</button>
+  </div>
+</div>  

@@ -2,10 +2,11 @@
 using WebSalesMvc.Controllers;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Services
 {
-    public class SalesRecordService
+    public class SalesRecordService: ISalesRecordService
     {
         private readonly WebSalesMvcContext _context;
         private readonly ILogger<SalesRecordsController> _logger;
@@ -27,8 +28,8 @@ namespace WebSalesMvc.Services
         {
             if (pageNumber <= 0 || pageSize <= 0)
                 throw new ArgumentException("Número de página deve ser maior que 0");
-
             return await _context.SalesRecord
+                                  .Include(x => x.SoldProducts)
                                   .OrderByDescending(x => x.Date)
                                   .Skip((pageNumber - 1) * pageSize)
                                   .Take(pageSize)
@@ -97,7 +98,6 @@ namespace WebSalesMvc.Services
             _context.SalesRecord.Update(sale);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteAsync(int id)
         {
             var sale = await _context.SalesRecord.FindAsync(id);
@@ -111,5 +111,12 @@ namespace WebSalesMvc.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<SalesRecord> FindByIdAsync(int? id)
+        {
+            return await _context.SalesRecord
+                                  .Include(m => m.SoldProducts)
+                                  .ThenInclude(sp => sp.Product)
+                                  .FirstOrDefaultAsync(m => m.Id == id);
+        }
     }
 }

@@ -1,0 +1,44 @@
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+  .center-content .container,
+  .center-content .buttons {
+    display: flex;
+    justify-content: center;
+  }
+.mat-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-mat-table .mat-header-cell .custom-mat-table .mat-cell {
+  text-align: center;
+  background-color: #e0e0e0;
+  color: #333;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.buttons {
+    margin-top: 8px;
+}
+
+
+.custom-mat-table mat-header-row {
+  background-color: #e0e0e0;
+  color: #333;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.custom-mat-table mat-header-cell:hover {
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+

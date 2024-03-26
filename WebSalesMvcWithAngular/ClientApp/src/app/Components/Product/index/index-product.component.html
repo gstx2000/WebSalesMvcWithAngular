@@ -51,12 +51,12 @@
 
   <ng-container matColumnDef="category">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Categoria </mat-header-cell>
-    <mat-cell *matCellDef="let item"> {{ item.category?.name }} </mat-cell>
+    <mat-cell *matCellDef="let item"> {{ item.departmentName }} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="department">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Loja </mat-header-cell>
-    <mat-cell *matCellDef="let item"> {{ item.department?.name }} </mat-cell>
+    <mat-cell *matCellDef="let item"> {{ item.categoryName }} </mat-cell>
   </ng-container>
 
 

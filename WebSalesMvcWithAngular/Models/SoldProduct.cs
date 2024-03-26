@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebSalesMvc.Models;
 
 namespace WebSalesMvcWithAngular.Models
 {
@@ -13,5 +14,7 @@ namespace WebSalesMvcWithAngular.Models
         public int ProductId { get; set; }
 
         public int Quantity { get; set; }
-    } 
+        public Product? Product { get; set; }
+
+    }
 }

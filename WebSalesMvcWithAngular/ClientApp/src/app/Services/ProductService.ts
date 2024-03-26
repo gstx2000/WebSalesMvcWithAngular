@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './AuthService';
 import { Product } from '../Models/Product';
 import { PagedResult } from '../Models/PagedResult';
+import { ProductDTO } from '../DTOs/ProductDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -25,11 +26,11 @@ export class ProductService {
       );
   }
 
-  getProductsPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<Product>> {
+  getProductsPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<ProductDTO>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
-    return this.http.get<PagedResult<Product>>(`${environment.apiUrl}/${this.url}/get-products-paginated`, { params })
+    return this.http.get<PagedResult<ProductDTO>>(`${environment.apiUrl}/${this.url}/get-products-paginated`, { params })
       .pipe(
         catchError((error: any) => {
           console.error('Erro HTTP:', error);
@@ -81,12 +82,12 @@ export class ProductService {
     }
   }
 
-  async deleteProduct(id: number): Promise<Observable<HttpEvent<Product>>> {
+  async deleteProduct(id: number): Promise<Observable<HttpEvent<ProductDTO>>> {
     try {
 
       const options = await this.auth.getOptions();
 
-      return this.http.delete<Product>(`${environment.apiUrl}/${this.url}/delete-product/${id}`, options)
+      return this.http.delete<ProductDTO>(`${environment.apiUrl}/${this.url}/delete-product/${id}`, options)
         .pipe(
           catchError((error: any) => {
             console.error('Erro HTTP:', error);
@@ -98,10 +99,10 @@ export class ProductService {
     }
   }
 
-  searchProductsByName(searchTerm: string, categoryId?: number | null): Observable<Product[]> {
+  searchProductsByName(searchTerm: string, categoryId?: number | null): Observable<ProductDTO[]> {
     const url = `${environment.apiUrl}/${this.url}/get-product/${searchTerm}${categoryId !== null && categoryId !== undefined ? `/${categoryId}` : ''}`;
 
-    return this.http.get<Product[]>(url)
+    return this.http.get<ProductDTO[]>(url)
       .pipe(
         catchError((error: any) => {
           console.error('HTTP Error:', error);

@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
-import { Department } from '../../../Models/Department';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Category } from '../../../Models/Category';
 import { LoadingService } from '../../../Services/LoadingService';
@@ -15,8 +14,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../../../Services/AlertService';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { PagedResult } from '../../../Models/PagedResult';
 import { ToastrService } from 'ngx-toastr';
+import { ProductDTO } from '../../../DTOs/ProductDTO';
 
 @Component({
   selector: 'app-products',
@@ -27,14 +26,13 @@ export class IndexProductComponent implements OnInit, OnDestroy {
   private paginator!: MatPaginator;
   private sort!: MatSort;
 
-  productsDataSource: MatTableDataSource<Product>;
-  departments: Department[] = [];
+  productsDataSource: MatTableDataSource<ProductDTO>;
   categories: Category[] = [];
 
-  filteredProducts: Product[] = [];
+  filteredProducts: ProductDTO[] = [];
   searchControl: FormControl = new FormControl();
   searchForm!: FormGroup;
-  searchedProducts: Product[] = [];
+  searchedProducts: ProductDTO[] = [];
   categories$!: Observable<Category[]>;
   private destroy$ = new Subject<void>();
   isMessageVisible: boolean = false;
@@ -43,7 +41,7 @@ export class IndexProductComponent implements OnInit, OnDestroy {
   pageSize = 10;
   totalItems = 0;
   totalPages = 0;
-  products: Product[] = []; 
+  products: ProductDTO[] = []; 
 
   @ViewChild(MatSort) set matSort(ms: MatSort) {
     this.sort = ms;
@@ -66,11 +64,10 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private alertService: AlertService,
-    private changeDetectorRef: ChangeDetectorRef,
     private toastr: ToastrService
 
   ) {
-    this.productsDataSource = new MatTableDataSource<Product>;
+    this.productsDataSource = new MatTableDataSource<ProductDTO>;
   }
 
   ngOnInit(): void {
@@ -141,8 +138,8 @@ export class IndexProductComponent implements OnInit, OnDestroy {
                 return of([]);
               } else {
                 console.error('Erro ao buscar produtos:', error);
-                throw error;
                 this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
+                throw error;
 
               }
             })
@@ -151,7 +148,7 @@ export class IndexProductComponent implements OnInit, OnDestroy {
           return of(this.products);
         }
       })
-    ).subscribe((products: Product[]) => {
+    ).subscribe((products: ProductDTO[]) => {
       this.isMessageVisible = false;
       if (products.length !== 0) {
         this.productsDataSource.data = products;
@@ -168,7 +165,7 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     this.searchForm.get('category')?.setValue(null);
   }
 
-  openDeleteDialog(product: Product): void {
+  openDeleteDialog(product: ProductDTO): void {
     const dialogRef = this.dialog.open(DeleteProductComponent, {
       data: { product },
       width: '550px',

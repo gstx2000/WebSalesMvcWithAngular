@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { SalesRecord } from '../../../Models/SalesRecord';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
 import { PaymentMethod } from '../../../Models/enums/PaymentMethod';
 import { ToastrService } from 'ngx-toastr';
+import { SalesRecordDTO } from '../../../DTOs/SalesRecordDTO';
 
 @Component({
   selector: 'app-salesrecords/delete-sales-record',
@@ -13,10 +13,10 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./delete-sales-record.component.css']
 })
 export class DeleteSalesRecordComponent implements OnInit {
-  salesRecord?: SalesRecord;
+  salesRecord?: SalesRecordDTO;
   constructor(
     public dialogRef: MatDialogRef<DeleteSalesRecordComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { salesRecord: SalesRecord },
+    @Inject(MAT_DIALOG_DATA) public data: { salesRecord: SalesRecordDTO },
     private salesRecordService: SalesRecordService,
     private loadingService: LoadingService,
     private toastr: ToastrService

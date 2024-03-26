@@ -2,17 +2,16 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
-import { SalesRecord } from '../../../Models/SalesRecord';
 import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { DeleteSalesRecordComponent } from '../delete/delete-sales-record.component';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
 import { MatSort } from '@angular/material/sort';
 import { AlertService } from '../../../Services/AlertService';
 import { MatTableDataSource } from '@angular/material/table';
-import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { MatPaginator } from '@angular/material/paginator';
 import { Subject, of } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
+import { SalesRecordDTO } from '../../../DTOs/SalesRecordDTO';
 
 @Component({
   selector: 'app-sales-records',
@@ -23,8 +22,8 @@ export class IndexSalesRecordComponent implements OnInit, OnDestroy {
   private paginator!: MatPaginator;
   private sort!: MatSort;
 
-  salesRecords: SalesRecord[] = [];
-  salesRecordsDataSource: MatTableDataSource<SalesRecord>;
+  salesRecords: SalesRecordDTO[] = [];
+  salesRecordsDataSource: MatTableDataSource<SalesRecordDTO>;
   private destroy$ = new Subject<void>();
   currentPage = 1;
   pageSize = 10;
@@ -52,7 +51,7 @@ export class IndexSalesRecordComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
 
   ){
-    this.salesRecordsDataSource = new MatTableDataSource<SalesRecord>(this.salesRecords);
+    this.salesRecordsDataSource = new MatTableDataSource<SalesRecordDTO>(this.salesRecords);
    }
 
   ngOnInit(): void {
@@ -103,7 +102,7 @@ export class IndexSalesRecordComponent implements OnInit, OnDestroy {
     return SaleStatus[value] as string;
   }
 
-  openDeleteDialog(salesRecord: SalesRecord): void {
+  openDeleteDialog(salesRecord: SalesRecordDTO): void {
     const dialogRef = this.dialog.open(DeleteSalesRecordComponent, {
       data: { salesRecord },
       width: '550px',

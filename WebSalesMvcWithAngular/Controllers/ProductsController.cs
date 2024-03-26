@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
-using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.DTOs;
 using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Controllers
 {
@@ -13,12 +14,12 @@ namespace WebSalesMvc.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly WebSalesMvcContext _context;
-        private readonly DepartmentService _departmentService;
-        private readonly CategoryService _categoryService;
-        private readonly ProductService _productService;
+        private readonly IDepartmentService _departmentService;
+        private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
         private readonly ILogger<SalesRecordsController> _logger;
 
-        public ProductsController(WebSalesMvcContext context, DepartmentService departmentService, ILogger<SalesRecordsController> logger, CategoryService categoryService, ProductService productService)
+        public ProductsController(WebSalesMvcContext context, IDepartmentService departmentService, ILogger<SalesRecordsController> logger, ICategoryService categoryService, IProductService productService)
         {
             _context = context;
             _departmentService = departmentService;
@@ -65,9 +66,18 @@ namespace WebSalesMvc.Controllers
                 var totalItems = await _productService.CountAllAsync(); 
                 var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-                var result = new PagedResult<Product>
+                var productDtos = products.Select(p => new ProductDTO
                 {
-                    items = products,
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    CategoryName = p.Category.Name,
+                    DepartmentName = p.Department.Name
+                }).ToList();
+
+                var result = new PagedResult<ProductDTO>
+                {
+                    items = productDtos,
                     page = page,
                     pageSize = pageSize,
                     totalItems = totalItems,
@@ -268,13 +278,24 @@ namespace WebSalesMvc.Controllers
         public async Task<IActionResult> GetProductByName(string productName, int? categoryId)
         {
             var products = await _productService.FindByNameAsync(productName, categoryId);
+            
+            var productDtos = products.Select(p => new ProductDTO
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                CategoryName = p.Category.Name,
+                DepartmentName = p.Department.Name,
+                CategoryId = p.CategoryId,
+                DepartmentId = p.DepartmentId
+            }).ToList();
 
             if (products == null || products.Count == 0)
             {
                 return NotFound();
             }
 
-            return Ok(products);
+            return Ok(productDtos);
         }
 
         private bool ProductExists(int id)

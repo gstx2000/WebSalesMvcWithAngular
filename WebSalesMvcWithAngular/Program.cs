@@ -9,18 +9,19 @@ using Serilog;
 using Serilog.Events;
 using WebSalesMvcWithAngular.Data;
 using Microsoft.AspNetCore.Mvc;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
-                                        /*CORS, XSRF TOKEN AND COOKIE CONFIGURATION*/
+/*CORS, XSRF TOKEN AND COOKIE CONFIGURATION*/
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
-builder.Services.AddScoped<DepartmentService>();
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<SellerService>();
-builder.Services.AddScoped<SalesRecordService>();
+builder.Services.AddScoped<ISalesRecordService, SalesRecordService>();
 builder.Services.AddScoped<PasswordRecoveryService>();
 
 builder.Services.AddCors(options => options.AddPolicy(

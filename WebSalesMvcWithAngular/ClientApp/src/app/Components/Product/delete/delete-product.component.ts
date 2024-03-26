@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 import { ToastrService } from 'ngx-toastr';
+import { ProductDTO } from '../../../DTOs/ProductDTO';
 
 @Component({
   selector: 'app-products/delete-product',
@@ -10,10 +11,10 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./delete-product.component.css']
 })
 export class DeleteProductComponent implements OnInit {
-  product?: Product;
+  product?: ProductDTO;
   constructor(
     public dialogRef: MatDialogRef<DeleteProductComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { product: Product },
+    @Inject(MAT_DIALOG_DATA) public data: { product: ProductDTO },
     private productService: ProductService,
     private toastr: ToastrService
     ) { }

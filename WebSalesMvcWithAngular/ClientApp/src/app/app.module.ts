@@ -62,6 +62,7 @@ import { SalesRecordService } from './Services/SalesRecordService';
 import { DepartmentService } from './Services/DepartmentService';
 import { AlertService } from './Services/AlertService';
 import { AlertDialogComponent } from './Components/GlobalAlert/alert-dialog/alert-dialog.component';
+import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/details-sales-record.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { AlertDialogComponent } from './Components/GlobalAlert/alert-dialog/aler
     EditSalesRecordComponent,
     GlobalAlertComponent,
     AlertDialogComponent,
+    DetailsSalesRecordComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -19,7 +19,7 @@
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let item">
-      <button mat-raised-button [routerLink]="['/departments/details', item.id]" class="btn btn-default">Detalhes</button>
+      <button mat-raised-button [routerLink]="['/salesRecords/details', item.id]" class="btn btn-default">Detalhes</button>
       <button mat-raised-button [routerLink]="['/departments/edit', item.id]" class="btn btn-default">Editar</button>
       <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
         <mat-icon>delete</mat-icon>

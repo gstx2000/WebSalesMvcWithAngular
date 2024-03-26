@@ -24,6 +24,7 @@ import { IndexSalesRecordComponent } from './Components/SalesRecord/index/index-
 import { DeleteSalesRecordComponent } from './Components/SalesRecord/delete/delete-sales-record.component';
 import { CreateSalesRecordComponent } from './Components/SalesRecord/create/create-sales-record.component';
 import { EditSalesRecordComponent } from './Components/SalesRecord/edit/edit-sales-record.component';
+import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/details-sales-record.component';
 
 
 const routes: Routes = [
@@ -59,7 +60,7 @@ const routes: Routes = [
   { path: 'salesRecords/create', component: CreateSalesRecordComponent },
   { path: 'salesRecords/edit/:id', component: EditSalesRecordComponent },
   { path: 'salesRecords/delete/:id', component: DeleteSalesRecordComponent },
-
+  { path: 'salesRecords/details/:id', component: DetailsSalesRecordComponent }
   // *------------------------------------------------------------------------------*
 
 ];

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Models;
-using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
 using WebSalesMvcWithAngular.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Controllers
 {
@@ -11,8 +11,8 @@ namespace WebSalesMvc.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly DepartmentService _departmentService;
-        public DepartmentsController(DepartmentService departmentService)
+        private readonly IDepartmentService _departmentService;
+        public DepartmentsController(IDepartmentService departmentService)
         {
             _departmentService = departmentService;
         }

@@ -16,8 +16,8 @@ namespace WebSalesMvc.Data
         public DbSet<Department> Department { get; set; }
         public DbSet<Seller> Seller { get; set; }
         public DbSet<SalesRecord> SalesRecord { get; set; }
-        public DbSet<WebSalesMvc.Models.Category> Category { get; set; }
-        public DbSet<WebSalesMvc.Models.Product> Product { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<Product> Product { get; set; }
         public DbSet<SoldProduct> SoldProducts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

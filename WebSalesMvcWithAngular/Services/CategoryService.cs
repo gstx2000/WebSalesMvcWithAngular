@@ -3,10 +3,11 @@
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Services
 {
-    public class CategoryService
+    public class CategoryService: ICategoryService
     {
         private readonly WebSalesMvcContext _context;
 
@@ -64,16 +65,6 @@ namespace WebSalesMvc.Services
             catch (DbUpdateException e)
             {
                 throw new IntegrityException(e.Message);
-            }
-        }
-        public async Task AddProductToCategoryAsync(int categoryId, Product product)
-        {
-            var category = await _context.Category.FindAsync(categoryId);
-            if (category != null)
-            {
-                product.Category = category;
-                category.AddProduct(product);
-                await _context.SaveChangesAsync();
             }
         }
     }

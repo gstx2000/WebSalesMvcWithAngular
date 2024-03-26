@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Department } from '../../../Models/Department';
 import { Router } from '@angular/router';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
-import { DepartmentService } from '../../../Services/DepartmentService';
 import { Observable, Subject, catchError } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
@@ -19,9 +17,10 @@ import { LoadingService } from '../../../Services/LoadingService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SoldProduct } from '../../../Models/SoldProduct';
 import { ToastrService } from 'ngx-toastr';
+import { ProductDTO } from '../../../DTOs/ProductDTO';
 
 @Component({
-  selector: 'app-sales-record/create',
+  selector: 'app-sales-records/create-salesrecord',
   templateUrl: './create-sales-record.component.html',
   styleUrls: ['./create-sales-record.component.css']
 })
@@ -31,7 +30,7 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
 
   selectedProducts: SoldProduct[] = [];
 
-  filteredProducts: Product[] = [];
+  filteredProducts: ProductDTO[] = [];
   salesRecord: SalesRecord;
   PaymentMethod = PaymentMethod;
   SaleStatus = SaleStatus;
@@ -40,7 +39,6 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
   searchTerm: string = '';
   quantity = new FormControl();
 
-  departments$!: Observable<Department[]>;
   sellers$!: Observable<Seller[]>;
   products$!: Observable<Product[]>;
   categories$!: Observable<Category[]>;
@@ -55,7 +53,6 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
   constructor(
     private SalesService: SalesRecordService,
     private productService: ProductService,
-    private departmentService: DepartmentService,
     private fb: FormBuilder,
     private router: Router,
     private categoryService: CategoryService,
@@ -76,7 +73,6 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
     this.setupSearchControl();
     this.initSalesForm();
     this.initsearchForm();
-    this.departments$ = this.departmentService.getDepartments();
     this.products$ = this.productService.getProducts();
     this.categories$ = this.categoryService.getCategories();
     this.loadingService.hideLoading();
@@ -176,19 +172,19 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          return new Observable<Product[]>();
+          return new Observable<ProductDTO[]>();
         }
       })
-    ).subscribe((products: Product[]) => {
+    ).subscribe((products: ProductDTO[]) => {
       this.filteredProducts = products.filter(p => !this.isProductSelected(p));
     });
   }
 
-  private isProductSelected(product: Product): boolean {
+  private isProductSelected(product: ProductDTO): boolean {
     return this.selectedProducts.some(soldProduct => soldProduct.productId === product.id);
   }
 
-  selectProduct(product: Product): void {
+  selectProduct(product: ProductDTO): void {
 
     const existingProduct = this.selectedProducts.find(sp => sp.productId === product.id);
 
@@ -230,9 +226,8 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
         formData.soldProducts = this.selectedProducts
         const createdSales = await (await this.SalesService.createSalesRecordAsync(formData)).toPromise();
         this.toastr.success('A venda foi registrada com sucesso.')
-        setTimeout(() => {
-          this.router.navigate(['/salesRecords']);
-        }, 2000);
+        this.router.navigate(['/salesRecords']);
+        
       }
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');

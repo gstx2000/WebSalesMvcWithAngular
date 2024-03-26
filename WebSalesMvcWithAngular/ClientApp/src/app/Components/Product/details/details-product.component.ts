@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { LoadingService } from '../../../Services/LoadingService';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-products/details',
@@ -13,12 +13,13 @@ import { ProductService } from '../../../Services/ProductService';
 })
 export class DetailsProductComponent implements OnInit {
   product: Product | undefined;
-
   constructor(
     private activedroute: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private toastr: ToastrService
+
   ) { }
 
   ngOnInit(): void {
@@ -34,6 +35,8 @@ export class DetailsProductComponent implements OnInit {
 
     },
       (error) => {
+        this.loadingService.hideLoading();
+        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
         console.error('Erro ao carregar produto:', error);
       }
     );

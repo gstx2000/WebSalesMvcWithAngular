@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
-using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
 using WebSalesMvcWithAngular.Services.Exceptions;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Controllers
 {
@@ -14,10 +14,10 @@ namespace WebSalesMvc.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly WebSalesMvcContext _context;
-        private readonly CategoryService _categoryService;
-        private readonly DepartmentService _departmentService;
+        private readonly ICategoryService _categoryService;
+        private readonly IDepartmentService _departmentService;
 
-        public CategoriesController(WebSalesMvcContext context, CategoryService categoryService, DepartmentService departmentService)
+        public CategoriesController(WebSalesMvcContext context, ICategoryService categoryService, IDepartmentService departmentService)
         {
             _context = context;
             _categoryService = categoryService;
