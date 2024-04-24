@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebSalesMvcWithAngular.Controllers
@@ -14,6 +15,7 @@ namespace WebSalesMvcWithAngular.Controllers
         }
         
         [HttpGet]
+        [AllowAnonymous]
         [Route("antiforgery-token")]
         public IActionResult GetAntiforgeryToken()
         {

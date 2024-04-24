@@ -10,12 +10,14 @@ using Serilog.Events;
 using WebSalesMvcWithAngular.Data;
 using Microsoft.AspNetCore.Mvc;
 using WebSalesMvcWithAngular.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using WebSalesMvcWithAngular.Services;
+using WebSalesMvcWithAngular.Configurations;
+
 
 var builder = WebApplication.CreateBuilder(args);
-
-/*-----------------------------------------------------------------------------------------------------------------------*/
-/*CORS, XSRF TOKEN AND COOKIE CONFIGURATION*/
-/*-----------------------------------------------------------------------------------------------------------------------*/
 
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -23,6 +25,12 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<SellerService>();
 builder.Services.AddScoped<ISalesRecordService, SalesRecordService>();
 builder.Services.AddScoped<PasswordRecoveryService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+
+
+/*-----------------------------------------------------------------------------------------------------------------------*/
+/*CORS, XSRF TOKEN AND COOKIE CONFIGURATION*/
+/*-----------------------------------------------------------------------------------------------------------------------*/
 
 builder.Services.AddCors(options => options.AddPolicy(
     name: "AllowAllOrigins",  
@@ -31,19 +39,7 @@ builder.Services.AddCors(options => options.AddPolicy(
         policy.WithOrigins("https://localhost:44493").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     }));
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.HttpOnly = false;
-    options.Cookie.Path = "/";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.None; // For development; change to CookieSecurePolicy.Always in production
-});
-
 builder.Services.AddControllers();
-
-//builder.Services.AddControllers().AddJsonOptions(options =>
-//{
-//    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//});
 
 builder.Services.AddAntiforgery(options =>
 {
@@ -58,9 +54,12 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
+
+/*-----------------------------------------------------------------------------------------------------------------------*/
+                                                             /*COOKIE CONFIGURATIONS*/
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
-/*
+
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -68,17 +67,15 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
-/*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-.AddCookie(options =>
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.ExpireTimeSpan = TimeSpan.FromDays(3); // Set the desired expiration time
-    options.LoginPath = "/Users/Login";
-    options.LogoutPath = "/Users/Logout";
-
-});*/
+    options.Cookie.HttpOnly = false;
+    options.Cookie.Path = "/";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None; // For development; change to CookieSecurePolicy.Always in production
+});
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
-                                       /*DB context and connection configuration*/
+                                              /*DB context/Identity context and connection configuration*/
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
 /*MODELS SCHEMA*/
@@ -90,6 +87,8 @@ builder.Services.AddDbContext<WebSalesMvcContext>(options =>
 
 });
 
+
+
 /*USERS SCHEMA*/
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -98,7 +97,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 34)));
 
 });
-
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
                                                     /*Log configuration*/
@@ -120,24 +118,23 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("logs\\WebSalesMvcWithAngular.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 /*-----------------------------------------------------------------------------------------------------------------------*/
+/*Identity Users configuration*/
+/*-----------------------------------------------------------------------------------------------------------------------*/
 
-
-var brl = new CultureInfo("pt-BR");
-var localizationOptions = new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture(brl),
-    SupportedCultures = new List<CultureInfo> { brl },
-};
-
-
-/*builder.Services.AddDataProtection()
-    .SetApplicationName("WebSalesMvcWithAngular")
-    .PersistKeysToFileSystem((new DirectoryInfo(@"C:\Users\gst20\OneDrive\Área de Trabalho\SalesWebAngular\WebSalesMvcWithAngular\WebSalesMvcWithAngular/keys")));*/
-
-/*builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders()
-.AddErrorDescriber<CustomIdentityErrorDescriber>();
+.AddRoles<IdentityRole>()
+.AddDefaultTokenProviders();
+//.AddErrorDescriber<CustomIdentityErrorDescriber>();
+
+builder.Services.AddScoped<SignInManager<User>>();
+
+builder.Services.AddSingleton<JwtOptions>(sp =>
+{
+    var jwtOptions = new JwtOptions();
+    builder.Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
+    return jwtOptions;
+});
 
 builder.Services.AddMvc(config =>
 {
@@ -147,26 +144,29 @@ builder.Services.AddMvc(config =>
     config.Filters.Add(new AuthorizeFilter(policy));
 });
 
+//JWT CONFIGURATION
+AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);
 
-builder.Services.Configure<IdentityOptions>(options =>
+//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//.AddCookie(options =>
+//{
+//    options.ExpireTimeSpan = TimeSpan.FromDays(3); // Set the desired expiration time
+//    options.LoginPath = "/Users/Login";
+//    options.LogoutPath = "/Users/Logout";
+
+//});
+/*-----------------------------------------------------------------------------------------------------------------------*/
+
+var brl = new CultureInfo("pt-BR");
+var localizationOptions = new RequestLocalizationOptions
 {
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    DefaultRequestCulture = new RequestCulture(brl),
+    SupportedCultures = new List<CultureInfo> { brl },
+};
 
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-
-    // Lockout settings
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-
-    // User settings
-    options.User.RequireUniqueEmail = true;
-});*/
-
+/*builder.Services.AddDataProtection()
+    .SetApplicationName("WebSalesMvcWithAngular")
+    .PersistKeysToFileSystem((new DirectoryInfo(@"C:\Users\gst20\OneDrive\Área de Trabalho\SalesWebAngular\WebSalesMvcWithAngular\WebSalesMvcWithAngular/keys")));*/
 
 var app = builder.Build();
 
@@ -182,32 +182,12 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Users}/{action=Login}/{id?}");
 });
 
-
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 app.UseRequestLocalization(localizationOptions);
-
-/*app.Use(nextDelegate => context =>
-{
-    var antiforgery = app.Services.GetRequiredService<IAntiforgery>();
-    string path = context.Request.Path.Value.ToLower();
-    string[] directUrls = { "/create", "/cetDepartments" };
-   
-        AntiforgeryTokenSet tokens = antiforgery.GetAndStoreTokens(context);
-        context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken, new CookieOptions()
-        {
-            HttpOnly = false,
-            Secure = false,
-            IsEssential = true,
-            SameSite = SameSiteMode.None
-        });
-    
-    return nextDelegate(context);
-});*/
 
 if (app.Environment.IsDevelopment())
 {
@@ -242,6 +222,7 @@ public class CustomIdentityErrorDescriber : IdentityErrorDescriber
         };
     }
 }
+
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<WebSalesMvcContext>
 {
     public WebSalesMvcContext CreateDbContext(string[] args)
@@ -259,7 +240,6 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<WebSalesMv
         return new WebSalesMvcContext(builder.Options);
     }
 }
-
 public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
     public ApplicationDbContext CreateDbContext(string[] args)
@@ -278,4 +258,3 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
         return new ApplicationDbContext(builder.Options);
     }
 }
-

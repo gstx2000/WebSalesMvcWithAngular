@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientXsrfModule } from '@angular/common/http';
+import * as jwt_decode from 'jwt-decode';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -33,6 +34,7 @@ import { CreateSalesRecordComponent } from './Components/SalesRecord/create/crea
 import { IndexSalesRecordComponent } from './Components/SalesRecord/index/index-sales-record.component';
 import { DeleteSalesRecordComponent } from './Components/SalesRecord/delete/delete-sales-record.component';
 import { EditSalesRecordComponent } from './Components/SalesRecord/edit/edit-sales-record.component';
+import { toInvoiceSalesRecordComponent } from './Components/SalesRecord/toInvoice/toInvoice-sales-record.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -51,8 +53,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { ToastrModule } from 'ngx-toastr';
+import { MatMenuModule } from '@angular/material/menu';
 
+import { ToastrModule } from 'ngx-toastr';
 
 import { LoadingService } from './Services/LoadingService';
 import { ProductService } from './Services/ProductService';
@@ -63,7 +66,9 @@ import { DepartmentService } from './Services/DepartmentService';
 import { AlertService } from './Services/AlertService';
 import { AlertDialogComponent } from './Components/GlobalAlert/alert-dialog/alert-dialog.component';
 import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/details-sales-record.component';
-
+import { LoginComponent } from './Components/Login/login.component';
+import { LoginService } from './Services/LoginService/login.service';
+import { RegisterComponent } from './Components/Register/register.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -87,10 +92,13 @@ import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/de
     CreateSalesRecordComponent,
     IndexSalesRecordComponent,
     DeleteSalesRecordComponent,
+    toInvoiceSalesRecordComponent,
     EditSalesRecordComponent,
     GlobalAlertComponent,
     AlertDialogComponent,
     DetailsSalesRecordComponent,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -119,9 +127,12 @@ import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/de
     MatProgressBarModule,
     MatSortModule,
     MatPaginatorModule,
-    ToastrModule.forRoot()
+    MatMenuModule,
+    ToastrModule.forRoot(),
+    
   ],
-  providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService, SalesRecordService, AlertService],
+  providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService,
+    SalesRecordService, AlertService, LoginService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import * as jwt_decode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+
   private apiUrl = 'https://localhost:7135/api';
-  constructor(private http: HttpClient ) { }
+  constructor(private http: HttpClient) { }
 
   setAntiforgeryCookie(): Promise<{ token: string, cookie: string }> {
     return new Promise((resolve, reject) => {
@@ -43,6 +45,24 @@ export class AuthService {
       headers: headers,
       withCredentials: true,
     };
+  }
+
+  saveToken(token: string) {
+    localStorage.setItem('JWTtoken', token);
+    console.log('Token:', token);
+  }
+
+  isLoggedIn() {
+    const JWTtoken = localStorage.getItem('JWTtoken');
+    if (!JWTtoken) {
+      return false;
+    }
+    try {
+      const decodedToken: any = jwt_decode(JWTtoken);
+      decodedToken
+    } catch {
+
+    }
   }
 
 }

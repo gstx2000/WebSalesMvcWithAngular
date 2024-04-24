@@ -39,12 +39,18 @@
     <None Remove="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
     <None Remove="ClientApp\src\app\Models\enums\SaleStatus.ts" />
     <None Remove="ClientApp\src\app\Models\SoldProduct.ts" />
+    <None Remove="ClientApp\src\app\Models\User.ts" />
     <None Remove="ClientApp\src\app\Services\AlertService.ts" />
     <None Remove="ClientApp\src\app\Services\AuthService.ts" />
     <None Remove="ClientApp\src\app\Services\CategoryService.ts" />
     <None Remove="ClientApp\src\app\Services\LoadingService.ts" />
     <None Remove="ClientApp\src\app\Services\ProductService.ts" />
     <None Remove="ClientApp\src\app\Services\SalesRecordService.ts" />
+    <None Remove="ClientApp\tsconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ClientApp\tsconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +59,7 @@
     <TypeScriptCompile Include="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\enums\SaleStatus.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\SoldProduct.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\User.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\AlertService.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\AuthService.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\CategoryService.ts" />
@@ -66,6 +73,7 @@
     <Folder Include="ClientApp\src\app\Components\Category\edit\" />
     <Folder Include="ClientApp\src\app\Components\Category\delete\" />
     <Folder Include="ClientApp\src\app\Components\GlobalLoading\" />
+    <Folder Include="ClientApp\src\app\Components\Register\" />
     <Folder Include="ClientApp\src\app\Components\Product\create\" />
     <Folder Include="ClientApp\src\app\Components\Product\edit\" />
     <Folder Include="ClientApp\src\app\Components\Product\delete\" />

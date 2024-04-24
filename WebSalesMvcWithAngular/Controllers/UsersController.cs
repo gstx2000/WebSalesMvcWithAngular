@@ -1,214 +1,137 @@
-﻿//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.AspNetCore.Mvc;
-//using WebSalesMvc.Models;
-//using System.Text.Encodings.Web;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using WebSalesMvcWithAngular.DTOs.Requests;
+using WebSalesMvcWithAngular.Services;
+using WebSalesMvcWithAngular.Services.Interfaces;
 
-//[Authorize]
-//[Route("api/[controller]")]
-//public class UsersController : Controller
-//{
-//    private readonly UserManager<User> _userManager;
-//    private readonly SignInManager<User> _signInManager;
-//    private readonly PasswordRecoveryService _passwordRecoveryService;
-//    public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, PasswordRecoveryService passwordRecoveryService )
-//    {
-//        _userManager = userManager;
-//        _signInManager = signInManager;
-//        _passwordRecoveryService = passwordRecoveryService;
-//    }
+[Authorize]
+[Route("api/[controller]")]
+public class UsersController : ControllerBase
+{
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly PasswordRecoveryService _passwordRecoveryService;
+    private readonly IIdentityService _identityService;
 
-//    [HttpGet]
-//    [AllowAnonymous]
-//    public IActionResult Register()
-//    {
-//        return View();
-//    }
-
-//    [HttpPost]
-//    [ValidateAntiForgeryToken]
-//    [AllowAnonymous]
-//    public async Task<IActionResult> Register(model)
-//    {
-//        if (ModelState.IsValid)
-//        {
-//            var user = new User { UserName = model.Email, Email = model.Email };
-//            var passwordValidator = new PasswordValidator<User>();
-//            var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, user, model.Password);
-//            if (passwordValidationResult.Succeeded)
-//            {
-//                var result = await _userManager.CreateAsync(user, model.Password);
-//                if (result.Succeeded)
-//                {
-//                    await _signInManager.SignInAsync(user, isPersistent: false);
-//                    return RedirectToAction("Index", "Home");
-//                }
-//                else
-//                {
-//                    foreach (var error in result.Errors)
-//                    {
-//                        ModelState.AddModelError(string.Empty, error.Description);
-//                    }
-//                }
-//            }
-//            else
-//            {
-//                ModelState.AddModelError(string.Empty, "Sua senha deve conter 6 letras, letras maiúsculas, minúsculas e um caractere especial.");
-//            }
-//        }
-//        return View(model);
-//    }
+    public UsersController(
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        PasswordRecoveryService passwordRecoveryService,
+        IIdentityService identityService)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _passwordRecoveryService = passwordRecoveryService;
+        _identityService = identityService;
+    }
 
 
-//    [HttpGet]
-//    [AllowAnonymous]
-//    public IActionResult Login()
-//    {
-//        return View();
-//    }
 
-//    [HttpPost]
-//    [ValidateAntiForgeryToken]
-//    [AllowAnonymous]
-//    public async Task<IActionResult> Login(LoginViewModel model)
-//    {
-//        if (ModelState.IsValid)
-//        {
-//            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
+[HttpPost]
+    [ValidateAntiForgeryToken]
+    [AllowAnonymous]
+    [Route("register")]
 
-//            if (result.Succeeded)
-//            {
-//                return RedirectToAction("Index", "Home");
-//            }
+    public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
+    {
 
-//            ModelState.AddModelError(string.Empty, "Usuário ou senha incorretos.");
-//        }
+        if (ModelState.IsValid)
+        {
+                var result = await _identityService.RegisterUser(registerRequest);
 
-//        return View(model);
-//    }
+                if (result.Success)
+                {
+                    return Ok();
+                }
+                else if (result.Errors.Count > 0)
+                {
+                return BadRequest(result);
+                }
+       
+        }
+        return StatusCode(StatusCodes.Status500InternalServerError);
 
-//    [HttpPost]
-//    [ValidateAntiForgeryToken]
-//    public async Task<IActionResult> Logout()
-//    {
-//        await _signInManager.SignOutAsync();
+    }
 
-//        return RedirectToAction("Login");
-//    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [AllowAnonymous]
+    [Route("login")]
 
-//    [HttpGet]
-//    [AllowAnonymous]
-//    public IActionResult PasswordRecovery()
-//    {
-//        return View();
-//    }
+    public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = await _identityService.LoginUser(loginRequest);
 
-//    [HttpPost]
-//    [AllowAnonymous]
-//    [ValidateAntiForgeryToken]
-//    public async Task<IActionResult> PasswordRecovery(PasswordRecoveryViewModel model)
-//    {
-//        if (ModelState.IsValid)
-//        {
-//            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (result.Success)
+            {
+                Response.Headers.Add("Authorization", "Bearer " + result.Token);
+                return Ok(result);
+            }
+            else if (result.Errors.Count > 0)
+            {
+                return BadRequest(result);
+            }
+        }
+        return StatusCode(StatusCodes.Status500InternalServerError);
+    }
 
-//            if (user != null)
-//            {
-//                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-//                var resetLink = Url.Action("ResetPassword", "Users", new { email = user.Email, token = token }, Request.Scheme);
-//                var encodedResetLink = HtmlEncoder.Default.Encode(resetLink);
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
 
-//                await _passwordRecoveryService.SendEmailAsync(model.Email, "Recuperação de senha", "Equipe de suporte", "gst203002@gmail.com", $"Clique no link para redefinir sua senha: {encodedResetLink}");
+        return Ok();
+    }
 
-//                return RedirectToAction("PasswordRecoveryConfirmation");
-//            }
+    //[HttpPost]
+    //[AllowAnonymous]
+    //[ValidateAntiForgeryToken]
+    //public async Task<IActionResult> PasswordRecovery(PasswordRecoveryViewModel model)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        var user = await _userManager.FindByEmailAsync(model.Email);
 
-//        }
+    //        if (user != null)
+    //        {
+    //            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+    //            var resetLink = _urlHelper.Action("ResetPassword", "Users", new { email = user.Email, token = token }, Request.Scheme);
+    //            var encodedResetLink = HtmlEncoder.Default.Encode(resetLink);
 
-//        ModelState.AddModelError(string.Empty, "Email inválido.");
-//        return View(model);
-//    }
+    //            await _passwordRecoveryService.SendEmailAsync(model.Email, "Recuperação de senha", "Equipe de suporte", "gst203002@gmail.com", $"Clique no link para redefinir sua senha: {encodedResetLink}");
 
-//    [HttpGet]
-//    [AllowAnonymous]
-//    public async Task<IActionResult> PasswordRecoveryConfirmation()
-//    {
-//       return View();   
-//    }
+    //            return RedirectToAction("PasswordRecoveryConfirmation");
+    //        }
+    //    }
 
-//    [HttpPost]
-//    [AllowAnonymous]
-//    [ValidateAntiForgeryToken]
-//    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
-//    {
-//        if (ModelState.IsValid)
-//        {
-//            var user = await _userManager.FindByEmailAsync(model.Email);
+    //    ModelState.AddModelError(string.Empty, "Email inválido.");
+    //    return Ok();
+    //}
 
-//            if (user == null)
-//            {
-//                return RedirectToAction("PasswordResetError");
-//            }
+    //[HttpGet]
+    //[AllowAnonymous]
+    //public async Task<IActionResult> ResetPassword(string email, string token)
+    //{
+    //    var user = await _userManager.FindByEmailAsync(email);
+    //    var isTokenValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
 
-//            var isTokenValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", model.Token);
+    //    if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+    //    {
+    //        return RedirectToAction("PasswordResetError", new { error = "Usuário ou token inválido." });
+    //    }
 
-//            if (!isTokenValid)
-//            {
-//                return RedirectToAction("PasswordResetError");
-//            }
+    //    if (user == null)
+    //        return RedirectToAction("PasswordResetError", new { error = "Usuário não encontrado." });
 
-//            var resetResult = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+    //    if (!isTokenValid)
+    //    {
+    //        return RedirectToAction("PasswordResetError", new { error = "Token inválido." });
+    //    }
 
-//            if (resetResult.Succeeded)
-//            {
-//                await _signInManager.SignInAsync(user, isPersistent: false);
-//                return RedirectToAction("Index", "Home");
-//            }
-//            else
-//            {
-//                foreach (var error in resetResult.Errors)
-//                {
-//                    ModelState.AddModelError(string.Empty, error.Description);
-//                }
-
-//                return View(model);
-//            }
-//        }
-
-//        return View(model);
-//    }
-
-
-//    [HttpGet]
-//    [AllowAnonymous]
-//    public async Task<IActionResult> ResetPassword(string email, string token)
-//    {
-//        var user = await _userManager.FindByEmailAsync(email);
-//        var isTokenValid = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
-
-//        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
-//        {
-//            return RedirectToAction("PasswordResetError", new { error = "Usuário ou token inválido." });
-//        }
-
-//        if (user == null)
-//            return RedirectToAction("PasswordResetError", new { error = "Usuário não encontrado." });
-
-//        if (!isTokenValid)
-//        {
-//            return RedirectToAction("PasswordResetError", new { error = "Token innválido." });
-//        }
-
-//        return View();
-//    }
-
-//    [HttpGet]
-//    [AllowAnonymous]
-//    public IActionResult PasswordResetError()
-//    {
-//        return View();
-//    }
-
-//}
-
-
+    //    return Ok();
+    
+}

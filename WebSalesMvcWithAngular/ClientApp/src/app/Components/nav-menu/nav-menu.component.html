@@ -25,8 +25,12 @@
               [routerLinkActiveOptions]="{ exact: true }">
             <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
           </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/salesRecords']">Vendas</a>
+
+          <button class="nav-link text-dark" mat-button [matMenuTriggerFor]="salesMenu">Vendas</button>
+          <mat-menu #salesMenu="matMenu">
+            <button mat-menu-item [routerLink]="['/salesRecords/toInvoice']">Vendas pendentes</button>
+            <button mat-menu-item [routerLink]="['/salesRecords']">Todas as vendas</button>
+          </mat-menu>
 
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/departments']">Lojas</a>

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './Components/home/home.component';
-
 import { IndexDepartmentComponent } from './Components/Department/index/index-department.component';
 import { CreateDepartmentComponent } from './Components/Department/create/create-department.component';
 import { EditDepartmentComponent } from './Components/Department/edit/edit-department.component';
@@ -25,48 +24,54 @@ import { DeleteSalesRecordComponent } from './Components/SalesRecord/delete/dele
 import { CreateSalesRecordComponent } from './Components/SalesRecord/create/create-sales-record.component';
 import { EditSalesRecordComponent } from './Components/SalesRecord/edit/edit-sales-record.component';
 import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/details-sales-record.component';
+import { toInvoiceSalesRecordComponent } from './Components/SalesRecord/toInvoice/toInvoice-sales-record.component';
 
+import { LoginComponent } from './Components/Login/login.component';
+import { AuthGuard } from './AuthGuard/auth.guard';
+import { RegisterComponent } from './Components/Register/register.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 
-  { path: '', component: HomeComponent, pathMatch: 'full' },
+  // Home route
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
 
-  //DEPARTMENT ROUTES *----------------------------------------------------------*
-  { path: 'departments', component: IndexDepartmentComponent },
-  { path: 'departments/create', component: CreateDepartmentComponent },
-  { path: 'departments/edit/:id', component: EditDepartmentComponent },
-  { path: 'departments/delete/:id', component: DeleteDepartmentComponent },
-  { path: 'departments/details/:id', component: DetailsDepartmentComponent },
-  // *----------------------------------------------------------------------------*
+  // Department routes
+  { path: 'departments', component: IndexDepartmentComponent, canActivate: [AuthGuard] },
+  { path: 'departments/create', component: CreateDepartmentComponent, canActivate: [AuthGuard] },
+  { path: 'departments/edit/:id', component: EditDepartmentComponent, canActivate: [AuthGuard] },
+  { path: 'departments/delete/:id', component: DeleteDepartmentComponent, canActivate: [AuthGuard] },
+  { path: 'departments/details/:id', component: DetailsDepartmentComponent, canActivate: [AuthGuard] },
 
-  //PRODUCT ROUTES *--------------------------------------------------------------*
-  { path: 'products', component: IndexProductComponent },
-  { path: 'products/create', component: CreateProductComponent },
-  { path: 'products/edit/:id', component: EditProductComponent },
-  { path: 'products/delete/:id', component: DeleteProductComponent },
-  { path: 'products/details/:id', component: DetailsProductComponent },
-  // *----------------------------------------------------------------------------*
+  // Product routes
+  { path: 'products', component: IndexProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/create', component: CreateProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/edit/:id', component: EditProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/delete/:id', component: DeleteProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/details/:id', component: DetailsProductComponent, canActivate: [AuthGuard] },
 
-  //CATEGORY ROUTES *-------------------------------------------------------------*
-  { path: 'categories', component: IndexCategoryComponent },
-  { path: 'categories/create', component: CreateCategoryComponent },
-  { path: 'categories/edit/:id', component: EditCategoryComponent },
-  { path: 'categories/delete/:id', component: DeleteCategoryComponent },
+  // Category routes
+  { path: 'categories', component: IndexCategoryComponent, canActivate: [AuthGuard] },
+  { path: 'categories/create', component: CreateCategoryComponent, canActivate: [AuthGuard] },
+  { path: 'categories/edit/:id', component: EditCategoryComponent, canActivate: [AuthGuard] },
+  { path: 'categories/delete/:id', component: DeleteCategoryComponent, canActivate: [AuthGuard] },
 
-  // *------------------------------------------------------------------------------*
+  // Sales record routes
+  { path: 'salesRecords', component: IndexSalesRecordComponent, canActivate: [AuthGuard] },
+  { path: 'salesRecords/create', component: CreateSalesRecordComponent, canActivate: [AuthGuard] },
+  { path: 'salesRecords/edit/:id', component: EditSalesRecordComponent, canActivate: [AuthGuard] },
+  { path: 'salesRecords/delete/:id', component: DeleteSalesRecordComponent, canActivate: [AuthGuard] },
+  { path: 'salesRecords/details/:id', component: DetailsSalesRecordComponent, canActivate: [AuthGuard] },
+  { path: 'salesRecords/toInvoice', component: toInvoiceSalesRecordComponent, canActivate: [AuthGuard] },
 
-  //SALES RECORDS ROUTES *----------------------------------------------------------*
-  { path: 'salesRecords', component: IndexSalesRecordComponent },
-  { path: 'salesRecords/create', component: CreateSalesRecordComponent },
-  { path: 'salesRecords/edit/:id', component: EditSalesRecordComponent },
-  { path: 'salesRecords/delete/:id', component: DeleteSalesRecordComponent },
-  { path: 'salesRecords/details/:id', component: DetailsSalesRecordComponent }
-  // *------------------------------------------------------------------------------*
+  // Login routes
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true }),],
-  exports: [RouterModule],
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

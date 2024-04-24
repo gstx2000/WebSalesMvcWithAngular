@@ -1,0 +1,37 @@
+<button mat-raised-button [routerLink]="['/salesRecords/create']" class="btn btn-default">Nova venda</button>
+<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="salesRecordsDataSource" matSort>
+
+  <ng-container matColumnDef="date">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{ item.date | date:'dd/MM/yyyy HH:mm':'UTC' }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="amount">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Valor</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{ item.amount | currency:'BRL':'symbol':'1.2-2'}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{ getSaleStatusName(item.status) }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let item">
+      <button mat-raised-button [routerLink]="['/salesRecords/details', item.id]" class="btn btn-default">Detalhes</button>
+      <button mat-raised-button [routerLink]="['/departments/edit', item.id]" class="btn btn-default">Editar</button>
+      <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="['date', 'amount', 'status', 'actions']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['date', 'amount', 'status', 'actions'];"></mat-row>
+
+</mat-table>
+<mat-paginator [pageSizeOptions]="[5, 10, 20]"
+               showFirstLastButtons
+               [length]="totalItems">
+</mat-paginator>

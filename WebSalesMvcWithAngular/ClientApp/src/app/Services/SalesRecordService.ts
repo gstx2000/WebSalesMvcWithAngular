@@ -37,6 +37,19 @@ export class SalesRecordService {
       );
   }
 
+  getSalesRecordsToInvoice(page: number = 1, pageSize: number = 10): Observable<PagedResult<SalesRecordDTO>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+    return this.http.get<PagedResult<SalesRecordDTO>>(`${environment.apiUrl}/${this.url}/get-salesrecords-to-invoice`, { params })
+      .pipe(
+        catchError((error: any) => {
+          console.error('Erro HTTP:', error);
+          return throwError(error);
+        })
+      );
+  }
+
   async getSalesRecordById(id: number): Promise<Observable<SalesRecord>> {
     return this.http.get<SalesRecord>(`${environment.apiUrl}/${this.url}/get-salesrecord/${id}`)
       .pipe(
