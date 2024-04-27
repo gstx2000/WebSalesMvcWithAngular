@@ -11,6 +11,6 @@ namespace WebSalesMvcWithAngular.Services.Interfaces
         Task InsertAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
-        Task<List<Product>> FindByNameAsync(string productName, int? categoryId);
+        Task<List<Product>> FindByNameAsync(string productName, int? categoryId = null);
     }
 }

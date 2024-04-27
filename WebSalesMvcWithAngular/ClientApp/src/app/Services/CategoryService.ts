@@ -49,7 +49,6 @@ export class CategoryService {
     }
   }
 
-
   async updateCategory(id: number, category: Category): Promise<Observable<HttpEvent<Category>>> {
     try {
       const options = await this.auth.getOptions();

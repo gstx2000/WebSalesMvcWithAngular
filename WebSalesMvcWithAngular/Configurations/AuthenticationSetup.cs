@@ -65,7 +65,6 @@ namespace WebSalesMvcWithAngular.Configurations
              {
                  options.TokenValidationParameters = tokenValidationParameters;
              });
-
         }
     }
 }

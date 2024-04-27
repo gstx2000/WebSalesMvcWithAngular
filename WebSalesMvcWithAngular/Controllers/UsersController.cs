@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebSalesMvcWithAngular.DTOs.Requests;
-using WebSalesMvcWithAngular.Services;
 using WebSalesMvcWithAngular.Services.Interfaces;
 
 [Authorize]
@@ -73,6 +72,10 @@ public class UsersController : ControllerBase
             else if (result.Errors.Count > 0)
             {
                 return BadRequest(result);
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
         }
         return StatusCode(StatusCodes.Status500InternalServerError);

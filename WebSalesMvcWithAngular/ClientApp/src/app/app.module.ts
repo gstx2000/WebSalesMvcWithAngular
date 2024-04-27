@@ -3,7 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientXsrfModule } from '@angular/common/http';
-import * as jwt_decode from 'jwt-decode';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpInterceptorService } from './AuthGuard/HttpInterceptor/http-interceptor.service';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -129,10 +130,10 @@ import { RegisterComponent } from './Components/Register/register.component';
     MatPaginatorModule,
     MatMenuModule,
     ToastrModule.forRoot(),
-    
   ],
   providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService,
-    SalesRecordService, AlertService, LoginService],
+    SalesRecordService, AlertService, LoginService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

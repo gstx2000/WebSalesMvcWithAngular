@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services.Exceptions;
@@ -7,6 +8,7 @@ using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentsController : ControllerBase
@@ -32,15 +34,15 @@ namespace WebSalesMvc.Controllers
 
                 return Ok(departments);
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
                 return NotFound("Nenhum departamento encontrado.");
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
@@ -67,11 +69,11 @@ namespace WebSalesMvc.Controllers
                 return Ok(department);
 
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação. ");
             }
@@ -99,11 +101,11 @@ namespace WebSalesMvc.Controllers
                     return UnprocessableEntity(ModelState);
                 }
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação");
             }
@@ -146,11 +148,11 @@ namespace WebSalesMvc.Controllers
                     return UnprocessableEntity(ModelState);
                 }
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
@@ -172,11 +174,11 @@ namespace WebSalesMvc.Controllers
             {
                 return NotFound("Departmento não encontrado.");
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }

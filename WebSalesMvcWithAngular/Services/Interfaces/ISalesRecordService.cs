@@ -16,6 +16,9 @@ namespace WebSalesMvcWithAngular.Services.Interfaces
        
         Task<SalesRecord> FindByIdAsync(int? id);
 
+        Task<(List<SalesRecord> Results, int TotalCount)> FindAlltoInvoiceAsync(int pageNumber = 1, int pageSize = 10);
+
+
 
     }
 }

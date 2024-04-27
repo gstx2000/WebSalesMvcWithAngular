@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
@@ -10,6 +11,8 @@ using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Controllers
 {
+    [Authorize]
+    [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
@@ -42,15 +45,15 @@ namespace WebSalesMvc.Controllers
 
                 return Ok(products);
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
                 return NotFound("Nenhuma categoria encontrada.");
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
@@ -91,15 +94,15 @@ namespace WebSalesMvc.Controllers
 
                 return Ok(result);
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)        
             {
                 return NotFound("Nenhum produto encontrada.");
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
@@ -126,11 +129,11 @@ namespace WebSalesMvc.Controllers
                 return Ok(product);
 
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação. ");
             }
@@ -192,11 +195,11 @@ namespace WebSalesMvc.Controllers
                     return UnprocessableEntity(ModelState);
                 }
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação");
             }
@@ -239,11 +242,11 @@ namespace WebSalesMvc.Controllers
                     return UnprocessableEntity(ModelState);
                 }
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
@@ -264,21 +267,26 @@ namespace WebSalesMvc.Controllers
             {
                 return NotFound("Produto não encontrada.");
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
         }
 
-        [HttpGet("get-product/{productName}/{categoryId?}")]
-        public async Task<IActionResult> GetProductByName(string productName, int? categoryId)
+        [HttpGet("get-product-by-name/{productName}/{categoryId?}")]
+        public async Task<IActionResult> GetProductByName(string productName, int? categoryId = null)
         {
             var products = await _productService.FindByNameAsync(productName, categoryId);
-            
+
+            if (products == null || products.Count == 0)
+            {
+                return NotFound();
+            }
+
             var productDtos = products.Select(p => new ProductDTO
             {
                 Id = p.Id,
@@ -289,11 +297,6 @@ namespace WebSalesMvc.Controllers
                 CategoryId = p.CategoryId,
                 DepartmentId = p.DepartmentId
             }).ToList();
-
-            if (products == null || products.Count == 0)
-            {
-                return NotFound();
-            }
 
             return Ok(productDtos);
         }

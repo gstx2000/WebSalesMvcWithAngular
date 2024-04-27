@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import * as jwt_decode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -53,16 +52,8 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    const JWTtoken = localStorage.getItem('JWTtoken');
-    if (!JWTtoken) {
+
       return false;
-    }
-    try {
-      const decodedToken: any = jwt_decode(JWTtoken);
-      decodedToken
-    } catch {
 
-    }
   }
-
 }

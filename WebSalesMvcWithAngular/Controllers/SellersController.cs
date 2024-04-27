@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -6,8 +7,9 @@ using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
 
-namespace WebSalesMvc.Controllers 
-{    
+namespace WebSalesMvc.Controllers
+{
+    [Authorize]
     [Route("api/[controller]")]
     public class SellersController : Controller
     {

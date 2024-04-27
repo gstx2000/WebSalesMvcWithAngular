@@ -86,7 +86,6 @@ namespace WebSalesMvcWithAngular.Services
         {
             //*This function is supposed to return a LoginUserResponse always
             //The GenerateJWTToken returns it authenticated with the JWT.
-
             var loginUserResponse = new LoginUserResponse(false);
 
             var result = await _signInManager.PasswordSignInAsync(loginRequest.Email, loginRequest.Password, false, false);
@@ -96,7 +95,6 @@ namespace WebSalesMvcWithAngular.Services
                 var jwtResponse = await GenerateJWTToken(loginRequest.Email);
                 return jwtResponse;
             }
-
             if (!result.Succeeded) {
                 if (result.IsLockedOut)
                 {

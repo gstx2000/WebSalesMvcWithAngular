@@ -1,4 +1,4 @@
-import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, shareReplay, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -6,6 +6,8 @@ import { AuthService } from './AuthService';
 import { Product } from '../Models/Product';
 import { PagedResult } from '../Models/PagedResult';
 import { ProductDTO } from '../DTOs/ProductDTO';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +15,8 @@ import { ProductDTO } from '../DTOs/ProductDTO';
 export class ProductService {
   private url = 'Products';
   applicationUrl = 'https://localhost:7135/api';
-  constructor(private http: HttpClient, private auth: AuthService) { }
+  constructor(private http: HttpClient, private auth: AuthService,
+    private toastr: ToastrService, private router: Router) { }
 
 
   getProducts(): Observable<Product[]> {
@@ -100,7 +103,7 @@ export class ProductService {
   }
 
   searchProductsByName(searchTerm: string, categoryId?: number | null): Observable<ProductDTO[]> {
-    const url = `${environment.apiUrl}/${this.url}/get-product/${searchTerm}${categoryId !== null && categoryId !== undefined ? `/${categoryId}` : ''}`;
+    const url = `${environment.apiUrl}/${this.url}/get-product-by-name/${searchTerm}${categoryId !== null && categoryId !== undefined ? `/${categoryId}` : ''}`;
 
     return this.http.get<ProductDTO[]>(url)
       .pipe(
@@ -110,6 +113,4 @@ export class ProductService {
         })
       );
   }
-
-
 }

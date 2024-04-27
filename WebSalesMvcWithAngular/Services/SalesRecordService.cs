@@ -60,6 +60,25 @@ namespace WebSalesMvc.Services
                 .ToListAsync();
         }
 
+        public async Task<(List<SalesRecord> Results, int TotalCount)> FindAlltoInvoiceAsync(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber <= 0 || pageSize <= 0)
+                throw new ArgumentException("Número de página deve ser maior que 0");
+
+            int totalCount = await _context.SalesRecord
+                                           .Where(x => x.Status == 0)
+                                           .CountAsync();
+
+            var results = await _context.SalesRecord
+                                        .Include(x => x.SoldProducts)
+                                        .Where(x => x.Status == 0)
+                                        .OrderByDescending(x => x.Date)
+                                        .Skip((pageNumber - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToListAsync();
+            return (results, totalCount);
+        }
+
         public async Task<List<IGrouping<Department, SalesRecord>>> FindByDateGroupingAsync(DateTime? minDate, DateTime? maxDate)
         {
             var result = from obj in _context.SalesRecord select obj;

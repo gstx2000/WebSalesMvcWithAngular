@@ -69,6 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\app\AuthGuard\HttpInterceptor\" />
     <Folder Include="ClientApp\src\app\Components\Category\create\" />
     <Folder Include="ClientApp\src\app\Components\Category\edit\" />
     <Folder Include="ClientApp\src\app\Components\Category\delete\" />

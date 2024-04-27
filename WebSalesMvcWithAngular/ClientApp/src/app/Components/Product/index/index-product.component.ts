@@ -129,7 +129,7 @@ export class IndexProductComponent implements OnInit, OnDestroy {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((searchTerm: string) => {
-        const categoryId = this.searchForm.get('category')?.value;
+        var categoryId = this.searchForm.get('category')?.value;
         if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
           return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
             takeUntil(this.destroy$),
@@ -140,7 +140,6 @@ export class IndexProductComponent implements OnInit, OnDestroy {
                 console.error('Erro ao buscar produtos:', error);
                 this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
                 throw error;
-
               }
             })
           );

@@ -63,7 +63,7 @@ public class ProductService: IProductService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Product>> FindByNameAsync(string productName, int? categoryId)
+    public async Task<List<Product>> FindByNameAsync(string productName, int? categoryId = null)
     {
         var query = _context.Product
             .Where(p => EF.Functions.Like(p.Name, $"%{productName}%"));

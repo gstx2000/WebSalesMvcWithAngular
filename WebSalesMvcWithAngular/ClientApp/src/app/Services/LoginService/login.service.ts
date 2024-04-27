@@ -24,7 +24,6 @@ export class LoginService {
             const token = response.token; 
             if (token) {
               console.log(token)
-
               this.auth.saveToken(token);
             }
           }

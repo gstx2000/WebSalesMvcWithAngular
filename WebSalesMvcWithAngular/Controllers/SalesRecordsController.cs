@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
@@ -11,6 +12,7 @@ using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class SalesRecordsController : ControllerBase
     {
@@ -20,7 +22,7 @@ namespace WebSalesMvc.Controllers
         private readonly IProductService _productService;
         private readonly ILogger<SalesRecordsController> _logger;
         public SalesRecordsController(WebSalesMvcContext context,
-            ISalesRecordService salesRecordService, SellerService sellerService, IProductService productService, 
+            ISalesRecordService salesRecordService, SellerService sellerService, IProductService productService,
             ILogger<SalesRecordsController> logger)
         {
             _context = context;
@@ -45,20 +47,20 @@ namespace WebSalesMvc.Controllers
 
                 return Ok(sales);
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
                 return NotFound("Nenhuma categoria encontrada.");
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
         }
-       
+
         [HttpGet("{id}")]
         [Route("get-salesrecord/{id}")]
         public async Task<ActionResult> GetSaleById(int? id)
@@ -80,26 +82,25 @@ namespace WebSalesMvc.Controllers
                 return Ok(sale);
 
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação. ");
             }
         }
-    
 
         [HttpGet]
-        [Route("get-salesrecords-paginated")]
-        public async Task<ActionResult<PagedResult<SalesRecord>>> GetSalesRecordPaginated([FromQuery] int page = 1, 
-        [FromQuery] int pageSize = 10)
+        [Route("get-salesrecords-to-invoice")]
+        public async Task<ActionResult<PagedResult<SalesRecord>>> GetSalesRecordToInvoice([FromQuery] int page = 1,
+         [FromQuery] int pageSize = 10)
         {
             try
             {
-                var salesRecords = await _salesRecordService.FindAllPaginatedAsync(page, pageSize);
-                var totalItems = await _salesRecordService.CountAllAsync();
+                var (salesRecords, totalItems) = await _salesRecordService.FindAlltoInvoiceAsync(page, pageSize);
+
                 var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
                 var salesRecordDtos = salesRecords.Select(p => new SalesRecordDTO
@@ -135,6 +136,56 @@ namespace WebSalesMvc.Controllers
                 return Unauthorized("Sem autorização.");
             }
             catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
+
+
+        [HttpGet]
+        [Route("get-salesrecords-paginated")]
+        public async Task<ActionResult<PagedResult<SalesRecord>>> GetSalesRecordPaginated([FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var salesRecords = await _salesRecordService.FindAllPaginatedAsync(page, pageSize);
+                var totalItems = await _salesRecordService.CountAllAsync();
+                var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+                var salesRecordDtos = salesRecords.Select(p => new SalesRecordDTO
+                {
+                    Id = p.Id,
+                    Status = p.Status,
+                    Amount = p.Amount,
+                    Date = p.Date
+                }).ToList();
+
+                var result = new PagedResult<SalesRecordDTO>
+                {
+                    items = salesRecordDtos,
+                    page = page,
+                    pageSize = pageSize,
+                    totalItems = totalItems,
+                    totalPages = totalPages
+                };
+
+                if (result.items.Count == 0)
+                {
+                    return NoContent();
+                }
+
+                return Ok(result);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound("Nenhuma categoria encontrada.");
+            }
+            catch (UnauthorizedException)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
@@ -186,11 +237,11 @@ namespace WebSalesMvc.Controllers
                     return UnprocessableEntity(ModelState);
                 }
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação");
             }
@@ -235,11 +286,11 @@ namespace WebSalesMvc.Controllers
                     return UnprocessableEntity(ModelState);
                 }
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }
@@ -260,11 +311,11 @@ namespace WebSalesMvc.Controllers
             {
                 return NotFound("Venda não encontrada.");
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro interno da aplicação.");
             }

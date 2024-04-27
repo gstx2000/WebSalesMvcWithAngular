@@ -77,7 +77,7 @@ export class IndexCategoryComponent implements OnInit {
 
       },
       (error) => {
-        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
+        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente');
         console.error('Erro ao carregar produtos:', error);
       }
     );

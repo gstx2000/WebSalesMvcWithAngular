@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using WebSalesMvcWithAngular.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using WebSalesMvcWithAngular.Services;
 using WebSalesMvcWithAngular.Configurations;
+using WebSalesMvcWithAngular.Configurations.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,9 +54,8 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
-
 /*-----------------------------------------------------------------------------------------------------------------------*/
-                                                             /*COOKIE CONFIGURATIONS*/
+                                             /*COOKIE CONFIGURATIONS*/
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
 
@@ -75,7 +74,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
-                                              /*DB context/Identity context and connection configuration*/
+                                     /*DB context/Identity context and connection configuration*/
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
 /*MODELS SCHEMA*/
@@ -84,10 +83,7 @@ builder.Services.AddDbContext<WebSalesMvcContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("ConnString");
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 34)));
-
 });
-
-
 
 /*USERS SCHEMA*/
 
@@ -95,7 +91,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("ConnString");
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 34)));
-
 });
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
@@ -136,6 +131,10 @@ builder.Services.AddSingleton<JwtOptions>(sp =>
     return jwtOptions;
 });
 
+builder.Services.AddSingleton<JWTValidator>();
+builder.Services.AddSingleton<ValidateRequests>();
+
+
 builder.Services.AddMvc(config =>
 {
     var policy = new AuthorizationPolicyBuilder()
@@ -169,11 +168,19 @@ var localizationOptions = new RequestLocalizationOptions
     .PersistKeysToFileSystem((new DirectoryInfo(@"C:\Users\gst20\OneDrive\Área de Trabalho\SalesWebAngular\WebSalesMvcWithAngular\WebSalesMvcWithAngular/keys")));*/
 
 var app = builder.Build();
-
-app.UseRouting();
-app.UseAuthentication(); 
-app.UseAuthorization();
 app.UseCors("AllowAllOrigins");
+app.UseRouting();
+app.UseAuthentication();
+app.UseWhen(
+      context => !(context.Request.Path.StartsWithSegments("/api/Users/login") ||
+                   context.Request.Path.StartsWithSegments("/api/Tokens/antiforgery-token") ||
+                   context.Request.Path.StartsWithSegments("/api/Users/register")),
+      appBuilder =>
+      {
+          appBuilder.UseMiddleware<JWTValidator>();
+      }
+  );
+app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
