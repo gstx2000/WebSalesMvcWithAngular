@@ -16,7 +16,6 @@ namespace WebSalesMvcWithAngular.Configurations.Middlewares
             _jwtOptions = jwtOptions.Value;
             _logger = logger;
         }
-
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             string authHeader = context.Request.Headers["Authorization"];
@@ -28,7 +27,11 @@ namespace WebSalesMvcWithAngular.Configurations.Middlewares
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var jwtToken = tokenHandler.ReadJwtToken(token);
 
-                    if (!_validator.ValidateSignature(token, _jwtOptions, out jwtToken, _conf))
+                    if (_validator.ValidateSignature(token, _jwtOptions, out jwtToken, _conf))
+                    {
+                        await next(context);
+
+                    } else
                     {
                         context.Response.StatusCode = 401;
                         return;
@@ -37,12 +40,10 @@ namespace WebSalesMvcWithAngular.Configurations.Middlewares
                 catch (Exception)
                 {
                     context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Invalid token.");
+                    await context.Response.WriteAsync("Token inválido ou expirado.");
                     return;
                 }
             }
-               await next(context);
-            
         }
     }
 }

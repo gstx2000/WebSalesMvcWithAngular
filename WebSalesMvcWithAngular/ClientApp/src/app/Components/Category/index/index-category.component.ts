@@ -59,7 +59,6 @@ export class IndexCategoryComponent implements OnInit {
         this.loadingService.hideLoading();
       },
       (error) => {
-        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
         console.error('Erro ao carregar os dados:', error);
         this.loadingService.hideLoading();
       }

@@ -100,16 +100,6 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
 
     });
 
-    this.searchControl?.disable({ onlySelf: true, emitEvent: false });
-
-    this.searchForm.get('category')?.valueChanges.subscribe(value => {
-      if (value === null) {
-        this.searchControl?.disable({ onlySelf: true, emitEvent: false });
-      } else {
-        this.searchControl.enable({ onlySelf: true, emitEvent: false });
-      }
-    });
-
     this.searchForm.get('quantity')?.valueChanges.subscribe(value => {
       if (value === null || value == 0) {
         this.searchControl?.disable({ onlySelf: true, emitEvent: false });

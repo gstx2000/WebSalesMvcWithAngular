@@ -18,5 +18,8 @@ namespace WebSalesMvcWithAngular.DTOs.Requests
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Senhas estão diferentes, tente novamente.")]
         public required string ConfirmPassword { get; set; }
+
+        public string? RecoveryToken { get; set; }
+
     }
 }

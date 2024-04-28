@@ -34,8 +34,6 @@ export class IndexDepartmentComponent implements OnInit {
       },
       (error) => {
         console.error('Erro ao carregar departamentos:', error);
-        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
-
         this.loadingService.hideLoading();
       },
       () => {

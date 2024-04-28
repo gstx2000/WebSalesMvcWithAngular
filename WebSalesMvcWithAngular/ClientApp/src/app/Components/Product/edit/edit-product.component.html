@@ -5,7 +5,6 @@
       <mat-label for="id">ID</mat-label>
       <input matInput type="number" id="id" formControlName="id">
     </mat-form-field>
-
     <br />
 
     <mat-form-field appearance="outline">
@@ -14,27 +13,22 @@
     </mat-form-field>
 
     <br />
-
-
     <mat-form-field appearance="outline">
       <mat-label for="price">Preço</mat-label>
       <input matInput type="number" id="price" formControlName="price" required>
     </mat-form-field>
-
     <br />
 
     <mat-form-field appearance="outline">
       <mat-label for="description">Descrição</mat-label>
       <input matInput type="text" id="description" formControlName="description">
     </mat-form-field>
-
     <br />
 
     <mat-form-field appearance="outline">
       <mat-label for="imageUrl">Imagem</mat-label>
       <input matInput type="text" id="imageUrl" formControlName="imageUrl">
     </mat-form-field>
-
     <br />
 
     <mat-form-field appearance="outline" >
@@ -43,7 +37,6 @@
         <mat-option *ngFor="let department of departments$ | async" [value]=department.id>{{ department.name }}</mat-option>
       </mat-select>
     </mat-form-field>
-
     <br />
 
     <mat-form-field appearance="outline">

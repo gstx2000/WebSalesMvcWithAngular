@@ -106,8 +106,9 @@ export class IndexProductComponent implements OnInit, OnDestroy {
         this.products = empData;
         this.productsDataSource = new MatTableDataSource(this.products);
         this.productsDataSource.sort = this.sort;
-
+        this.loadingService.hideLoading();
       }, null, () => {
+        this.loadingService.hideLoading();
       });
   }
 

@@ -120,7 +120,7 @@ namespace WebSalesMvcWithAngular.Services
             var user = await _userManager.FindByEmailAsync(email);
             var tokenClaims = await GetClaims(user);
 
-            var expireDate = DateTime.Now.AddHours(_jwtOptions.ExpirationDate);
+            var expireDate = DateTime.Now.AddMinutes(_jwtOptions.ExpirationDate);
 
             var jwt = new JwtSecurityToken(
 
@@ -138,7 +138,6 @@ namespace WebSalesMvcWithAngular.Services
                 token: token,
                 expireDate: expireDate
                 );
-
         }
         public async Task<List<Claim>> GetClaims(IdentityUser user)
         {

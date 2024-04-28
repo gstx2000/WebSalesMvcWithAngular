@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\services\\identityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\services\\identityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\services\\productservice.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\services\\productservice.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\product\\edit\\edit-product.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\product\\edit\\edit-product.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\authguard\\httpinterceptor\\http-interceptor.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\authguard\\httpinterceptor\\http-interceptor.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,50 +22,60 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "http-interceptor.service.ts",
-              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\AuthGuard\\HttpInterceptor\\http-interceptor.service.ts",
-              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\AuthGuard\\HttpInterceptor\\http-interceptor.service.ts",
-              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\AuthGuard\\HttpInterceptor\\http-interceptor.service.ts",
-              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\AuthGuard\\HttpInterceptor\\http-interceptor.service.ts",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAABAAAA",
+              "DocumentIndex": 0,
+              "Title": "redefine-password.component.ts",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
+              "ViewState": "AQIAABkAAAAAAAAAAAAQwCAAAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2024-04-27T20:30:07.817Z",
+              "WhenOpened": "2024-04-28T18:27:20.898Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ProductService.ts",
-              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Services\\ProductService.ts",
-              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Services\\ProductService.ts",
-              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Services\\ProductService.ts",
-              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Services\\ProductService.ts",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAHIAAAADAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2024-04-27T20:28:49.807Z",
+              "Title": "edit-product.component.html",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-28T18:25:57.514Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "IdentityService.cs",
-              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\Services\\IdentityService.cs",
-              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\Services\\IdentityService.cs",
-              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\Services\\IdentityService.cs",
-              "RelativeToolTip": "WebSalesMvcWithAngular\\Services\\IdentityService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAA/AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-27T20:22:32.487Z",
+              "DocumentIndex": 2,
+              "Title": "redefine-password.component.html",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-28T17:10:12.027Z",
               "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             }
           ]
         }

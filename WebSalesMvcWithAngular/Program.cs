@@ -174,7 +174,9 @@ app.UseAuthentication();
 app.UseWhen(
       context => !(context.Request.Path.StartsWithSegments("/api/Users/login") ||
                    context.Request.Path.StartsWithSegments("/api/Tokens/antiforgery-token") ||
-                   context.Request.Path.StartsWithSegments("/api/Users/register")),
+                   context.Request.Path.StartsWithSegments("/api/Users/register") ||
+                   context.Request.Path.StartsWithSegments("/api/Users/password-recovery") ||
+                   context.Request.Path.StartsWithSegments("/api/Users/reset-password")),
       appBuilder =>
       {
           appBuilder.UseMiddleware<JWTValidator>();

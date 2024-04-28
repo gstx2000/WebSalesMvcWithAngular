@@ -26,9 +26,11 @@ import { EditSalesRecordComponent } from './Components/SalesRecord/edit/edit-sal
 import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/details-sales-record.component';
 import { toInvoiceSalesRecordComponent } from './Components/SalesRecord/toInvoice/toInvoice-sales-record.component';
 
-import { LoginComponent } from './Components/Login/login.component';
 import { AuthGuard } from './AuthGuard/auth.guard';
-import { RegisterComponent } from './Components/Register/register.component';
+import { RegisterComponent } from './Components/UserLogin/Register/register.component';
+import { LoginComponent } from './Components/UserLogin/Login/login.component';
+import { PasswordRecoveryComponent } from './Components/UserLogin/PasswordRecovery/PasswordRecovery.component';
+import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecovery/RedefinePassword/redefine-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -67,6 +69,8 @@ const routes: Routes = [
   // Login routes
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'password-recovery', component: PasswordRecoveryComponent },
+  { path: 'redefine-password', component: RedefinePasswordComponent },
 
 ];
 

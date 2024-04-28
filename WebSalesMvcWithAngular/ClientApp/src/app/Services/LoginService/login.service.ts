@@ -55,4 +55,34 @@ export class LoginService {
       return throwError(error);
     }
   }
+  async passwordRecovery(email: string): Promise<Observable<HttpEvent<string>>> { 
+    try {
+      const options = await this.auth.getOptions();
+      return await this.http.post<string>(`${environment.apiUrl}/${this.url}/password-recovery`, { email: email }, options)
+        .pipe(
+          catchError((error: any) => {
+            console.error('Erro HTTP:', error);
+            return throwError(error);
+          })
+        );
+    } catch (error) {
+      return throwError(error);
+    }
+  }
+
+  async redefinePassword(user: User): Promise<Observable<HttpEvent<string>>> {
+    try {
+      user.username = user.email;
+      const options = await this.auth.getOptions();
+      return await this.http.post<string>(`${environment.apiUrl}/${this.url}/reset-password`, user, options)
+        .pipe(
+          catchError((error: any) => {
+            console.error('Erro HTTP:', error);
+            return throwError(error);
+          })
+        );
+    } catch (error) {
+      return throwError(error);
+    }
+  }
 }

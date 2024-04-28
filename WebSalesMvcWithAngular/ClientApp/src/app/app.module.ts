@@ -67,9 +67,12 @@ import { DepartmentService } from './Services/DepartmentService';
 import { AlertService } from './Services/AlertService';
 import { AlertDialogComponent } from './Components/GlobalAlert/alert-dialog/alert-dialog.component';
 import { DetailsSalesRecordComponent } from './Components/SalesRecord/details/details-sales-record.component';
-import { LoginComponent } from './Components/Login/login.component';
 import { LoginService } from './Services/LoginService/login.service';
-import { RegisterComponent } from './Components/Register/register.component';
+import { RegisterComponent } from './Components/UserLogin/Register/register.component';
+import { LoginComponent } from './Components/UserLogin/Login/login.component';
+import { PasswordRecoveryComponent } from './Components/UserLogin/PasswordRecovery/PasswordRecovery.component';
+import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecovery/RedefinePassword/redefine-password.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -100,6 +103,8 @@ import { RegisterComponent } from './Components/Register/register.component';
     DetailsSalesRecordComponent,
     LoginComponent,
     RegisterComponent,
+    PasswordRecoveryComponent,
+    RedefinePasswordComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -74,7 +74,8 @@
     <Folder Include="ClientApp\src\app\Components\Category\edit\" />
     <Folder Include="ClientApp\src\app\Components\Category\delete\" />
     <Folder Include="ClientApp\src\app\Components\GlobalLoading\" />
-    <Folder Include="ClientApp\src\app\Components\Register\" />
+    <Folder Include="ClientApp\src\app\Components\UserLogin\PasswordRecovery\RedefinePassword\" />
+    <Folder Include="ClientApp\src\app\Components\UserLogin\Register\" />
     <Folder Include="ClientApp\src\app\Components\Product\create\" />
     <Folder Include="ClientApp\src\app\Components\Product\edit\" />
     <Folder Include="ClientApp\src\app\Components\Product\delete\" />
