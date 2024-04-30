@@ -72,6 +72,9 @@ namespace WebSalesMvcWithAngular.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<double?>("AcquisitionCost")
+                        .HasColumnType("double");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -83,6 +86,18 @@ namespace WebSalesMvcWithAngular.Migrations
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
+
+                    b.Property<double?>("InventoryCost")
+                        .HasColumnType("double");
+
+                    b.Property<double?>("InventoryQuantity")
+                        .HasColumnType("double");
+
+                    b.Property<int>("InventoryUnitMeas")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("MinimumInventoryQuantity")
+                        .HasColumnType("double");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -247,8 +262,8 @@ namespace WebSalesMvcWithAngular.Migrations
 
             modelBuilder.Entity("WebSalesMvcWithAngular.Models.SoldProduct", b =>
                 {
-                    b.HasOne("WebSalesMvc.Models.Product", null)
-                        .WithMany("SoldProducts")
+                    b.HasOne("WebSalesMvc.Models.Product", "Product")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -256,6 +271,8 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.HasOne("WebSalesMvc.Models.SalesRecord", null)
                         .WithMany("SoldProducts")
                         .HasForeignKey("SalesRecordId");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("WebSalesMvc.Models.Category", b =>
@@ -266,11 +283,6 @@ namespace WebSalesMvcWithAngular.Migrations
             modelBuilder.Entity("WebSalesMvc.Models.Department", b =>
                 {
                     b.Navigation("Sellers");
-                });
-
-            modelBuilder.Entity("WebSalesMvc.Models.Product", b =>
-                {
-                    b.Navigation("SoldProducts");
                 });
 
             modelBuilder.Entity("WebSalesMvc.Models.SalesRecord", b =>

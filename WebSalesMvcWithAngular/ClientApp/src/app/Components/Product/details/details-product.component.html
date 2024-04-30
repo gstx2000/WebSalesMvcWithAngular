@@ -10,7 +10,7 @@
       Loja: {{ product?.department?.name }}<br>
 
       <div class="buttons">
-        <button mat-raised-button class="btn btn-default" (click)="backToIndex()">Voltar</button>
+        <button mat-raised-button class="btn btn-default" [routerLink]="['/products']">Voltar</button>
         <button mat-raised-button [routerLink]="['/products/edit', product?.id]" class="btn btn-default">Editar</button>
       </div>
     </td>

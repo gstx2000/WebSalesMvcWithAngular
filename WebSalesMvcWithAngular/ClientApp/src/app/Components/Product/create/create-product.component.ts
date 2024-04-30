@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ToastrService } from 'ngx-toastr';
+import { InventoryUnitMeas } from '../../../Models/enums/InventoryUnitMeas';
 
 @Component({
   selector: 'app-products/create',
@@ -22,6 +23,7 @@ export class CreateProductComponent implements OnInit {
   product: Product;
   departments$: Observable<Department[]> | undefined;
   categories$: Observable<Category[]> | undefined;
+  InventoryUnitMeas!: InventoryUnitMeas;
   constructor(
     private productService: ProductService,
     private departmentService: DepartmentService,
@@ -38,7 +40,8 @@ export class CreateProductComponent implements OnInit {
       description: '',
       categoryId: 0,
       departmentId: 0,
-      imageUrl: ''
+      imageUrl: '',
+      inventoryUnitMeas: 0
     };
   }
 
@@ -55,7 +58,8 @@ export class CreateProductComponent implements OnInit {
       description: '',
       categoryId: [0],
       departmentId: [0],
-      imageUrl: ''
+      imageUrl: '',
+      inventoryUnitMeas: 0
     });
   }
 
@@ -77,6 +81,14 @@ export class CreateProductComponent implements OnInit {
     () => {
       this.loadingService.hideLoading();
     }
+  }
+
+  getUnitMeasValues(): number[] {
+    return Object.values(InventoryUnitMeas).filter(value => typeof value === 'number') as number[];
+  }
+
+  getUnitMeasName(value: number): string {
+    return InventoryUnitMeas[value] as string;
   }
 
   cancel() {

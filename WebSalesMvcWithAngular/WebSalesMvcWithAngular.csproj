@@ -36,6 +36,7 @@
   <ItemGroup>
     <None Remove="ClientApp\src\app\Models\Alert.ts" />
     <None Remove="ClientApp\src\app\Models\AlertSettings.ts" />
+    <None Remove="ClientApp\src\app\Models\enums\InventoryUnitMeas.ts" />
     <None Remove="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
     <None Remove="ClientApp\src\app\Models\enums\SaleStatus.ts" />
     <None Remove="ClientApp\src\app\Models\SoldProduct.ts" />
@@ -56,6 +57,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\Models\Alert\Alert.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\Alert\AlertSettings.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\enums\InventoryUnitMeas.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\enums\SaleStatus.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\SoldProduct.ts" />
@@ -74,6 +76,7 @@
     <Folder Include="ClientApp\src\app\Components\Category\edit\" />
     <Folder Include="ClientApp\src\app\Components\Category\delete\" />
     <Folder Include="ClientApp\src\app\Components\GlobalLoading\" />
+    <Folder Include="ClientApp\src\app\Components\Product\inventoryManagement\" />
     <Folder Include="ClientApp\src\app\Components\UserLogin\PasswordRecovery\RedefinePassword\" />
     <Folder Include="ClientApp\src\app\Components\UserLogin\Register\" />
     <Folder Include="ClientApp\src\app\Components\Product\create\" />

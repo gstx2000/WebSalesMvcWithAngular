@@ -49,8 +49,19 @@
 
     <br />
 
+    <mat-form-field appearance="outline" class="input">
+      <mat-label for="um">Unidade de estoque</mat-label>
+      <mat-select id="um" formControlName="inventoryUnitMeas">
+        <mat-option *ngFor="let um of getUnitMeasValues()" [value]="um">
+          {{ getUnitMeasName(um) }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="productForm.get('inventoryUnitMeas')?.hasError('required')">Campo obrigatório</mat-error>
+    </mat-form-field>
+
+    <br />
+
     <button type="submit" [disabled]="productForm.invalid" class="btn btn-default">Cadastrar</button>
     <button class="btn btn-default" (click)="cancel()">Cancelar</button>
-
   </form>
 </div>

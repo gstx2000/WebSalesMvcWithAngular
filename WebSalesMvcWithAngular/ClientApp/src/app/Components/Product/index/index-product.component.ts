@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Category } from '../../../Models/Category';
@@ -27,15 +26,13 @@ export class IndexProductComponent implements OnInit, OnDestroy {
   private sort!: MatSort;
 
   productsDataSource: MatTableDataSource<ProductDTO>;
-  categories: Category[] = [];
 
-  filteredProducts: ProductDTO[] = [];
   searchControl: FormControl = new FormControl();
   searchForm!: FormGroup;
-  searchedProducts: ProductDTO[] = [];
   categories$!: Observable<Category[]>;
   private destroy$ = new Subject<void>();
   isMessageVisible: boolean = false;
+  filteredProducts: ProductDTO[] = [];
 
   currentPage = 1;
   pageSize = 10;
@@ -65,7 +62,6 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private alertService: AlertService,
     private toastr: ToastrService
-
   ) {
     this.productsDataSource = new MatTableDataSource<ProductDTO>;
   }
@@ -132,7 +128,7 @@ export class IndexProductComponent implements OnInit, OnDestroy {
       switchMap((searchTerm: string) => {
         var categoryId = this.searchForm.get('category')?.value;
         if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
-          return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
+          return this.productService.searchProductsByNameDTO(searchTerm, categoryId).pipe(
             takeUntil(this.destroy$),
             catchError((error: any) => {
               if (error instanceof HttpErrorResponse && error.status === 404) {

@@ -3,16 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\salesrecord\\details\\details-sales-record.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\salesrecord\\details\\details-sales-record.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\product\\edit\\edit-product.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\product\\edit\\edit-product.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\nav-menu\\nav-menu.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\nav-menu\\nav-menu.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\userlogin\\passwordrecovery\\redefinepassword\\redefine-password.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\department\\index\\index-department.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\department\\index\\index-department.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\category\\index\\index-category.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\category\\index\\index-category.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\salesrecord\\toinvoice\\toinvoice-sales-record.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\salesrecord\\toinvoice\\toinvoice-sales-record.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|c:\\users\\gst20\\onedrive\\\u00E1rea de trabalho\\saleswebangular\\websalesmvcwithangular\\websalesmvcwithangular\\clientapp\\src\\app\\components\\product\\index\\index-product.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{68C4C0FC-7BDB-41C4-A44D-3E974ACE8965}|WebSalesMvcWithAngular\\WebSalesMvcWithAngular.csproj|solutionrelative:websalesmvcwithangular\\clientapp\\src\\app\\components\\product\\index\\index-product.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,50 +34,89 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "redefine-password.component.ts",
-              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
-              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
-              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
-              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.ts",
-              "ViewState": "AQIAABkAAAAAAAAAAAAQwCAAAAAjAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2024-04-28T18:27:20.898Z",
+              "Title": "details-sales-record.component.css",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\details\\details-sales-record.component.css",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\details\\details-sales-record.component.css",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\details\\details-sales-record.component.css",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\details\\details-sales-record.component.css",
+              "ViewState": "AQIAABYAAAAAAAAAAAAQwDkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-04-30T03:53:48.837Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "edit-product.component.html",
-              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
-              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
-              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
-              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\edit\\edit-product.component.html",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAKAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2024-04-28T18:25:57.514Z",
+              "Title": "nav-menu.component.css",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\nav-menu\\nav-menu.component.css",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\nav-menu\\nav-menu.component.css",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\nav-menu\\nav-menu.component.css",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\nav-menu\\nav-menu.component.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-04-30T03:51:49.614Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "redefine-password.component.html",
-              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
-              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
-              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
-              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\UserLogin\\PasswordRecovery\\RedefinePassword\\redefine-password.component.html",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2024-04-28T17:10:12.027Z",
+              "Title": "index-department.component.css",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Department\\index\\index-department.component.css",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Department\\index\\index-department.component.css",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Department\\index\\index-department.component.css",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Department\\index\\index-department.component.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-04-30T03:51:15.521Z",
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "index-category.component.css",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Category\\index\\index-category.component.css",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Category\\index\\index-category.component.css",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Category\\index\\index-category.component.css",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Category\\index\\index-category.component.css",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAYwBkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-04-30T03:50:33.54Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "toInvoice-sales-record.component.css",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\toInvoice\\toInvoice-sales-record.component.css",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\toInvoice\\toInvoice-sales-record.component.css",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\toInvoice\\toInvoice-sales-record.component.css",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\SalesRecord\\toInvoice\\toInvoice-sales-record.component.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-04-30T03:48:24.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "index-product.component.css",
+              "DocumentMoniker": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\index\\index-product.component.css",
+              "RelativeDocumentMoniker": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\index\\index-product.component.css",
+              "ToolTip": "C:\\Users\\gst20\\OneDrive\\\u00C1rea de Trabalho\\SalesWebAngular\\WebSalesMvcWithAngular\\WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\index\\index-product.component.css",
+              "RelativeToolTip": "WebSalesMvcWithAngular\\ClientApp\\src\\app\\Components\\Product\\index\\index-product.component.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-04-30T03:48:16.373Z",
+              "EditorCaption": ""
             }
           ]
         },

@@ -69,7 +69,6 @@ export class EditProductComponent {
           categoryId: fetchedProduct.categoryId,
           departmentId: fetchedProduct.departmentId,
           imageUrl: fetchedProduct.imageUrl
-
       });
 
       this.productForm.get('id')!.disable();
@@ -83,29 +82,25 @@ export class EditProductComponent {
 
   }
 
-  async onSubmit(): Promise < void> {
+  async onSubmit(): Promise<void> {
     try {
-      if(this.productForm.valid) {
-    const formData: Product = this.productForm.getRawValue();
-    if (formData.id) {
-      const productId = await (await this.productService.getProductById(formData.id)).toPromise();
-      if (productId) {
-        if (productId.id) {
-          const updatedDepartment = await (await this.productService.updateProduct(productId.id, formData)).toPromise();
-          this.toastr.success(`Produto ${formData.name} alterado com sucesso.`);
-          this.router.navigate(['/products']);
+      if (this.productForm.valid) {
+        const formData: Product = this.productForm.getRawValue();
+        if (formData.id) {
+          const productId = await (await this.productService.getProductById(formData.id)).toPromise();
+          if (productId) {
+            if (productId.id) {
+              const updatedProduct = await (await this.productService.updateProduct(productId.id, formData)).toPromise();
+              this.toastr.success(`Produto ${formData.name} alterado com sucesso.`);
+              this.router.navigate(['/products']);
 
+            }
+          }
         }
       }
-    }
-  }
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar produto:', error);
-  }
     }
-
-  cancel() {
-    this.router.navigate(['/products']);
   }
 }

@@ -84,8 +84,10 @@ export class toInvoiceSalesRecordComponent implements OnInit, OnDestroy {
         this.salesRecords = empData;
         this.salesRecordsDataSource = new MatTableDataSource(this.salesRecords);
         this.salesRecordsDataSource.sort = this.sort;
+        this.loadingService.hideLoading()
 
       }, null, () => {
+        this.loadingService.hideLoading()
       });
   }
 

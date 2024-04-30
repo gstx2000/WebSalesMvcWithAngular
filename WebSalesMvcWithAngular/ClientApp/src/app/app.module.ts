@@ -72,6 +72,7 @@ import { RegisterComponent } from './Components/UserLogin/Register/register.comp
 import { LoginComponent } from './Components/UserLogin/Login/login.component';
 import { PasswordRecoveryComponent } from './Components/UserLogin/PasswordRecovery/PasswordRecovery.component';
 import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecovery/RedefinePassword/redefine-password.component';
+import { InventoryManagementComponent } from './Components/Product/inventoryManagement/inventory-management.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecove
     LoginComponent,
     RegisterComponent,
     PasswordRecoveryComponent,
-    RedefinePasswordComponent
+    RedefinePasswordComponent,
+    InventoryManagementComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -48,6 +48,6 @@
     </mat-form-field>
     <br />
     <button mat-raised-button [disabled]="productForm.invalid" type="submit">Editar</button>
-    <button mat-raised-button class="btn btn-default" (click)="cancel()">Cancelar</button>
+    <button mat-raised-button class="btn btn-default" [routerLink]="['/products']" >Cancelar</button>
   </form>
 </div>

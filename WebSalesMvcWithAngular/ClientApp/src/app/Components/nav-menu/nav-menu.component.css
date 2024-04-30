@@ -16,3 +16,15 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+.mat-menu-panel {
+  background-color: red; /* Example style */
+}
+
+.mat-menu-item {
+  color: white; /* Example style */
+}
+
+.navbar {
+  margin-bottom: 20px; /* Adjust the value as needed */
+}
+

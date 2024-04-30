@@ -67,6 +67,14 @@ namespace WebSalesMvc.Services
                 throw new IntegrityException(e.Message);
             }
         }
+        public async Task<Category> GetCategoryByNameAsync(string categoryName)
+        {
+            var category = await _context.Category
+                .FirstOrDefaultAsync(p => EF.Functions.Like(p.Name, $"%{categoryName}%"));
+
+            return category;
+        }
     }
 }
+
         

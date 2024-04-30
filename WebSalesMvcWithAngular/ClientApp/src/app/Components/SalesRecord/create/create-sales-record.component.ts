@@ -149,7 +149,7 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
         const categoryId = this.searchForm.get('category')?.value;
 
         if (typeof searchTerm === 'string' && searchTerm.trim() !== '') {
-          return this.productService.searchProductsByName(searchTerm, categoryId).pipe(
+          return this.productService.searchProductsByNameDTO(searchTerm, categoryId).pipe(
             takeUntil(this.destroy$),
             catchError((error: any) => {
               if (error instanceof HttpErrorResponse && error.status === 404) {
@@ -187,8 +187,8 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
       const soldProduct: SoldProduct = {
         productId: id!,
         quantity: this.searchForm.get('quantity')?.value,
-        name: name,
-        price: price
+        name: name!,
+        price: price!
       };
 
       this.selectedProducts.push(soldProduct);

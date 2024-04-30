@@ -31,6 +31,7 @@ import { RegisterComponent } from './Components/UserLogin/Register/register.comp
 import { LoginComponent } from './Components/UserLogin/Login/login.component';
 import { PasswordRecoveryComponent } from './Components/UserLogin/PasswordRecovery/PasswordRecovery.component';
 import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecovery/RedefinePassword/redefine-password.component';
+import { InventoryManagementComponent } from './Components/Product/inventoryManagement/inventory-management.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -51,6 +52,7 @@ const routes: Routes = [
   { path: 'products/edit/:id', component: EditProductComponent, canActivate: [AuthGuard] },
   { path: 'products/delete/:id', component: DeleteProductComponent, canActivate: [AuthGuard] },
   { path: 'products/details/:id', component: DetailsProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/inventory-management', component: InventoryManagementComponent, canActivate: [AuthGuard] },
 
   // Category routes
   { path: 'categories', component: IndexCategoryComponent, canActivate: [AuthGuard] },

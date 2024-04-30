@@ -205,29 +205,66 @@ namespace WebSalesMvc.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [Route("edit-product/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [FromBody] Product product)
+        public async Task<IActionResult> Edit(int id, [FromBody] ProductDTO productDto)
         {
             try
             {
-                if (id != product.Id)
+                var productToUpdate = await _productService.FindByIdAsync(id);
+
+                if (productToUpdate == null)
                 {
-                    return BadRequest("ID fornecido difere do ID que vai ser atualizado.");
+                    return NotFound("Produto não encontrada.");
                 }
 
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        await _productService.UpdateAsync(product);
+                        productToUpdate.Name = productDto.Name ?? productToUpdate.Name;
+                        productToUpdate.Price = productDto.Price ?? productToUpdate.Price;
+                        productToUpdate.DepartmentId = productDto.DepartmentId ?? productToUpdate.DepartmentId;
+                        productToUpdate.CategoryId = productDto.CategoryId ?? productToUpdate.CategoryId;
+                        productToUpdate.ImageUrl = productDto.ImageUrl ?? productToUpdate.ImageUrl;
+                        productToUpdate.InventoryUnitMeas = productDto.InventoryUnitMeas ?? productToUpdate.InventoryUnitMeas;
+                        productToUpdate.InventoryCost = productDto.InventoryCost ?? productToUpdate.InventoryCost;
+                        productToUpdate.InventoryQuantity = productDto.InventoryQuantity ?? productToUpdate.InventoryQuantity;
+                        productToUpdate.AcquisitionCost = productDto.AcquisitionCost ?? productToUpdate.AcquisitionCost;
+                        productToUpdate.MinimumInventoryQuantity = productDto.MinimumInventoryQuantity ?? productToUpdate.MinimumInventoryQuantity;
 
+                        if (productDto.CategoryId.HasValue)
+                        {
+                            var category = await _categoryService.FindByIdAsync(productDto.CategoryId.Value);
+                            if (category != null)
+                            {
+                                productToUpdate.Category = category;
+                            }
+                            else
+                            {
+                                return BadRequest("Categoria não encontrada.");
+                            }
+                        }
+                        if (productDto.DepartmentId.HasValue)
+                        {
+                            var department = await _departmentService.FindByIdAsync(productDto.DepartmentId.Value);
+                            if (department != null)
+                            {
+                                productToUpdate.Department = department;
+                            }
+                            else
+                            {
+                                return BadRequest("Departamento não encontrado.");
+                            }
+                        }
+
+                        await _productService.UpdateAsync(productToUpdate);
                         return Ok();
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!ProductExists(product.Id))
+                        if (!ProductExists(productToUpdate.Id))
                         {
                             return NotFound("Produto não encontrada.");
                         }
@@ -295,10 +332,31 @@ namespace WebSalesMvc.Controllers
                 CategoryName = p.Category.Name,
                 DepartmentName = p.Department.Name,
                 CategoryId = p.CategoryId,
-                DepartmentId = p.DepartmentId
+                DepartmentId = p.DepartmentId,
+                InventoryUnitMeas = p.InventoryUnitMeas,
+                AcquisitionCost = p.AcquisitionCost,
+                InventoryQuantity = p.InventoryQuantity,
+                InventoryCost = p.InventoryCost,
+                MinimumInventoryQuantity = p.MinimumInventoryQuantity,
+                TotalInventoryValue = p.TotalInventoryValue,
+                ImageUrl = p.ImageUrl
+
             }).ToList();
 
             return Ok(productDtos);
+        }
+
+        [HttpGet("get-full-product-by-name/{productName}/{categoryId?}")]
+        public async Task<IActionResult> GetFullProductByName(string productName, int? categoryId = null)
+        {
+            var products = await _productService.FindByNameAsync(productName, categoryId);
+
+            if (products == null || products.Count == 0)
+            {
+                return NotFound();
+            }         
+
+            return Ok(products);
         }
 
         private bool ProductExists(int id)

@@ -9,5 +9,6 @@ namespace WebSalesMvcWithAngular.Services.Interfaces
         Task<Category> FindByIdAsync(int id);
         Task UpdateAsync(Category category);
         Task DeleteAsync(int id);
+        Task <Category> GetCategoryByNameAsync(string categoryName);
     }
 }

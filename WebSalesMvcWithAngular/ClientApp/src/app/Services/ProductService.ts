@@ -69,7 +69,7 @@ export class ProductService {
     }
   }
 
-  async updateProduct(id: number, product: Product): Promise<Observable<HttpEvent<Product>>> {
+  async updateProduct(id: number, product: ProductDTO): Promise<Observable<HttpEvent<Product>>> {
     try {
       const options = await this.auth.getOptions();
 
@@ -102,10 +102,22 @@ export class ProductService {
     }
   }
 
-  searchProductsByName(searchTerm: string, categoryId?: number | null): Observable<ProductDTO[]> {
+  searchProductsByNameDTO(searchTerm: string, categoryId?: number | null): Observable<ProductDTO[]> {
     const url = `${environment.apiUrl}/${this.url}/get-product-by-name/${searchTerm}${categoryId !== null && categoryId !== undefined ? `/${categoryId}` : ''}`;
 
     return this.http.get<ProductDTO[]>(url)
+      .pipe(
+        catchError((error: any) => {
+          console.error('HTTP Error:', error);
+          return throwError(error);
+        })
+      );
+  }
+
+  searchProductsByName(searchTerm: string, categoryId?: number | null): Observable<Product[]> {
+    const url = `${environment.apiUrl}/${this.url}/get-full-product-by-name/${searchTerm}${categoryId !== null && categoryId !== undefined ? `/${categoryId}` : ''}`;
+
+    return this.http.get<Product[]>(url)
       .pipe(
         catchError((error: any) => {
           console.error('HTTP Error:', error);
