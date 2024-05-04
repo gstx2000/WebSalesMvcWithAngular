@@ -18,6 +18,7 @@ export class HttpInterceptorService implements HttpInterceptor {
     }
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
+        console.log('Erro:', error); 
         if (error.status && error.status === 401) {
           this.toastr.error('Sua sessão expirou, faça login novamente.');
           this.router.navigate(['/login']);

@@ -1,11 +1,12 @@
-import { HttpClient, HttpEvent, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './AuthService';
 import { SalesRecord } from '../Models/SalesRecord';
 import { PagedResult } from '../Models/PagedResult';
 import { SalesRecordDTO } from '../DTOs/SalesRecordDTO';
+import { SalesData } from '../Models/Reports/SalesData';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,15 @@ export class SalesRecordService {
 
   getSalesRecords(): Observable<SalesRecord[]> {
     return this.http.get<SalesRecord[]>(`${environment.apiUrl}/${this.url}/get-salesrecords`).pipe(
+      catchError((error: any) => {
+        console.error('Erro HTTP:', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  getWeekEarnings(): Observable<SalesData> {
+    return this.http.get<SalesData>(`${environment.apiUrl}/${this.url}/get-week-report`).pipe(
       catchError((error: any) => {
         console.error('Erro HTTP:', error);
         return throwError(error);

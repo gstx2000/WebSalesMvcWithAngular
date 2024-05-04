@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.DTOs;
 using WebSalesMvcWithAngular.Services.Exceptions;
 using WebSalesMvcWithAngular.Services.Interfaces;
 
@@ -32,7 +33,34 @@ namespace WebSalesMvc.Controllers
             try
             {
                 var categories = await _categoryService.FindAllAsync();
+                if (categories == null || categories.Count == 0)
+                {
+                    return NoContent();
+                }
 
+                return Ok(categories);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound("Nenhuma categoria encontrada.");
+            }
+            catch (UnauthorizedException)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
+
+        [HttpGet]
+        [Route("get-categories-index")]
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategoriesIndex()
+        {
+            try
+            {
+                var categories = await _categoryService.FindAllDTOAsync();
                 if (categories == null || categories.Count == 0)
                 {
                     return NoContent();

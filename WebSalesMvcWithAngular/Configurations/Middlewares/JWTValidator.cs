@@ -30,18 +30,21 @@ namespace WebSalesMvcWithAngular.Configurations.Middlewares
                     if (_validator.ValidateSignature(token, _jwtOptions, out jwtToken, _conf))
                     {
                         await next(context);
+                        _logger.LogInformation($"Token validated successfully {jwtToken}");
 
-                    } else
+                    }
+                    else
                     {
+                        _logger.LogError("Token validation failed for endpoint.");
                         context.Response.StatusCode = 401;
                         return;
                     }
                 }
                 catch (Exception)
                 {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Token inválido ou expirado.");
-                    return;
+                    //context.Response.StatusCode = 401;
+                    //await context.Response.WriteAsync("Token inválido ou expirado.");
+                    //return;
                 }
             }
         }

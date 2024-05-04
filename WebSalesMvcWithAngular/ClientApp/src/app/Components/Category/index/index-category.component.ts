@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Department } from '../../../Models/Department';
-import { DepartmentService } from '../../../Services/DepartmentService';
-import { Category } from '../../../Models/Category';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteCategoryComponent } from '../delete/delete-category.component';
-import { Product } from '../../../Models/Product';
-import { ProductService } from '../../../Services/ProductService';
-import { forkJoin } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { CategoryDTO } from '../../../DTOs/CategoryDTO';
 
 @Component({
   selector: 'app-categories',
@@ -18,84 +13,27 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./index-category.component.css']
 })
 export class IndexCategoryComponent implements OnInit {
-  departments: Department[] = [];
-  categories: Category[] = [];
-  products: Product[] = [];
-  categoriesDataSource = new MatTableDataSource<Category>();
+  categories: CategoryDTO[] = [];
+  categoriesDataSource = new MatTableDataSource<CategoryDTO>();
 
   constructor(
-    private departmentService: DepartmentService,
     private categoryService: CategoryService,
     private loadingService: LoadingService,
-    private productService: ProductService,
     private toastr: ToastrService,
     private dialog: MatDialog
   ) {
   }
 
   ngOnInit(): void {
-
-    this.loadingService.showLoading();
-
-    forkJoin([
-      this.departmentService.getDepartments(),
-      this.productService.getProducts(),
-      this.categoryService.getCategories()
-    ]).subscribe(
-      ([departments, products, categories]) => {
-        this.departments = departments;
-        this.products = products;
-        this.categories = categories;
-        this.categoriesDataSource.data = this.categories;
-
-        this.categories.forEach(category => {
-          category.products = this.products.filter(product => product.categoryId === category.id);
-        });
-
-        this.departments = this.departments.filter(department =>
-          this.categories.some(category => category.departmentId === department.id)
-        );
-
-        this.loadingService.hideLoading();
-      },
-      (error) => {
-        console.error('Erro ao carregar os dados:', error);
-        this.loadingService.hideLoading();
-      }
-    );
-  }
-
-  loadProducts(): void {
-
-    this.productService.getProducts().subscribe(
-      (result: Product[]) => {
-        this.products = result;
-
-        this.loadCategories();
-        this.loadingService.hideLoading();
-
-      },
-      (error) => {
-        this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente');
-        console.error('Erro ao carregar produtos:', error);
-      }
-    );
+    this.loadCategories();
   }
 
   loadCategories(): void {
-
-    this.categoryService.getCategories().subscribe(
-      (result: Category[]) => {
+    this.loadingService.showLoading();
+    this.categoryService.getCategoriesDTO().subscribe(
+      (result: CategoryDTO[]) => {
         this.categories = result;
-
-        this.departments = this.departments.filter(department =>
-          this.categories.some(category => category.departmentId === department.id)
-        );
-
-        this.products = this.products.filter(product =>
-          this.categories.some(category => category.id === product.categoryId)
-        );
-
+        this.categoriesDataSource = new MatTableDataSource(result);
         this.loadingService.hideLoading();
       },
       (error) => {
@@ -106,7 +44,7 @@ export class IndexCategoryComponent implements OnInit {
     );
   }
 
-  openDeleteDialog(category: Category): void {
+  openDeleteDialog(category: CategoryDTO): void {
     const dialogRef = this.dialog.open(DeleteCategoryComponent, {
       data: { category },
       width: '550px',
@@ -119,7 +57,6 @@ export class IndexCategoryComponent implements OnInit {
         this.categories = this.categories.filter(p => p.id !== category.id);
         this.categoriesDataSource.data = [...this.categories];
         this.loadCategories();
-        this.loadProducts();
       }
     });
   }

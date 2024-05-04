@@ -39,7 +39,7 @@ namespace WebSalesMvc.Models
         [Display(Name = "Custo de estoque")]
         public double? InventoryCost { get; set; }
         [Display(Name = "Quantidade em estoque")]
-        public double? InventoryQuantity { get; set; }
+        public double? InventoryQuantity{ get; set; }
 
         [Display(Name = "Custo de aquisição")]
         public double? AcquisitionCost { get; set; }
@@ -62,9 +62,18 @@ namespace WebSalesMvc.Models
             {
                 if (InventoryCost == null)
                 {
-                    return null; 
+                    return 0;
                 }
                 return InventoryQuantity * InventoryCost.Value;
+            }
+        }
+
+        [Display(Name = "Valor total de estoque")]
+        public double? CMV
+        {
+            get
+            {
+               return CalculateCMV();
             }
         }
 
@@ -72,9 +81,9 @@ namespace WebSalesMvc.Models
         //CURRENT INVENTORY DATA
         public double CalculateCMV()
         {
-            if (InventoryQuantity == 0 || InventoryCost == null)
+            if (InventoryQuantity == 0 || InventoryQuantity == null || InventoryCost == null || InventoryCost == 0)
             {
-                throw new InvalidOperationException("Não é possível calcular o CMV com quantidade de inventário igual a zero ou custo de inventário não definido.");
+                return 0;
             }
             return (double)(InventoryCost.Value / InventoryQuantity);
         }
@@ -87,23 +96,29 @@ namespace WebSalesMvc.Models
             }
             return inventoryCost / inventoryQuantity;
         }
-        public void AddInventoryQuantity(double quantity)
-        {
-            InventoryQuantity += quantity;
-        }
+
         public void RemoveInventoryQuantity(double quantity)
         {
             InventoryQuantity -= quantity;
         }
-        public double CalculateProfitCMV()
+        public double CalculateProfit() 
         {
-            if (InventoryQuantity == 0 || InventoryCost == null)
+            if (InventoryQuantity == 0 || InventoryQuantity == null|| AcquisitionCost == null || AcquisitionCost == 0)
             {
-                throw new InvalidOperationException("Não é possível calcular o lucro com CMV com quantidade de inventário igual a zero ou custo de inventário não definido.");
+                return 0;
             }
-            return Price - CalculateCMV();
+
+            return (double)(Price - (AcquisitionCost ?? 0));
         }
 
+        public double CalculateMargin()
+        {
+            if (InventoryQuantity == 0 || InventoryQuantity == null || AcquisitionCost == null || AcquisitionCost == 0)
+            {
+                return 0;
+            }
+                return (double)((double)(Price - AcquisitionCost) / AcquisitionCost * 100);
+        }
 
         public bool IsBelowMinimum(double inventoryQuantity, double minimumInventoryQuantity)
         {

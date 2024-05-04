@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,7 +6,6 @@ import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { DeleteSalesRecordComponent } from '../delete/delete-sales-record.component';
 import { SaleStatus } from '../../../Models/enums/SaleStatus';
 import { MatSort } from '@angular/material/sort';
-import { AlertService } from '../../../Services/AlertService';
 import { MatTableDataSource } from '@angular/material/table';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { MatPaginator } from '@angular/material/paginator';
@@ -18,7 +17,7 @@ import { SalesRecordDTO } from '../../../DTOs/SalesRecordDTO';
   templateUrl: './index-sales-record.component.html',
   styleUrls: ['./index-sales-record.component.css']
 })
-export class IndexSalesRecordComponent implements OnInit, OnDestroy {
+export class IndexSalesRecordComponent implements OnDestroy {
   private paginator!: MatPaginator;
   private sort!: MatSort;
 
@@ -47,14 +46,9 @@ export class IndexSalesRecordComponent implements OnInit, OnDestroy {
     private loadingService: LoadingService,
     private dialog: MatDialog,
     private salesService: SalesRecordService,
-    private alertService: AlertService,
-    private changeDetectorRef: ChangeDetectorRef
 
   ){
     this.salesRecordsDataSource = new MatTableDataSource<SalesRecordDTO>(this.salesRecords);
-   }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit() {

@@ -52,7 +52,7 @@ export class ProductService {
       );
   }
 
-  async createProduct(product: Product): Promise<Observable<HttpEvent<Product>>> {
+  async createProduct(product: ProductDTO): Promise<Observable<HttpEvent<Product>>> {
     try {
 
       const options = await this.auth.getOptions();
@@ -69,11 +69,27 @@ export class ProductService {
     }
   }
 
-  async updateProduct(id: number, product: ProductDTO): Promise<Observable<HttpEvent<Product>>> {
+  async updateProduct(id: number, product: ProductDTO): Promise<Observable<HttpEvent<ProductDTO>>> {
     try {
       const options = await this.auth.getOptions();
 
-      return this.http.put<Product>(`${environment.apiUrl}/${this.url}/edit-product/${id}`, product, options)
+      return this.http.put<ProductDTO>(`${environment.apiUrl}/${this.url}/edit-product/${id}`, product, options)
+        .pipe(
+          catchError((error: any) => {
+            console.error('Erro HTTP:', error);
+            return throwError(error);
+          })
+        );
+    } catch (error) {
+      return throwError(error);
+    }
+  }
+
+  async editInventory(id: number, product: ProductDTO): Promise<Observable<HttpEvent<ProductDTO>>> {
+    try {
+      const options = await this.auth.getOptions();
+
+      return this.http.put<ProductDTO>(`${environment.apiUrl}/${this.url}/edit-inventory/${id}`, product, options)
         .pipe(
           catchError((error: any) => {
             console.error('Erro HTTP:', error);

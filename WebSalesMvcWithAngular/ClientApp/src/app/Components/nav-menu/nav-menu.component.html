@@ -21,7 +21,7 @@
             <button mat-button [matMenuTriggerFor]="productsMenu">Produtos</button>
             <mat-menu #productsMenu="matMenu">
               <button mat-menu-item [routerLink]="['/products']">Produtos</button>
-              <button mat-menu-item [routerLink]="['/salesRecords']">Gerenciamento de estoque</button>
+              <button mat-menu-item [routerLink]="['/products/inventory-management']">Gerenciamento de estoque</button>
             </mat-menu>
           </li>
           <li class="nav-item" [routerLinkActive]="['active']">
@@ -29,6 +29,11 @@
           </li>
           <li class="nav-item" [routerLinkActive]="['active']">
             <a class="nav-link" [routerLink]="['/departments']">Lojas</a>
+          </li>
+        </ul>
+         <ul class="navbar-nav logout-list">
+          <li class="nav-item"> 
+            <mat-icon>logout</mat-icon>
           </li>
         </ul>
       </div>

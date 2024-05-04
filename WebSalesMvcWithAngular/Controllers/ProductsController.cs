@@ -142,7 +142,7 @@ namespace WebSalesMvc.Controllers
         [HttpPost]
         [Route("post-product")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody] Product product)
+        public async Task<IActionResult> Create([FromBody] ProductDTO product)
         {
             try
             {
@@ -152,24 +152,21 @@ namespace WebSalesMvc.Controllers
                         ",.");
                 }
 
-                var department = await _departmentService.FindByIdAsync(product.DepartmentId);
+                var department = await _departmentService.FindByIdAsync((int)product.DepartmentId);
 
-                var category = await _categoryService.FindByIdAsync(product.CategoryId);
+                var category = await _categoryService.FindByIdAsync((int)product.CategoryId);
 
-
-                if (department == null)
+                var newProduct = new Product
                 {
-                    return BadRequest("Departamento não encontrado.");
-                }
-
-                if (category == null)
-                {
-                    return BadRequest("Categoria não encontrada.");
-                }
-
-                product.Category = category;
-
-                product.Department = department;
+                    Name = product.Name,
+                    Price = (double)product.Price,
+                    Category = category,
+                    Department = department,
+                    CategoryId = (int)product.CategoryId,
+                    DepartmentId = (int)product.DepartmentId,
+                    InventoryUnitMeas = (WebSalesMvcWithAngular.Models.Enums.InventoryUnitMeas)product.InventoryUnitMeas,
+                    ImageUrl = product.ImageUrl,
+                };
 
 
                 if (!ModelState.IsValid)
@@ -187,7 +184,7 @@ namespace WebSalesMvc.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    await _productService.InsertAsync(product);
+                    await _productService.InsertAsync(newProduct);
                     return CreatedAtAction("Details", new { id = product.Id }, product);
                 }
                 else
@@ -229,10 +226,6 @@ namespace WebSalesMvc.Controllers
                         productToUpdate.CategoryId = productDto.CategoryId ?? productToUpdate.CategoryId;
                         productToUpdate.ImageUrl = productDto.ImageUrl ?? productToUpdate.ImageUrl;
                         productToUpdate.InventoryUnitMeas = productDto.InventoryUnitMeas ?? productToUpdate.InventoryUnitMeas;
-                        productToUpdate.InventoryCost = productDto.InventoryCost ?? productToUpdate.InventoryCost;
-                        productToUpdate.InventoryQuantity = productDto.InventoryQuantity ?? productToUpdate.InventoryQuantity;
-                        productToUpdate.AcquisitionCost = productDto.AcquisitionCost ?? productToUpdate.AcquisitionCost;
-                        productToUpdate.MinimumInventoryQuantity = productDto.MinimumInventoryQuantity ?? productToUpdate.MinimumInventoryQuantity;
 
                         if (productDto.CategoryId.HasValue)
                         {
@@ -259,8 +252,68 @@ namespace WebSalesMvc.Controllers
                             }
                         }
 
+
+
                         await _productService.UpdateAsync(productToUpdate);
                         return Ok();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ProductExists(productToUpdate.Id))
+                        {
+                            return NotFound("Produto não encontrada.");
+                        }
+                        else
+                        {
+                            return StatusCode(500, "Erro de simultaneidade.");
+                        }
+                    }
+                }
+                else
+                {
+                    return UnprocessableEntity(ModelState);
+                }
+            }
+            catch (UnauthorizedException)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
+
+        [HttpPatch("{id}")]
+        [Route("edit-inventory/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddInventory(int id, [FromBody] ProductDTO productDto)
+        {
+            try
+            {
+                var productToUpdate = await _productService.FindByIdAsync(id);
+
+                if (productToUpdate == null)
+                {
+                    return NotFound("Produto não encontrada.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        productToUpdate.InventoryCost = productDto.InventoryCost ?? productToUpdate.InventoryCost;
+                        productToUpdate.InventoryQuantity = productToUpdate.InventoryQuantity + productDto.InventoryQuantity ?? productToUpdate.InventoryQuantity;
+                        productToUpdate.AcquisitionCost = productDto.AcquisitionCost ?? productToUpdate.AcquisitionCost;
+                        productToUpdate.MinimumInventoryQuantity = productDto.MinimumInventoryQuantity ?? productToUpdate.MinimumInventoryQuantity;
+
+                        await _productService.UpdateAsync(productToUpdate);
+
+                        productDto.Margin = productToUpdate.CalculateMargin();
+                        productDto.Profit = productToUpdate.CalculateProfit();
+                        productDto.CMV = productToUpdate.CalculateCMV();
+
+                        return Ok(productDto);
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -339,9 +392,13 @@ namespace WebSalesMvc.Controllers
                 InventoryCost = p.InventoryCost,
                 MinimumInventoryQuantity = p.MinimumInventoryQuantity,
                 TotalInventoryValue = p.TotalInventoryValue,
-                ImageUrl = p.ImageUrl
+                TotalInventoryCost = p.TotalInventoryCost,
+                ImageUrl = p.ImageUrl,
+                Profit = p.CalculateProfit(),
+                Margin = p.CalculateMargin(),
+                CMV = p.CalculateCMV()
 
-            }).ToList();
+        }).ToList();
 
             return Ok(productDtos);
         }

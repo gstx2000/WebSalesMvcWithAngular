@@ -4,13 +4,14 @@ import { Department } from '../../../Models/Department';
 import { Router } from '@angular/router';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
-import { Category } from '../../../Models/Category';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { Observable } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ToastrService } from 'ngx-toastr';
 import { InventoryUnitMeas } from '../../../Models/enums/InventoryUnitMeas';
+import { ProductDTO } from '../../../DTOs/ProductDTO';
+import { CategoryDTO } from '../../../DTOs/CategoryDTO';
 
 @Component({
   selector: 'app-products/create',
@@ -18,11 +19,11 @@ import { InventoryUnitMeas } from '../../../Models/enums/InventoryUnitMeas';
   styleUrls: ['./create-product.component.css']
 })
 export class CreateProductComponent implements OnInit {
-  products: Product[] = [];
+  products: ProductDTO[] = [];
   productForm!: FormGroup;
   product: Product;
   departments$: Observable<Department[]> | undefined;
-  categories$: Observable<Category[]> | undefined;
+  categories$: Observable<CategoryDTO[]> | undefined;
   InventoryUnitMeas!: InventoryUnitMeas;
   constructor(
     private productService: ProductService,
@@ -48,7 +49,7 @@ export class CreateProductComponent implements OnInit {
   ngOnInit(): void {
     this.initProductForm();
     this.departments$ = this.departmentService.getDepartments();
-    this.categories$ = this.categoryService.getCategories();
+    this.categories$ = this.categoryService.getCategoriesDTO();
   }
 
   initProductForm(): void {
@@ -68,7 +69,7 @@ export class CreateProductComponent implements OnInit {
     try {
       console.log(this.productForm.value)
       if (this.productForm.valid) {
-        const formData: Product = this.productForm.value;
+        const formData: ProductDTO = this.productForm.value;
         const createdProduct = await (await this.productService.createProduct(formData)).toPromise();
         this.toastr.success(`Produto ${formData.name} criado com sucesso.`);
         this.router.navigate(['/products']);
@@ -89,10 +90,6 @@ export class CreateProductComponent implements OnInit {
 
   getUnitMeasName(value: number): string {
     return InventoryUnitMeas[value] as string;
-  }
-
-  cancel() {
-    this.router.navigate(['/products']);
   }
 }
 

@@ -5,8 +5,8 @@
     <h2>Tem certeza que deseja deletar {{ category?.name }}?</h2>
 
     <p><strong>ID:</strong> {{ category?.id }}</p>
-    <p><strong>Departamento:</strong> {{ category?.department?.name }}</p>
-    <p><strong>Produtos:</strong> {{ category?.products?.length ?? 0 }}</p>
+    <p><strong>Departamento:</strong> {{ category?.departmentName }}</p>
+    <p><strong>Produtos:</strong> {{ category?.productCount || 0 }}</p>
 
   </div>
 

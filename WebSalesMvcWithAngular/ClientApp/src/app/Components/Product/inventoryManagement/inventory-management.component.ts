@@ -63,7 +63,7 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
     this.productForm = this.fb.group({
       inventoryQuantity: 0,
       acquisitionCost: 0,
-      minimumInventoryQuantity: 0,
+      minimumInventoryQuantity: 0
     });
   }
 
@@ -99,6 +99,7 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
       this.isMessageVisible = false;
       if (products.length !== 0) {
         this.filteredProducts = products.filter(p => !this.isProductSelected(p));
+
       } else {
         this.isMessageVisible = true;
         const htmlContent = `<p style="color: red;">Nenhum resultado encontrado para "${this.searchControl.value}".</p>`;
@@ -115,10 +116,8 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
           const productId = await (await this.productService.getProductById(this.selectedProduct.id)).toPromise();
           if (productId) {
             if (productId.id) {
-              const updatedProduct = await (await this.productService.updateProduct(productId.id, formData)).toPromise();
+              const updatedProduct = await (await this.productService.editInventory(productId.id, formData)).toPromise();
               this.toastr.success(`Produto ${this.selectedProduct?.name} alterado com sucesso.`);
-              this.router.navigate(['/products']);
-
             }
           }
         }
@@ -135,6 +134,11 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
 
   selectProduct(product: ProductDTO): void {
     this.selectedProduct = product;
+    this.productForm.patchValue({
+      acquisitionCost: this.selectedProduct?.acquisitionCost,
+      minimumInventoryQuantity: this.selectedProduct?.minimumInventoryQuantity 
+      })
+
     this.searchControl?.setValue('');
   }
 

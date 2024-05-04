@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using WebSalesMvc.Controllers;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
@@ -10,7 +11,6 @@ namespace WebSalesMvc.Services
     {
         private readonly WebSalesMvcContext _context;
         private readonly ILogger<SalesRecordsController> _logger;
-
         public SalesRecordService(WebSalesMvcContext context, ILogger<SalesRecordsController> logger)
         {
             _context = context;
@@ -24,8 +24,58 @@ namespace WebSalesMvc.Services
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
         }
-        public async Task<List<SalesRecord>> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
+        public async Task<(double Sum, int Count, int PendingSales)> GetWeekReportAsync()
         {
+            DateTime date = DateTime.Now;
+            GregorianCalendar calendar = new GregorianCalendar(GregorianCalendarTypes.USEnglish);
+            DateTime firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+            DateTime startDay;
+            DateTime endDay;
+
+            int weekOfTheMonth = (int)Math.Ceiling((date - firstDayOfMonth).TotalDays / 7);
+            switch (weekOfTheMonth)
+            {
+                case 1:
+                    startDay = firstDayOfMonth;
+                    endDay = firstDayOfMonth.AddDays(6);
+                break;
+
+                case 2:
+                    startDay = firstDayOfMonth.AddDays(7);
+                    endDay = firstDayOfMonth.AddDays(15);
+                break;
+
+                case 3:
+                    startDay = firstDayOfMonth.AddDays(16);
+                    endDay = firstDayOfMonth.AddDays(23);
+                break;
+
+                case 4:
+                    startDay = firstDayOfMonth.AddDays(24);
+                    endDay = firstDayOfMonth.AddDays(31);
+                break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(weekOfTheMonth), weekOfTheMonth, null);
+            }
+            _logger.LogInformation($"Semana definida: {weekOfTheMonth}");
+            var sumWeekSales = await _context.SalesRecord
+                              .Where(p => p.Date >= startDay && p.Date <= endDay)
+                              .Where(p => p.Status == Models.Enums.SaleStatus.Faturada)
+                              .SumAsync(p => p.Amount);
+
+            var countWeekSales = await _context.SalesRecord
+                            .Where(p => p.Date >= startDay && p.Date <= endDay)
+                            .Where(p => p.Status == Models.Enums.SaleStatus.Faturada)
+                            .CountAsync();
+
+            var countPendingtSales = await _context.SalesRecord
+                         .Where(p => p.Status == Models.Enums.SaleStatus.Pendente)
+                         .CountAsync();
+            return (sumWeekSales, countWeekSales, countPendingtSales);
+        }
+        public async Task<List<SalesRecord>> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
+            {
             if (pageNumber <= 0 || pageSize <= 0)
                 throw new ArgumentException("Número de página deve ser maior que 0");
             return await _context.SalesRecord

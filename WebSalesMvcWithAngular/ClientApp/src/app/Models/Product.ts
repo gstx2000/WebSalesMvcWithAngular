@@ -17,5 +17,6 @@ export interface Product {
   minimumInventoryQuantity?: number;
   totalInventoryValue?: number;
   totalInventoryCost?: number;
-
+  profit?: number;
+  margin?: number;
 }

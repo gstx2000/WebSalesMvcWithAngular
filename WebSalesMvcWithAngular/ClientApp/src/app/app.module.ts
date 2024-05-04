@@ -73,6 +73,7 @@ import { LoginComponent } from './Components/UserLogin/Login/login.component';
 import { PasswordRecoveryComponent } from './Components/UserLogin/PasswordRecovery/PasswordRecovery.component';
 import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecovery/RedefinePassword/redefine-password.component';
 import { InventoryManagementComponent } from './Components/Product/inventoryManagement/inventory-management.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -137,6 +138,7 @@ import { InventoryManagementComponent } from './Components/Product/inventoryMana
     MatPaginatorModule,
     MatMenuModule,
     ToastrModule.forRoot(),
+    SharedModule,
   ],
   providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService,
     SalesRecordService, AlertService, LoginService,

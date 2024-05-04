@@ -14,5 +14,7 @@ export interface ProductDTO {
   minimumInventoryQuantity?: number;
   totalInventoryValue?: number;
   totalInventoryCost?: number;
+  profit?: number;
+  margin?: number;
 }
 

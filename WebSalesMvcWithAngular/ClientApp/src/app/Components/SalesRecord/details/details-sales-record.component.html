@@ -27,7 +27,7 @@
       </ng-container>
       <ng-container matColumnDef="price">
         <mat-header-cell *matHeaderCellDef>Preço unitário</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.product?.price}}</mat-cell>
+        <mat-cell *matCellDef="let element">{{element.product?.price  | currency:'BRL':'symbol':'1.2-2'}}</mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="['productName', 'quantity', 'price']"></mat-header-row>
       <mat-row *matRowDef="let row; columns: ['productName', 'quantity', 'price'];"></mat-row>

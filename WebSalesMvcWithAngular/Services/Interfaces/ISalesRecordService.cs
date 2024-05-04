@@ -13,9 +13,9 @@ namespace WebSalesMvcWithAngular.Services.Interfaces
         Task<int> InsertAsync(SalesRecord salesRecord);
         Task UpdateAsync(SalesRecord sale);
         Task DeleteAsync(int id);
-       
-        Task<SalesRecord> FindByIdAsync(int? id);
 
+        Task<(double Sum, int Count, int PendingSales)> GetWeekReportAsync();
+        Task<SalesRecord> FindByIdAsync(int? id);
         Task<(List<SalesRecord> Results, int TotalCount)> FindAlltoInvoiceAsync(int pageNumber = 1, int pageSize = 10);
 
 

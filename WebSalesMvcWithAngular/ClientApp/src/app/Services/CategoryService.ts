@@ -4,7 +4,7 @@ import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './AuthService';
 import { Category } from '../Models/Category';
-
+import { CategoryDTO } from '../DTOs/CategoryDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +14,12 @@ export class CategoryService {
   applicationUrl = 'https://localhost:7135/api';
   constructor(private http: HttpClient, private auth: AuthService) { }
 
-  getCategories(): Observable<Category[]> {
+  getCategories(): Observable<Category[]>  {
     return this.http.get<Category[]>(`${environment.apiUrl}/${this.url}/get-categories`);
+  }
+
+  getCategoriesDTO(): Observable<CategoryDTO[]>  {
+    return this.http.get<CategoryDTO[]>(`${environment.apiUrl}/${this.url}/get-categories-index`);
   }
 
   getCategoriesByProductIds(productIds: number[]): Observable<Category[]> {

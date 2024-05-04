@@ -34,11 +34,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\DTOs\CategoryDTO.ts" />
     <None Remove="ClientApp\src\app\Models\Alert.ts" />
     <None Remove="ClientApp\src\app\Models\AlertSettings.ts" />
     <None Remove="ClientApp\src\app\Models\enums\InventoryUnitMeas.ts" />
     <None Remove="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
     <None Remove="ClientApp\src\app\Models\enums\SaleStatus.ts" />
+    <None Remove="ClientApp\src\app\Models\Reports\SalesData.ts" />
     <None Remove="ClientApp\src\app\Models\SoldProduct.ts" />
     <None Remove="ClientApp\src\app\Models\User.ts" />
     <None Remove="ClientApp\src\app\Services\AlertService.ts" />
@@ -55,11 +57,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\DTOs\CategoryDTO.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\Alert\Alert.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\Alert\AlertSettings.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\enums\InventoryUnitMeas.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\enums\PaymentMethod.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\enums\SaleStatus.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\Reports\SalesData.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\SoldProduct.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\User.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Services\AlertService.ts" />

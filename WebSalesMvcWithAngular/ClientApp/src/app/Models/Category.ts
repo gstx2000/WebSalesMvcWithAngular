@@ -7,4 +7,5 @@ export interface Category {
   department?: Department;
   departmentId: number;
   products?: Product[];
+  productCount?: number;
 }

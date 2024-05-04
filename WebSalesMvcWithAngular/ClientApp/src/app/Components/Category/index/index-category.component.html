@@ -14,13 +14,13 @@
 
   <ng-container matColumnDef="department">
     <mat-header-cell *matHeaderCellDef> Loja </mat-header-cell>
-    <mat-cell *matCellDef="let item"> {{ item.department?.name }} </mat-cell>
+    <mat-cell *matCellDef="let item"> {{ item.departmentName }} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="products">
     <mat-header-cell *matHeaderCellDef>Produtos</mat-header-cell>
     <mat-cell *matCellDef="let item">
-      {{ item.products ? item.products.length : 0 }}
+      {{ item.productCount ? item.productCount : 0 }}
     </mat-cell>
   </ng-container>
 

@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services;
 using WebSalesMvc.Services.Exceptions;
 using WebSalesMvcWithAngular.DTOs;
 using WebSalesMvcWithAngular.Models;
+using WebSalesMvcWithAngular.Models.Reports;
 using WebSalesMvcWithAngular.Services.Exceptions;
 using WebSalesMvcWithAngular.Services.Interfaces;
 
@@ -36,7 +38,6 @@ namespace WebSalesMvc.Controllers
         [Route("get-salesrecords")]
         public async Task<ActionResult<List<SalesRecord>>> GetSalesRecords()
         {
-            var list = await _salesRecordService.FindAllAsync();
             try
             {
                 var sales = await _salesRecordService.FindAllAsync();
@@ -344,6 +345,35 @@ namespace WebSalesMvc.Controllers
                 Data = result
             });
         }
+
+        [HttpGet]
+        [Route("get-week-report")]
+        public async Task<IActionResult> GetWeekReport()
+        {
+
+            try
+            {
+                var weekTotal = await _salesRecordService.GetWeekReportAsync();
+
+                var sales = new SalesData
+                {
+                    Sum = weekTotal.Sum != 0 ? weekTotal.Sum : 0,
+                    Count = weekTotal.Count != 0 ? weekTotal.Count : 0,
+                    PendingSales = weekTotal.PendingSales != 0 ? weekTotal.PendingSales : 0
+                };
+
+                return Ok(sales);
+            }
+            catch (UnauthorizedException)
+            {
+                return Unauthorized("Sem autorização.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Erro interno da aplicação.");
+            }
+        }
+    
 
         [HttpGet]
         [Route("grouping-search")]

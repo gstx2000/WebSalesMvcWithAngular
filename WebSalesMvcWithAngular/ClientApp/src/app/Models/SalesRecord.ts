@@ -1,7 +1,5 @@
 import { SoldProduct } from "./SoldProduct";
 import { Seller } from "./Seller";
-
-
 export interface SalesRecord {
   id?: number;
   amount: number;
@@ -11,3 +9,5 @@ export interface SalesRecord {
   soldProducts?: SoldProduct[];
   paymentMethod: number;
 }
+
+

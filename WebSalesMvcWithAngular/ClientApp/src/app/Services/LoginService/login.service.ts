@@ -19,11 +19,9 @@ export class LoginService {
       const options = await this.auth.getOptions();
       return this.http.post<User>(`${environment.apiUrl}/${this.url}/login`, user, options).pipe(
         tap((response: any) => {
-          console.log(response)
           if (response) {
             const token = response.token; 
             if (token) {
-              console.log(token)
               this.auth.saveToken(token);
             }
           }

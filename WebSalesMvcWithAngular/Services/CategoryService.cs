@@ -3,6 +3,7 @@
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvc.Services.Exceptions;
+using WebSalesMvcWithAngular.DTOs;
 using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Services
@@ -22,6 +23,21 @@ namespace WebSalesMvc.Services
                 .Include(s => s.Department)
                 .Include(s => s.Products) 
                 .ToListAsync();
+        }
+
+        public async Task<List<CategoryDTO>> FindAllDTOAsync()
+        {
+            var categoriesWithProductCounts = await _context.Category
+              .Select(c => new CategoryDTO
+              {
+                  Id = c.Id,
+                  Name = c.Name,
+                  DepartmentName = c.Department.Name,
+                  ProductCount = c.Products.Count()
+              })
+              .ToListAsync();
+
+            return categoriesWithProductCounts;
         }
         public async Task InsertAsync(Category obj)
         {
