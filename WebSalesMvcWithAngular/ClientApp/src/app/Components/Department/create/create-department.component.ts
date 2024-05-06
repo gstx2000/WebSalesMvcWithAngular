@@ -21,8 +21,6 @@ export class CreateDepartmentComponent implements OnInit {
     private router: Router,
     private loadingService: LoadingService,
     private toastr: ToastrService
-
-
   ) {
     this.department = {
       name: '',
@@ -30,7 +28,6 @@ export class CreateDepartmentComponent implements OnInit {
       address: '',
       cnpj: ''
     };
-
   }
 
   ngOnInit(): void {

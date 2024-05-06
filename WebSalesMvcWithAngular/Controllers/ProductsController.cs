@@ -45,10 +45,6 @@ namespace WebSalesMvc.Controllers
 
                 return Ok(products);
             }
-            catch (NotFoundException)
-            {
-                return NotFound("Nenhuma categoria encontrada.");
-            }
             catch (UnauthorizedException)
             {
                 return Unauthorized("Sem autorização.");

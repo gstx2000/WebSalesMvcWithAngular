@@ -56,12 +56,11 @@
           {{ getUnitMeasName(um) }}
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="productForm.get('inventoryUnitMeas')?.hasError('required')">Campo obrigatório</mat-error>
     </mat-form-field>
 
     <br />
 
-    <button type="submit" [disabled]="productForm.invalid" class="btn btn-default">Cadastrar</button>
+    <button type="submit" class="btn btn-default">Cadastrar</button>
     <button class="btn btn-default" [routerLink]="['/products']">Cancelar</button>
   </form>
 </div>

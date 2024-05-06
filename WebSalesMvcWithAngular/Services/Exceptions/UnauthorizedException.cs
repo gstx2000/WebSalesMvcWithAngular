@@ -5,7 +5,7 @@ namespace WebSalesMvcWithAngular.Services.Exceptions
 
     public class UnauthorizedException : Exception
     {
-        public UnauthorizedException() : base("Unauthorized access.")
+        public UnauthorizedException() : base("Acesso negado. Você não está autenticado!")
         {
         }
 

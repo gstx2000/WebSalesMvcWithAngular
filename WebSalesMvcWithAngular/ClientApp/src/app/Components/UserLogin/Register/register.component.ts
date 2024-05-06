@@ -1,32 +1,47 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LoginService } from '../../../Services/LoginService/login.service';
 import { LoadingService } from '../../../Services/LoadingService';
 import { User } from '../../../Models/User';
+import { FormControlErrorMessageService } from '../../../Services/FormControlErrorMessage/form-control-error-message.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private loadingService: LoadingService,
     private toastr: ToastrService,
-    private loginService: LoginService
-  ) { }
+    private loginService: LoginService,
+    private formMessage: FormControlErrorMessageService,
+
+  ) {
+    this.registerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(10),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
+      ]],
+      confirmPassword: ['', Validators.required]
+    }, { asyncValidators: this.passwordMatchValidator() });
+  }
 
   registerForm!: FormGroup;
-
-  ngOnInit(): void {
-    this.initRegisterForm();
-  }
+  private fieldLabels: { [key: string]: string } = {
+    email: 'E-mail',
+    password: 'Senha',
+    confirmPassword: 'Confirmação de senha'
+  };
 
   passwordMatchValidator(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: boolean } | null> => {
@@ -48,19 +63,6 @@ export class RegisterComponent implements OnInit {
     };
   }
 
-  initRegisterForm(): void {
-    this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(10),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
-      ]],
-      confirmPassword: ['', Validators.required]
-    }, { asyncValidators: this.passwordMatchValidator() });
-  }
-
   async onSubmit(): Promise<void> {
     this.loadingService.showLoading();
     try {
@@ -73,7 +75,19 @@ export class RegisterComponent implements OnInit {
         const registeredUser = await (await this.loginService.register(formData)).toPromise();
         this.toastr.success(`Bem vindo ${formData.email}`);
         this.router.navigate(['/home']);
-      }
+      } else {
+        this.loadingService.hideLoading();
+        Object.keys(this.registerForm.controls).forEach(field => {
+          const control = this.registerForm.get(field);
+          if (control) {
+            if (control.invalid && control.touched) {
+              const label = this.fieldLabels[field] || field;
+              const errorMessage = this.formMessage.getErrorMessage(control.errors);
+              this.toastr.error(`Campo ${label} está inválido: ${errorMessage}`);
+            }
+          }
+        });
+      } 
     } catch (error: any) {
       if (error instanceof HttpErrorResponse) {
         const errorBody = error.error;

@@ -56,6 +56,13 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
 
+import { ShippingComponent } from './Components/Shipping/shipping.component';
+import { ViaCepService } from './Services/ViaCep/via-cep.service';
+import { AdressService } from './Services/AdressService/adress.service';
+
+import { CreateSupplierComponent } from './Components/Supplier/create/create-supplier.component';
+
+
 import { ToastrModule } from 'ngx-toastr';
 
 import { LoadingService } from './Services/LoadingService';
@@ -107,7 +114,9 @@ import { SharedModule } from './shared/shared.module';
     RegisterComponent,
     PasswordRecoveryComponent,
     RedefinePasswordComponent,
-    InventoryManagementComponent
+    InventoryManagementComponent,
+    ShippingComponent,
+    CreateSupplierComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -141,7 +150,7 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
   ],
   providers: [DepartmentService, AuthService, LoadingService, ProductService, CategoryService,
-    SalesRecordService, AlertService, LoginService,
+    SalesRecordService, AlertService, LoginService, ViaCepService, AdressService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })

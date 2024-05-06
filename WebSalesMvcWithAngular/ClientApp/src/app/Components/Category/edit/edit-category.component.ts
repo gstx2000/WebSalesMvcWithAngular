@@ -9,6 +9,7 @@ import { CategoryService } from '../../../Services/CategoryService';
 import { Observable } from 'rxjs';
 import { Category } from '../../../Models/Category';
 import { ToastrService } from 'ngx-toastr';
+import { FormControlErrorMessageService } from '../../../Services/FormControlErrorMessage/form-control-error-message.service';
 
 @Component({
   selector: 'app-categories/edit',
@@ -18,6 +19,12 @@ import { ToastrService } from 'ngx-toastr';
 export class EditCategoryComponent implements OnInit {
   categoryForm!: FormGroup;
   departments$: Observable<Department[]> | undefined;
+
+  private fieldLabels: { [key: string]: string } = {
+    name: 'Nome',
+    description: 'Descrição',
+    departmentId: 'ID Departamento'
+  };
   constructor(
     private departmentService: DepartmentService,
     private fb: FormBuilder,
@@ -25,7 +32,8 @@ export class EditCategoryComponent implements OnInit {
     private router: Router,
     private loadingService: LoadingService,
     private categoryService: CategoryService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private formMessage: FormControlErrorMessageService
   ) { }
 
   ngOnInit(): void {
@@ -89,15 +97,23 @@ export class EditCategoryComponent implements OnInit {
             }
           }
         }
+      } else {
+        this.loadingService.hideLoading();
+        Object.keys(this.categoryForm.controls).forEach(field => {
+          const control = this.categoryForm.get(field);
+          if (control) {
+            if (control.invalid && control.touched) {
+              const label = this.fieldLabels[field] || field;
+              const errorMessage = this.formMessage.getErrorMessage(control.errors);
+              this.toastr.error(`Campo ${label} está inválido: ${errorMessage}`);
+            }
+          }
+        });
       }
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar categoria:', error);
       this.loadingService.hideLoading();
     }
-  }
-
-  cancel() {
-    this.router.navigate(['/categories']);
   }
 }

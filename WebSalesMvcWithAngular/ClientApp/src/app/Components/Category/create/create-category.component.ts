@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ToastrService } from 'ngx-toastr';
+import { FormControlErrorMessageService } from '../../../Services/FormControlErrorMessage/form-control-error-message.service';
 
 @Component({
   selector: 'app-create-category',
@@ -17,34 +18,31 @@ import { ToastrService } from 'ngx-toastr';
 export class CreateCategoryComponent implements OnInit {
   categoryForm!: FormGroup;
   departments$: Observable<Department[]> | undefined;
-  category: Category;
+
+  private fieldLabels: { [key: string]: string } = {
+    name: 'Nome',
+    description: 'Descrição',
+    departmentId: 'ID Departamento'
+  };
   constructor(
     private categoryService: CategoryService,
     private departmentService: DepartmentService,
     private fb: FormBuilder,
     private router: Router,
     private loadingService: LoadingService,
-    private toastr: ToastrService
-
+    private toastr: ToastrService,
+    private formMessage: FormControlErrorMessageService
   ) {
-    this.category = {
-      name: '',
-      description: '',
-      departmentId: 0
-    };
+    this.categoryForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['',],
+      departmentId: [0]
+    });
+   
   }
 
   ngOnInit(): void {
     this.departments$ = this.departmentService.getDepartments();
-    this.initCategoryForm();
-  }
-
-  initCategoryForm(): void {
-    this.categoryForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', ],
-      departmentId: [0]
-    });
   }
 
   async onSubmit(): Promise<void> {
@@ -55,6 +53,18 @@ export class CreateCategoryComponent implements OnInit {
         this.toastr.success(`Categoria ${formData.name} criada com sucesso.`);
         this.router.navigate(['/categories']);
 
+      } else {
+        this.loadingService.hideLoading();
+        Object.keys(this.categoryForm.controls).forEach(field => {
+          const control = this.categoryForm.get(field);
+          if (control) {
+            if (control.invalid && control.touched) {
+              const label = this.fieldLabels[field] || field;
+              const errorMessage = this.formMessage.getErrorMessage(control.errors);
+              this.toastr.error(`Campo ${label} está inválido: ${errorMessage}`);
+            }
+          }
+        });
       }
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
@@ -63,9 +73,5 @@ export class CreateCategoryComponent implements OnInit {
     } finally {
       this.loadingService.hideLoading();
     }
-  }
-
-  cancel() {
-    this.router.navigate(['/categories']);
   }
 }

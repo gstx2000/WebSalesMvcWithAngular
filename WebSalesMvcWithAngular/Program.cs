@@ -22,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<SellerService>();
 builder.Services.AddScoped<ISalesRecordService, SalesRecordService>();
 builder.Services.AddScoped<PasswordRecoveryService>();

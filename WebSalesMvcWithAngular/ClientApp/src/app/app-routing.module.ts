@@ -33,6 +33,11 @@ import { PasswordRecoveryComponent } from './Components/UserLogin/PasswordRecove
 import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecovery/RedefinePassword/redefine-password.component';
 import { InventoryManagementComponent } from './Components/Product/inventoryManagement/inventory-management.component';
 
+import { ShippingComponent } from './Components/Shipping/shipping.component';
+import { CreateSupplierComponent } from './Components/Supplier/create/create-supplier.component';
+
+
+
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
@@ -73,6 +78,13 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'password-recovery', component: PasswordRecoveryComponent },
   { path: 'redefine-password', component: RedefinePasswordComponent },
+
+  // Shipping routes
+  { path: 'shipping', component: ShippingComponent },
+
+
+  // Supplier routes
+  { path: 'suppliers/create', component: CreateSupplierComponent }
 
 ];
 

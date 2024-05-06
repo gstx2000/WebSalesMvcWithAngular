@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Models.Enums;
 namespace WebSalesMvc.Models
 {
+    [Help("")]
+
     public class Product
     {
         [Key]
@@ -29,6 +32,7 @@ namespace WebSalesMvc.Models
 
         [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
+        public List<ProductSupplier> Suppliers { get; set; }
 
         [Display(Name = "Imagem")]
         public string? ImageUrl { get; set; }
@@ -48,6 +52,9 @@ namespace WebSalesMvc.Models
 
         [Display(Name = "Quantidade mínima de estoque")]
         public double? MinimumInventoryQuantity { get; set; }
+
+        [Display(Name = "Código de barras")]
+        public string? BarCode { get; set; }
 
         [Display(Name = "Valor total de estoque")]
         public double? TotalInventoryValue
@@ -157,5 +164,10 @@ namespace WebSalesMvc.Models
                 return false;
             }
         }
+
+    //    get suppliers: var productSuppliers = dbContext.ProductSuppliers
+    //.Where(ps => ps.ProductId == productId)
+    //.Select(ps => ps.Supplier)
+    //.ToList();
     }
 }

@@ -16,7 +16,7 @@ namespace WebSalesMvcWithAngular.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.14")
+                .HasAnnotation("ProductVersion", "7.0.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("WebSalesMvc.Models.Category", b =>
@@ -74,6 +74,9 @@ namespace WebSalesMvcWithAngular.Migrations
 
                     b.Property<double?>("AcquisitionCost")
                         .HasColumnType("double");
+
+                    b.Property<string>("BarCode")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -184,6 +187,99 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.ToTable("Seller");
                 });
 
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Adress", b =>
+                {
+                    b.Property<int?>("AdressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Bairro")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CEP")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DDD")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Localidade")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Logradouro")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UF")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("AdressId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Adress");
+                });
+
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Customer", b =>
+                {
+                    b.Property<int?>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("CNPJ")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CPF")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RG")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.ProductSupplier", b =>
+                {
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "SupplierId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("ProductSupplier");
+                });
+
             modelBuilder.Entity("WebSalesMvcWithAngular.Models.SoldProduct", b =>
                 {
                     b.Property<int>("Id")
@@ -206,6 +302,45 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.HasIndex("SalesRecordId");
 
                     b.ToTable("SoldProducts");
+                });
+
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Supplier", b =>
+                {
+                    b.Property<int?>("SupplierId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("CNPJ")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ContactPerson")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("DayToPay")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<double?>("ShippingValue")
+                        .HasColumnType("double");
+
+                    b.Property<int?>("SupplierType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("SupplierId");
+
+                    b.ToTable("Supplier");
                 });
 
             modelBuilder.Entity("WebSalesMvc.Models.Category", b =>
@@ -260,6 +395,40 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Navigation("Department");
                 });
 
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Adress", b =>
+                {
+                    b.HasOne("WebSalesMvcWithAngular.Models.Customer", "Customer")
+                        .WithMany("Adresses")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("WebSalesMvcWithAngular.Models.Supplier", "Supplier")
+                        .WithMany("Adresses")
+                        .HasForeignKey("SupplierId");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.ProductSupplier", b =>
+                {
+                    b.HasOne("WebSalesMvc.Models.Product", "Product")
+                        .WithMany("Suppliers")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebSalesMvcWithAngular.Models.Supplier", "Supplier")
+                        .WithMany("Products")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Supplier");
+                });
+
             modelBuilder.Entity("WebSalesMvcWithAngular.Models.SoldProduct", b =>
                 {
                     b.HasOne("WebSalesMvc.Models.Product", "Product")
@@ -285,6 +454,11 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Navigation("Sellers");
                 });
 
+            modelBuilder.Entity("WebSalesMvc.Models.Product", b =>
+                {
+                    b.Navigation("Suppliers");
+                });
+
             modelBuilder.Entity("WebSalesMvc.Models.SalesRecord", b =>
                 {
                     b.Navigation("SoldProducts");
@@ -293,6 +467,18 @@ namespace WebSalesMvcWithAngular.Migrations
             modelBuilder.Entity("WebSalesMvc.Models.Seller", b =>
                 {
                     b.Navigation("Sales");
+                });
+
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Customer", b =>
+                {
+                    b.Navigation("Adresses");
+                });
+
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Supplier", b =>
+                {
+                    b.Navigation("Adresses");
+
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

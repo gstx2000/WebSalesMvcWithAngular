@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { InventoryUnitMeas } from '../../../Models/enums/InventoryUnitMeas';
 import { ProductDTO } from '../../../DTOs/ProductDTO';
 import { CategoryDTO } from '../../../DTOs/CategoryDTO';
+import { FormControlErrorMessageService } from '../../../Services/FormControlErrorMessage/form-control-error-message.service';
 
 @Component({
   selector: 'app-products/create',
@@ -25,6 +26,16 @@ export class CreateProductComponent implements OnInit {
   departments$: Observable<Department[]> | undefined;
   categories$: Observable<CategoryDTO[]> | undefined;
   InventoryUnitMeas!: InventoryUnitMeas;
+
+  private fieldLabels: { [key: string]: string } = {
+    price: 'Preço',
+    name: 'Nome',
+    description: 'Descrição',
+    categoryId: 'ID Categoria',
+    departmentId: 'ID Departamento',
+    imageUrl: 'URL de imagem',
+    inventoryUnitMeas: 'Unidade de medida'
+  };
   constructor(
     private productService: ProductService,
     private departmentService: DepartmentService,
@@ -32,7 +43,9 @@ export class CreateProductComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private loadingService: LoadingService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private formMessage: FormControlErrorMessageService
+
 
   ) {
     this.product = {
@@ -54,7 +67,7 @@ export class CreateProductComponent implements OnInit {
 
   initProductForm(): void {
     this.productForm = this.fb.group({
-      price: [1, Validators.min(0.1)],
+      price: [0, [Validators.required, Validators.min(1)]],
       name: ['', Validators.required],
       description: '',
       categoryId: [0],
@@ -73,7 +86,19 @@ export class CreateProductComponent implements OnInit {
         const createdProduct = await (await this.productService.createProduct(formData)).toPromise();
         this.toastr.success(`Produto ${formData.name} criado com sucesso.`);
         this.router.navigate(['/products']);
-      }
+      } else {
+        this.loadingService.hideLoading();
+        Object.keys(this.productForm.controls).forEach(field => {
+          const control = this.productForm.get(field);
+          if (control) {
+            if (control.invalid && control.touched) {
+              const label = this.fieldLabels[field] || field;
+              const errorMessage = this.formMessage.getErrorMessage(control.errors);
+              this.toastr.error(`Campo ${label} está inválido: ${errorMessage}`);
+            }
+          }
+        });
+      } 
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao criar:', error);

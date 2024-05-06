@@ -11,6 +11,8 @@ import { CategoryService } from '../../../Services/CategoryService';
 import { Product } from '../../../Models/Product';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ToastrService } from 'ngx-toastr';
+import { FormControlErrorMessageService } from '../../../Services/FormControlErrorMessage/form-control-error-message.service';
+
 
 @Component({
   selector: 'app-products/edit',
@@ -21,6 +23,16 @@ export class EditProductComponent {
   departments$: Observable<Department[]> | undefined;
   productForm!: FormGroup;
   categories$: Observable<Category[]> | undefined;
+
+  private fieldLabels: { [key: string]: string } = {
+    price: 'Preço',
+    name: 'Nome',
+    description: 'Descrição',
+    categoryId: 'ID Categoria',
+    departmentId: 'ID Departamento',
+    imageUrl: 'URL de imagem',
+    inventoryUnitMeas: 'Unidade de medida'
+  };
   constructor(
     private departmentService: DepartmentService,
     private productService: ProductService,
@@ -29,7 +41,8 @@ export class EditProductComponent {
     private fb: FormBuilder,
     private activedroute: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private formMessage: FormControlErrorMessageService
   ) { }
 
   ngOnInit(): void {
@@ -93,10 +106,21 @@ export class EditProductComponent {
               const updatedProduct = await (await this.productService.updateProduct(productId.id, formData)).toPromise();
               this.toastr.success(`Produto ${formData.name} alterado com sucesso.`);
               this.router.navigate(['/products']);
-
             }
           }
         }
+      } else {
+        this.loadingService.hideLoading();
+        Object.keys(this.productForm.controls).forEach(field => {
+          const control = this.productForm.get(field);
+          if (control) {
+            if (control.invalid && control.touched) {
+              const label = this.fieldLabels[field] || field;
+              const errorMessage = this.formMessage.getErrorMessage(control.errors);
+              this.toastr.error(`Campo ${label} está inválido: ${errorMessage}`);
+            }
+          }
+        });
       }
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');

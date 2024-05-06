@@ -5,7 +5,7 @@
 namespace WebSalesMvcWithAngular.Migrations
 {
     /// <inheritdoc />
-    public partial class ProductBugFix : Migration
+    public partial class AdjustingSupplierAdresses3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
