@@ -273,6 +273,9 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
+                    b.Property<double?>("SupplyPrice")
+                        .HasColumnType("double");
+
                     b.HasKey("ProductId", "SupplierId");
 
                     b.HasIndex("SupplierId");

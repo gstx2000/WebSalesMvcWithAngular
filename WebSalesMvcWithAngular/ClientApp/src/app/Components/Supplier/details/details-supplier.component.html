@@ -1,0 +1,37 @@
+<div class="table">
+  <mat-table class="selected-products" [dataSource]="productsDataSource" matSort>
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.id }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Produto </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.name }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="categoryname">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Categoria </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.categoryname }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Preço </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.price }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+      <mat-cell *matCellDef="let item" fxLayout="row" fxLayoutAlign="space-between">
+        <button mat-mini-fab color="warn" (click)="removeFromSupplier(item.id)" class="btn btn-default">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['id', 'name', 'categoryname', 'price', 'actions']"></mat-header-row>
+
+    <mat-row *matRowDef="let row; columns: ['id', 'name', 'categoryname', 'price', 'actions']"></mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25]" aria-label="Select page of users"></mat-paginator>
+</div>

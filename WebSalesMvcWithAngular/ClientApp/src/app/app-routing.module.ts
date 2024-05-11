@@ -35,6 +35,8 @@ import { InventoryManagementComponent } from './Components/Product/inventoryMana
 
 import { ShippingComponent } from './Components/Shipping/shipping.component';
 import { CreateSupplierComponent } from './Components/Supplier/create/create-supplier.component';
+import { IndexSupplierComponent } from './Components/Supplier/index/index-supplier.component';
+import { DetailsSupplierComponent } from './Components/Supplier/details/details-supplier.component';
 
 
 
@@ -84,7 +86,11 @@ const routes: Routes = [
 
 
   // Supplier routes
-  { path: 'suppliers/create', component: CreateSupplierComponent }
+  { path: 'suppliers/create', component: CreateSupplierComponent },
+  { path: 'suppliers', component: IndexSupplierComponent },
+  { path: 'suppliers/details/:id', component: DetailsSupplierComponent }
+
+
 
 ];
 

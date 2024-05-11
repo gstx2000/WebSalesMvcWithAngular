@@ -4,6 +4,7 @@ import { AuthService } from '../AuthService';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { User } from '../../Models/User';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,9 @@ import { User } from '../../Models/User';
 export class LoginService {
   private url = 'Users';
   applicationUrl = 'https://localhost:7135/api';
-  constructor(private http: HttpClient, private auth: AuthService) { }
+  constructor(private http: HttpClient,
+    private router: Router,
+    private auth: AuthService) { }
 
   async login(user: User): Promise<Observable<HttpEvent<User>>> {
     user.username = user.email;
@@ -83,4 +86,17 @@ export class LoginService {
       return throwError(error);
     }
   }
+
+   
+  async logout(): Promise<void> {
+    try {
+      const options = await this.auth.getOptions();
+      await this.http.post<any>(`${environment.apiUrl}/${this.url}/logout`, {}, options).toPromise();
+      this.auth.removeToken();
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.error('Erro ao deslogar:', error);
+    }
+  }
+  
 }

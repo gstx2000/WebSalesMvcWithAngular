@@ -12,23 +12,35 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { InventoryUnitMeas } from '../../../Models/enums/InventoryUnitMeas';
 import { ProductDTO } from '../../../DTOs/ProductDTO';
+import { SupplierType } from '../../../Models/enums/SupplierType';
+import { SupplierService } from '../../../Services/SupplierService/supplier.service';
+import { Supplier } from '../../../Models/Supplier';
 
 @Component({
   selector: 'app-inventory-management',
   templateUrl: './inventory-management.component.html',
   styleUrls: ['./inventory-management.component.css']
 })
-export class InventoryManagementComponent implements OnInit, OnDestroy {
+export class InventoryManagementComponent implements OnDestroy {
 
   searchControl: FormControl = new FormControl();
   searchForm!: FormGroup;
   categories$!: Observable<Category[]>;
+  suppliers$!: Observable<Supplier[]>;
+
   isMessageVisible: boolean = false;
   private destroy$ = new Subject<void>();
   products: ProductDTO[] = []; 
   selectedProduct!: ProductDTO;
   filteredProducts: ProductDTO[] = [];
   productForm!: FormGroup;
+
+  private fieldLabels: { [key: string]: string } = {
+    inventoryQuantity: 'Quantidade em estoque',
+    acquisitionCost: 'Custo de aquisição',
+    minimumInventoryQuantity: 'Quantidade mínima de estoque',
+    supplierId: 'ID de fornecedor',
+  };
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
@@ -37,34 +49,29 @@ export class InventoryManagementComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private toastr: ToastrService,
     private router: Router,
+    private supplierService: SupplierService
 
-  ) { }
-
-  ngOnInit(): void {
-    this.initsearchForm();
-    this.initProductForm();
+  ) {
     this.setupSearchControl();
     this.categories$ = this.categoryService.getCategories();
+    this.suppliers$ = this.supplierService.getSuppliers();
+
+    this.searchForm = this.fb.group({
+      category: [null],
+      search: this.searchControl
+    });
+
+    this.productForm = this.fb.group({
+      inventoryQuantity: 0,
+      acquisitionCost: 0,
+      minimumInventoryQuantity: 0,
+      supplierId: 0
+    });
   }
   
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  initsearchForm(): void {
-    this.searchForm = this.fb.group({
-      category: [null],
-      search: this.searchControl
-    });
-  }
-
-  initProductForm(): void {
-    this.productForm = this.fb.group({
-      inventoryQuantity: 0,
-      acquisitionCost: 0,
-      minimumInventoryQuantity: 0
-    });
   }
 
   resetFilter(): void {

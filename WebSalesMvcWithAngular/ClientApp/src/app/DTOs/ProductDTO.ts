@@ -16,5 +16,6 @@ export interface ProductDTO {
   totalInventoryCost?: number;
   profit?: number;
   margin?: number;
+  supplierId?: number;
 }
 

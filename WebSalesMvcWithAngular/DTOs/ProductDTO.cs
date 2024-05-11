@@ -23,5 +23,6 @@ namespace WebSalesMvcWithAngular.DTOs
         public double? CMV { get; set; }
         public double? Profit { get; set; }
         public double? Margin { get; set; }
+        public int SupplierId { get; set; }
     }
 }

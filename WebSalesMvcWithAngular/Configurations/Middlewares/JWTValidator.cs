@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace WebSalesMvcWithAngular.Configurations.Middlewares
@@ -18,6 +19,7 @@ namespace WebSalesMvcWithAngular.Configurations.Middlewares
         }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+            string route = context.Request.Path;
             string authHeader = context.Request.Headers["Authorization"];
             if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
             {
@@ -26,12 +28,21 @@ namespace WebSalesMvcWithAngular.Configurations.Middlewares
                 {
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var jwtToken = tokenHandler.ReadJwtToken(token);
+                    var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
 
+                    if (IsLogoutRoute(context.GetEndpoint()))
+                    {
+                        context.Items["UserId"] = userIdClaim?.Value;
+                        await next(context);
+                        _logger.LogInformation($"UserId: { userIdClaim?.Value }");
+
+                        return;
+                    }
+                
                     if (_validator.ValidateSignature(token, _jwtOptions, out jwtToken, _conf))
                     {
                         await next(context);
                         _logger.LogInformation($"Token validated successfully {jwtToken}");
-
                     }
                     else
                     {
@@ -47,6 +58,15 @@ namespace WebSalesMvcWithAngular.Configurations.Middlewares
                     //return;
                 }
             }
+        }
+
+        private bool IsLogoutRoute(Endpoint endpoint)
+        {
+            if (endpoint?.Metadata.GetMetadata<RouteAttribute>()?.Template == "logout")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

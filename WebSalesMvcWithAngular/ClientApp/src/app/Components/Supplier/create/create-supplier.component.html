@@ -1,68 +1,72 @@
-<div>
-  <form method="post" asp-controller="SuppliersController" asp-action="Create" asp-antiforgery="true" [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
+<div class="container">
 
-    <mat-form-field appearance="outline">
-      <mat-label for="name">Nome</mat-label>
-      <input matInput type="text" id="name" formControlName="name" required>
-    </mat-form-field>
+  <div class="form-container">
+    <form method="post" asp-controller="SuppliersController" asp-action="Create" asp-antiforgery="true" [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
 
-    <br />
+      <mat-form-field appearance="outline">
+        <mat-label for="name">Nome</mat-label>
+        <input matInput type="text" id="name" formControlName="name" required>
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" floatLabel="always">
-      <mat-label>Telefone de contato</mat-label>
-      <input matInput type="text" id="phone" formControlName="phone" placeholder="(00)00000-0000">
-    </mat-form-field>
+      <br />
 
-    <br />
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Telefone de contato</mat-label>
+        <input matInput type="text" id="phone" formControlName="phone" placeholder="(00)00000-0000">
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label for="email">E-mail</mat-label>
-      <input matInput type="email" id="CNPJ" formControlName="email" placeholder="exemplo@email.com">
-    </mat-form-field>
-    
-    <br />
+      <br />
 
-    <mat-form-field appearance="outline">
-      <mat-label for="CNPJ">CNPJ</mat-label>
-      <input matInput type="text" id="CNPJ" formControlName="CNPJ" placeholder="XX.XXX.XXX/0001-XX">
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label for="email">E-mail</mat-label>
+        <input matInput type="email" id="CNPJ" formControlName="email" placeholder="exemplo@email.com">
+      </mat-form-field>
 
-    <br />
+      <br />
 
-    <mat-form-field appearance="outline">
-      <mat-label for="contactPerson">Pessoa de contato</mat-label>
-      <input matInput type="text" id="contactPerson" formControlName="contactPerson">
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label for="CNPJ">CNPJ</mat-label>
+        <input matInput type="text" id="CNPJ" formControlName="CNPJ" placeholder="XX.XXX.XXX/0001-XX">
+      </mat-form-field>
 
-    <br />
+      <br />
 
-    <mat-form-field appearance="outline">
-      <mat-label for="dayToPay">Definir dia de pagamento</mat-label>
-      <input matInput type="number" id="dayToPay" formControlName="dayToPay">
-    </mat-form-field>
-    
-    <br />
+      <mat-form-field appearance="outline">
+        <mat-label for="contactPerson">Pessoa de contato</mat-label>
+        <input matInput type="text" id="contactPerson" formControlName="contactPerson">
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label for="supplierType">Tipo de fornecedor</mat-label>
-      <mat-select id="supplierType" formControlName="supplierType">
-        <mat-option *ngFor="let supplierType of getSupplierTypeValues()" [value]="supplierType">
-          {{ getSupplierTypeName(supplierType) }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <br />
 
-    <br />
+      <mat-form-field appearance="outline">
+        <mat-label for="dayToPay">Definir dia de pagamento</mat-label>
+        <input matInput type="number" id="dayToPay" formControlName="dayToPay">
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label for="website">Site</mat-label>
-      <input matInput type="text" id="website" formControlName="website">
-    </mat-form-field>
+      <br />
 
-    <br />
+      <mat-form-field appearance="outline">
+        <mat-label for="supplierType">Tipo de fornecedor</mat-label>
+        <mat-select id="supplierType" formControlName="supplierType">
+          <mat-option *ngFor="let supplierType of getSupplierTypeValues()" [value]="supplierType">
+            {{ getSupplierTypeName(supplierType) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <button type="submit" class="btn btn-default">Cadastrar</button>
-    <button class="btn btn-default" [routerLink]="['/suppliers']">Cancelar</button>
+      <br />
 
-  </form>
+      <mat-form-field appearance="outline">
+        <mat-label for="website">Site</mat-label>
+        <input matInput type="text" id="website" formControlName="website">
+      </mat-form-field>
+
+      <br />
+
+      <button type="submit" class="btn btn-default">Cadastrar</button>
+      <button class="btn btn-default" [routerLink]="['/suppliers']">Cancelar</button>
+
+    </form>
+  </div>
+
 </div>

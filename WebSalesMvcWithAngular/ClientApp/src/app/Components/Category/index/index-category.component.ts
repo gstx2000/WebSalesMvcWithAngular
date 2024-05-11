@@ -12,19 +12,15 @@ import { CategoryDTO } from '../../../DTOs/CategoryDTO';
   templateUrl: './index-category.component.html',
   styleUrls: ['./index-category.component.css']
 })
-export class IndexCategoryComponent implements OnInit {
+export class IndexCategoryComponent {
   categories: CategoryDTO[] = [];
   categoriesDataSource = new MatTableDataSource<CategoryDTO>();
-
   constructor(
     private categoryService: CategoryService,
     private loadingService: LoadingService,
     private toastr: ToastrService,
     private dialog: MatDialog
   ) {
-  }
-
-  ngOnInit(): void {
     this.loadCategories();
   }
 

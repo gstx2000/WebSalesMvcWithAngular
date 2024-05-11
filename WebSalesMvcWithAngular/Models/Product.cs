@@ -164,10 +164,5 @@ namespace WebSalesMvc.Models
                 return false;
             }
         }
-
-    //    get suppliers: var productSuppliers = dbContext.ProductSuppliers
-    //.Where(ps => ps.ProductId == productId)
-    //.Select(ps => ps.Supplier)
-    //.ToList();
     }
 }

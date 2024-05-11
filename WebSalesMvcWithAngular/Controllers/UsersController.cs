@@ -84,11 +84,27 @@ public class UsersController : ControllerBase
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Logout()
+    [Authorize]
+    [Route("logout")]
+    public async Task Logout()
     {
-        await _signInManager.SignOutAsync();
+        var userId = HttpContext.Items["UserId"] as string;
+        var user = await _userManager.FindByIdAsync(userId);
 
-        return Ok();
+        _logger.LogInformation($"user id controller: {userId}");
+        _logger.LogInformation($"user  controller: {user}");
+
+
+        if (user != null)
+        {
+            await _signInManager.SignOutAsync();
+        } 
+        else
+        {
+            BadRequest("Usuário não encontrado.");
+        }
+
+        Ok("Usuário deslogado.");
     }
 
     [HttpPost]

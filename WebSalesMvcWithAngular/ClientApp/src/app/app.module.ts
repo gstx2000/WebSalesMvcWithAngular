@@ -81,6 +81,8 @@ import { PasswordRecoveryComponent } from './Components/UserLogin/PasswordRecove
 import { RedefinePasswordComponent } from './Components/UserLogin/PasswordRecovery/RedefinePassword/redefine-password.component';
 import { InventoryManagementComponent } from './Components/Product/inventoryManagement/inventory-management.component';
 import { SharedModule } from './shared/shared.module';
+import { IndexSupplierComponent } from './Components/Supplier/index/index-supplier.component';
+import { DetailsSupplierComponent } from './Components/Supplier/details/details-supplier.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +118,9 @@ import { SharedModule } from './shared/shared.module';
     RedefinePasswordComponent,
     InventoryManagementComponent,
     ShippingComponent,
-    CreateSupplierComponent
+    CreateSupplierComponent,
+    IndexSupplierComponent,
+    DetailsSupplierComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

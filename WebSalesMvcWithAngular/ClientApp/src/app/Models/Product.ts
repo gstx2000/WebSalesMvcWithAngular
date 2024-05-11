@@ -19,4 +19,5 @@ export interface Product {
   totalInventoryCost?: number;
   profit?: number;
   margin?: number;
+  supplierId?: number;
 }

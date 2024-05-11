@@ -5,6 +5,7 @@ import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDepartmentComponent } from '../delete/delete-department.component';
 import { ToastrService } from 'ngx-toastr';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-departments',
@@ -13,6 +14,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class IndexDepartmentComponent implements OnInit {
   departments: Department[] = [];
+  departmentsDataSource = new MatTableDataSource<Department>();
+
   constructor(private departmentService: DepartmentService,
     private loadingService: LoadingService,
     private dialog: MatDialog,
@@ -30,6 +33,7 @@ export class IndexDepartmentComponent implements OnInit {
       (result: Department[]) => {
         if (Array.isArray(result)) {
           this.departments = result;
+          this.departmentsDataSource = new MatTableDataSource(result);
         }
       },
       (error) => {

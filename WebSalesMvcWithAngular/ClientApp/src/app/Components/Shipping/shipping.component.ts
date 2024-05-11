@@ -14,7 +14,6 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './shipping.component.html',
   styleUrls: ['./shipping.component.css']
 })
-
 export class ShippingComponent implements OnInit {
   constructor(
     private ViaCepService: ViaCepService,

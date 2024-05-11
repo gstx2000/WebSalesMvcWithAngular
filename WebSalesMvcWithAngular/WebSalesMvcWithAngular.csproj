@@ -93,6 +93,7 @@
     <Folder Include="ClientApp\src\app\Components\Shipping\" />
     <Folder Include="ClientApp\src\app\Components\Product\inventoryManagement\" />
     <Folder Include="ClientApp\src\app\Components\Supplier\create\" />
+    <Folder Include="ClientApp\src\app\Components\Supplier\details\" />
     <Folder Include="ClientApp\src\app\Components\UserLogin\PasswordRecovery\RedefinePassword\" />
     <Folder Include="ClientApp\src\app\Components\UserLogin\Register\" />
     <Folder Include="ClientApp\src\app\Components\Product\create\" />

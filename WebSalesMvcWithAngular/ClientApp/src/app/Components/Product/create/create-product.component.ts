@@ -55,7 +55,8 @@ export class CreateProductComponent implements OnInit {
       categoryId: 0,
       departmentId: 0,
       imageUrl: '',
-      inventoryUnitMeas: 0
+      inventoryUnitMeas: 0,
+      supplierId: 0
     };
   }
 

@@ -1,3 +1,4 @@
+import { ProductDTO } from '../DTOs/ProductDTO';
 import { Adress } from './Adress';
 import { SupplierType } from './enums/SupplierType';
 
@@ -13,4 +14,5 @@ export interface Supplier {
   website?: string;
   shippingValue?: number;
   adresses?: Adress[];
+  products?: ProductDTO[];
 }

@@ -76,7 +76,6 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
     this.products$ = this.productService.getProducts();
     this.categories$ = this.categoryService.getCategories();
     this.loadingService.hideLoading();
-
   }
 
   ngOnDestroy() {
@@ -217,7 +216,6 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
         const createdSales = await (await this.SalesService.createSalesRecordAsync(formData)).toPromise();
         this.toastr.success('A venda foi registrada com sucesso.')
         this.router.navigate(['/salesRecords']);
-        
       }
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');

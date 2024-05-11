@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { DepartmentService } from '../../../Services/DepartmentService';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Department } from '../../../Models/Department';
@@ -16,7 +16,7 @@ import { FormControlErrorMessageService } from '../../../Services/FormControlErr
   templateUrl: './edit-category.component.html',
   styleUrls: ['./edit-category.component.css']
 })
-export class EditCategoryComponent implements OnInit {
+export class EditCategoryComponent  {
   categoryForm!: FormGroup;
   departments$: Observable<Department[]> | undefined;
 
@@ -34,17 +34,14 @@ export class EditCategoryComponent implements OnInit {
     private categoryService: CategoryService,
     private toastr: ToastrService,
     private formMessage: FormControlErrorMessageService
-  ) { }
-
-  ngOnInit(): void {
-    this.initializeForm();
-    this.departments$ = this.departmentService.getDepartments();
-    const categoryId = Number(this.activedroute.snapshot.params['id']);
-    if (categoryId) {
-      this.fetchCategory(categoryId);
-
+  ) {
+      this.initializeForm();
+      this.departments$ = this.departmentService.getDepartments();
+      const categoryId = Number(this.activedroute.snapshot.params['id']);
+      if (categoryId) {
+        this.fetchCategory(categoryId);
+      }
     }
-  }
 
   initializeForm(): void {
     this.categoryForm = this.fb.group({

@@ -20,15 +20,17 @@ namespace WebSalesMvc.Controllers
         private readonly IDepartmentService _departmentService;
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
+        private readonly ISupplierService _supplierService;
         private readonly ILogger<SalesRecordsController> _logger;
 
-        public ProductsController(WebSalesMvcContext context, IDepartmentService departmentService, ILogger<SalesRecordsController> logger, ICategoryService categoryService, IProductService productService)
+        public ProductsController(WebSalesMvcContext context, IDepartmentService departmentService, ILogger<SalesRecordsController> logger, ICategoryService categoryService, IProductService productService, ISupplierService supplierService)
         {
             _context = context;
             _departmentService = departmentService;
             _categoryService = categoryService;
             _productService = productService;
             _logger = logger;
+            _supplierService = supplierService;
         }
 
         [HttpGet]
@@ -298,10 +300,17 @@ namespace WebSalesMvc.Controllers
                 {
                     try
                     {
+                        var supplier = await _supplierService.FindByIdAsync(productDto.SupplierId);
+
                         productToUpdate.InventoryCost = productDto.InventoryCost ?? productToUpdate.InventoryCost;
                         productToUpdate.InventoryQuantity = productToUpdate.InventoryQuantity + productDto.InventoryQuantity ?? productToUpdate.InventoryQuantity;
                         productToUpdate.AcquisitionCost = productDto.AcquisitionCost ?? productToUpdate.AcquisitionCost;
                         productToUpdate.MinimumInventoryQuantity = productDto.MinimumInventoryQuantity ?? productToUpdate.MinimumInventoryQuantity;
+
+                        if (supplier != null)
+                        {
+                            await _productService.AddSupplierAsync(productToUpdate, supplier, productDto.AcquisitionCost ?? 0);
+                        }
 
                         await _productService.UpdateAsync(productToUpdate);
 

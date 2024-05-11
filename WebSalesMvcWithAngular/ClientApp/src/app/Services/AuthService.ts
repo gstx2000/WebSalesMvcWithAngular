@@ -48,9 +48,11 @@ export class AuthService {
 
   saveToken(token: string) {
     localStorage.setItem('JWTtoken', token);
-    console.log('Token:', token);
   }
 
+  removeToken() {
+    localStorage.removeItem('JWTtoken');
+  }
   isLoggedIn() {
 
       return false;

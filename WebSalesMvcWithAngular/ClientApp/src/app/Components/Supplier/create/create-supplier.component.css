@@ -1,0 +1,41 @@
+/* General styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Container for the form and the right side */
+.container {
+  display: flex;
+  height: 100%;
+}
+
+/* Form container */
+.form-container {
+  flex: 1;
+  padding: 20px;
+}
+
+.right-container {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto; /* Add scroll if content overflows */
+}
+
+.search-container, .table {
+  margin-bottom: 20px;
+  width: 100%;
+}
+.input-container {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 38px;
+}
+
+.right-card {
+  align-items: center;
+  justify-content: center;
+  display:flex;
+}

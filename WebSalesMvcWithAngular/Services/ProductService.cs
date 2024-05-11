@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
+using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Interfaces;
 public class ProductService: IProductService
 {
@@ -77,5 +78,25 @@ public class ProductService: IProductService
             query = query.Where(p => p.CategoryId == categoryId.Value);
         }
         return await query.ToListAsync();
+    }
+
+    public async Task<List<Supplier>> GetSuppliers(int productId) {
+      return await  _context.ProductSupplier
+         .Where(ps => ps.ProductId == productId)
+         .Select(ps => ps.Supplier)
+         .ToListAsync();
+    }
+
+    public async Task AddSupplierAsync(Product product, Supplier supplier, double supplyPrice)
+    {
+        var productSupplier = new ProductSupplier
+        {
+            Product = product,
+            Supplier = supplier,
+            SupplyPrice = supplyPrice
+        };
+
+        _context.ProductSupplier.Add(productSupplier);
+        await _context.SaveChangesAsync();
     }
 }

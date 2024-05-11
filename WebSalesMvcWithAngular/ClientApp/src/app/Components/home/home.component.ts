@@ -23,8 +23,5 @@ export class HomeComponent implements OnInit{
   ngOnInit(): void {
     this.salesData$ = this.salesService.getWeekEarnings();
     this.salesData$.subscribe(value => {
-      console.log(value.count);
-      console.log(value.pendingSales);
-
     });  }
 }

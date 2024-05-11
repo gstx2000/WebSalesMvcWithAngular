@@ -1,4 +1,5 @@
 ﻿using WebSalesMvc.Models;
+using WebSalesMvcWithAngular.Models;
 
 namespace WebSalesMvcWithAngular.Services.Interfaces
 {
@@ -12,5 +13,7 @@ namespace WebSalesMvcWithAngular.Services.Interfaces
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
         Task<List<Product>> FindByNameAsync(string productName, int? categoryId = null);
+        Task<List<Supplier>> GetSuppliers(int productId);
+        Task AddSupplierAsync(Product product, Supplier supplier, double supplyPrice);
     }
 }

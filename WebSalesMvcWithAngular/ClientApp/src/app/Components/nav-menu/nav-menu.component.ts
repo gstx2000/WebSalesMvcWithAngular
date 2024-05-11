@@ -1,5 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { LoginService } from '../../Services/LoginService/login.service';
+import { LoadingService } from '../../Services/LoadingService';
 
 @Component({
  selector: 'app-nav-menu',
@@ -9,7 +11,17 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class NavMenuComponent {
  @ViewChild(MatMenuTrigger) matMenuTrigger!: MatMenuTrigger;
 
- isExpanded = false;
+  isExpanded = false;
+
+  constructor(private loginService: LoginService, private loadingService: LoadingService,
+) { }
+
+  logoutUser() {
+    this.loadingService.showLoading();
+    this.loginService.logout();
+    this.loadingService.hideLoading();
+
+  }
 
  toggle() {
     this.isExpanded = !this.isExpanded;
