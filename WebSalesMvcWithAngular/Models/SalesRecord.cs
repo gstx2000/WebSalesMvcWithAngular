@@ -17,7 +17,7 @@ namespace WebSalesMvc.Models
        
         [Required]
         [Display(Name = "Valor")]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [Required]
         [Display(Name = "Status")]
@@ -35,6 +35,8 @@ namespace WebSalesMvc.Models
         [Display(Name = "Nome do cliente")]
         public string? CustomerName { get; set; }
 
+        [Display(Name = "Lucro")]
+        public decimal? Profit  { get; set; }
         public SalesRecord()
         {
             SoldProducts = new List<SoldProduct>();

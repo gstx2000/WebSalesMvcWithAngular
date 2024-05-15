@@ -157,7 +157,7 @@ namespace WebSalesMvc.Controllers
                 var newProduct = new Product
                 {
                     Name = product.Name,
-                    Price = (double)product.Price,
+                    Price = (decimal)product.Price,
                     Category = category,
                     Department = department,
                     CategoryId = (int)product.CategoryId,
@@ -249,9 +249,6 @@ namespace WebSalesMvc.Controllers
                                 return BadRequest("Departamento não encontrado.");
                             }
                         }
-
-
-
                         await _productService.UpdateAsync(productToUpdate);
                         return Ok();
                     }
@@ -300,21 +297,23 @@ namespace WebSalesMvc.Controllers
                 {
                     try
                     {
-                        var supplier = await _supplierService.FindByIdAsync(productDto.SupplierId);
+                        if (productDto.SupplierId != null)
+                        {
+                            var supplier = await _supplierService.FindByIdAsync((int)productDto.SupplierId);
+                            if (supplier != null)
+                            {
+                                await _productService.AddSupplierAsync(productToUpdate, supplier, productDto.AcquisitionCost ?? 0);
+                            }
+                        }
 
                         productToUpdate.InventoryCost = productDto.InventoryCost ?? productToUpdate.InventoryCost;
-                        productToUpdate.InventoryQuantity = productToUpdate.InventoryQuantity + productDto.InventoryQuantity ?? productToUpdate.InventoryQuantity;
+                        productToUpdate.InventoryQuantity += productDto.InventoryQuantity ?? 0;
                         productToUpdate.AcquisitionCost = productDto.AcquisitionCost ?? productToUpdate.AcquisitionCost;
                         productToUpdate.MinimumInventoryQuantity = productDto.MinimumInventoryQuantity ?? productToUpdate.MinimumInventoryQuantity;
 
-                        if (supplier != null)
-                        {
-                            await _productService.AddSupplierAsync(productToUpdate, supplier, productDto.AcquisitionCost ?? 0);
-                        }
+                        var receiptQuantity = productDto.InventoryQuantity ?? 0;
+                        await _productService.UpdateInventoryAsync(productToUpdate, receiptQuantity, (int)productDto.SupplierId);
 
-                        await _productService.UpdateAsync(productToUpdate);
-
-                        productDto.Margin = productToUpdate.CalculateMargin();
                         productDto.Profit = productToUpdate.CalculateProfit();
                         productDto.CMV = productToUpdate.CalculateCMV();
 
@@ -399,11 +398,14 @@ namespace WebSalesMvc.Controllers
                 TotalInventoryValue = p.TotalInventoryValue,
                 TotalInventoryCost = p.TotalInventoryCost,
                 ImageUrl = p.ImageUrl,
-                Profit = p.CalculateProfit(),
-                Margin = p.CalculateMargin(),
-                CMV = p.CalculateCMV()
-
-        }).ToList();
+                CMV = p.CalculateCMV(),
+                Suppliers = p.Suppliers.Select(ps => new SupplierDTO
+                {
+                    SupplierId = ps.SupplierId,
+                    Name = ps.Supplier.Name,
+                    SupplyPrice = ps.SupplyPrice,
+                }).ToList()
+            }).ToList();
 
             return Ok(productDtos);
         }

@@ -8,7 +8,7 @@
       ID: {{ salesRecord?.id }}<br>
       Total: {{ salesRecord?.amount }}<br>
       Forma de pagamento: {{ getPaymentMethodName(salesRecord?.paymentMethod ?? 0) }} <br>
-      Status da venda: {{ getSaleStatusName(salesRecord?.status ?? 0) }}
+      Status da venda: {{ getSaleStatusName(salesRecord?.status ?? 0) }} <br>
     </mat-card-content>
   </mat-card>
   <br>
@@ -35,6 +35,6 @@
   </div>
 
   <div class="buttons">
-    <button mat-raised-button class="btn btn-default" (click)="backToIndex()">Voltar</button>
+    <button mat-raised-button class="btn btn-default" [routerLink]="['/salesRecords']">Voltar</button>
   </div>
 </div>  

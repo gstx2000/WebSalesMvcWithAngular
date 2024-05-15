@@ -25,7 +25,7 @@ namespace WebSalesMvc.Models
         public Category? Category { get; set; }
 
         [Display(Name = "Preço")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [Display(Name = "Departamento")]
         public int DepartmentId { get; set; }
@@ -41,29 +41,29 @@ namespace WebSalesMvc.Models
         //THIS IS USED TO CALCULATE THE CMV, IT SHOULD HAVE ALL THE COSTS INCLUDED LIKE:
         //TRANSPORT COSTS, STORAGE, MAINTENANCE, OBSOLENSCE, DEPRECIATION AND ETC.
         [Display(Name = "Custo de estoque")]
-        public double? InventoryCost { get; set; }
+        public decimal? InventoryCost { get; set; }
         [Display(Name = "Quantidade em estoque")]
-        public double? InventoryQuantity{ get; set; }
+        public decimal? InventoryQuantity{ get; set; }
 
         [Display(Name = "Custo de aquisição")]
-        public double? AcquisitionCost { get; set; }
+        public decimal? AcquisitionCost { get; set; }
 
         //THIS QUANTITY IS USED TO ALERT WHEN PRODUCT IS BELOW THE MINIMUM LIMIT TO AVOID LACK OF STOCK
 
         [Display(Name = "Quantidade mínima de estoque")]
-        public double? MinimumInventoryQuantity { get; set; }
+        public decimal? MinimumInventoryQuantity { get; set; }
 
         [Display(Name = "Código de barras")]
         public string? BarCode { get; set; }
 
         [Display(Name = "Valor total de estoque")]
-        public double? TotalInventoryValue
+        public decimal? TotalInventoryValue
         {
             get { return InventoryQuantity * Price; }
         }
 
         [Display(Name = "Valor total de estoque")]
-        public double? TotalInventoryCost
+        public decimal? TotalInventoryCost
         {
             get
             {
@@ -76,7 +76,7 @@ namespace WebSalesMvc.Models
         }
 
         [Display(Name = "Valor total de estoque")]
-        public double? CMV
+        public decimal? CMV
         {
             get
             {
@@ -86,16 +86,16 @@ namespace WebSalesMvc.Models
 
         //THIS CALCULATES THE CMV WITH THE STATE OF THE CLASS ITSELF, THE CALCULATION IS ALWAYS PERFORMED WITH THE
         //CURRENT INVENTORY DATA
-        public double CalculateCMV()
+        public decimal CalculateCMV()
         {
             if (InventoryQuantity == 0 || InventoryQuantity == null || InventoryCost == null || InventoryCost == 0)
             {
                 return 0;
             }
-            return (double)(InventoryCost.Value / InventoryQuantity);
+            return (decimal)(InventoryCost.Value / InventoryQuantity);
         }
         //THIS CALCULATES THE COST REGARDLESS OF THE STATE OF THE CLASS
-        private double CalculateCMV(double inventoryQuantity, double inventoryCost)
+        private decimal CalculateCMV(decimal inventoryQuantity, decimal inventoryCost)
         {
             if (inventoryQuantity == 0)
             {
@@ -104,30 +104,15 @@ namespace WebSalesMvc.Models
             return inventoryCost / inventoryQuantity;
         }
 
-        public void RemoveInventoryQuantity(double quantity)
-        {
-            InventoryQuantity -= quantity;
-        }
-        public double CalculateProfit() 
+        public decimal CalculateProfit() 
         {
             if (InventoryQuantity == 0 || InventoryQuantity == null|| AcquisitionCost == null || AcquisitionCost == 0)
             {
                 return 0;
             }
-
-            return (double)(Price - (AcquisitionCost ?? 0));
+            return (decimal)(Price - (AcquisitionCost ?? 0));
         }
-
-        public double CalculateMargin()
-        {
-            if (InventoryQuantity == 0 || InventoryQuantity == null || AcquisitionCost == null || AcquisitionCost == 0)
-            {
-                return 0;
-            }
-                return (double)((double)(Price - AcquisitionCost) / AcquisitionCost * 100);
-        }
-
-        public bool IsBelowMinimum(double inventoryQuantity, double minimumInventoryQuantity)
+        public bool IsBelowMinimum(decimal inventoryQuantity, decimal minimumInventoryQuantity)
         {
             if(inventoryQuantity == 0)
             {

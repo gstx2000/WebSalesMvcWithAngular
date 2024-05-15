@@ -26,9 +26,9 @@ body {
 }
 
 .form-container {
-  background-color: #ffffff;
   padding: 30px;
   border-radius: 10px;
+  background-color: #ffffff;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   width: 600px;
 }
@@ -71,4 +71,17 @@ body {
 
 .search-input {
     width: 383px;
+}
+.tables {
+  display: flex;
+  justify-content: space-between;
+  margin:auto;
+}
+.right-table {
+  margin-top: 48px;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+.form {
+    margin: auto;
 }

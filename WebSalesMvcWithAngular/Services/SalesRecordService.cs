@@ -3,18 +3,19 @@ using System.Globalization;
 using WebSalesMvc.Controllers;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
+using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Interfaces;
 
 namespace WebSalesMvc.Services
 {
-    public class SalesRecordService: ISalesRecordService
+    public class SalesRecordService : ISalesRecordService
     {
         private readonly WebSalesMvcContext _context;
         private readonly ILogger<SalesRecordsController> _logger;
         public SalesRecordService(WebSalesMvcContext context, ILogger<SalesRecordsController> logger)
         {
             _context = context;
-            _logger = logger;   
+            _logger = logger;
         }
         public async Task<List<SalesRecord>> FindAllAsync()
         {
@@ -24,7 +25,7 @@ namespace WebSalesMvc.Services
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
         }
-        public async Task<(double Sum, int Count, int PendingSales)> GetWeekReportAsync()
+        public async Task<(decimal Sum, int Count, int PendingSales)> GetWeekReportAsync()
         {
             DateTime date = DateTime.Now;
             GregorianCalendar calendar = new GregorianCalendar(GregorianCalendarTypes.USEnglish);
@@ -38,22 +39,22 @@ namespace WebSalesMvc.Services
                 case 1:
                     startDay = firstDayOfMonth;
                     endDay = firstDayOfMonth.AddDays(6);
-                break;
+                    break;
 
                 case 2:
                     startDay = firstDayOfMonth.AddDays(7);
                     endDay = firstDayOfMonth.AddDays(15);
-                break;
+                    break;
 
                 case 3:
                     startDay = firstDayOfMonth.AddDays(16);
                     endDay = firstDayOfMonth.AddDays(23);
-                break;
+                    break;
 
                 case 4:
                     startDay = firstDayOfMonth.AddDays(24);
                     endDay = firstDayOfMonth.AddDays(31);
-                break;
+                    break;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(weekOfTheMonth), weekOfTheMonth, null);
@@ -75,7 +76,7 @@ namespace WebSalesMvc.Services
             return (sumWeekSales, countWeekSales, countPendingtSales);
         }
         public async Task<List<SalesRecord>> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
-            {
+        {
             if (pageNumber <= 0 || pageSize <= 0)
                 throw new ArgumentException("Número de página deve ser maior que 0");
             return await _context.SalesRecord
@@ -156,12 +157,64 @@ namespace WebSalesMvc.Services
             _context.ChangeTracker.Entries().ToList().ForEach(e => Console.WriteLine($"Entity: {e.Entity.GetType().Name}, State: {e.State}"));
 
             await _context.SaveChangesAsync();
-                _logger.LogInformation($"SalesRecord inserted. ID: {salesRecord.Id}, Date: {salesRecord.Date}, Amount: {salesRecord.Amount}");
 
-                _logger.LogInformation("Transaction committed successfully.");
             return salesRecord.Id;
-
         }
+
+        public async Task<(string, decimal?)> RemoveStockQuantity(int productId, decimal quantityToRemove)
+        {
+            var (inventoryQuantity, acquisitionCosts, inventoryReceipts) = await GetTotalStockQuantity(productId, quantityToRemove);
+
+            if (inventoryQuantity < quantityToRemove)
+            {
+                return ("Sem capacidade suficiente no estoque para realizar a venda.", 0);
+            }
+            else
+            {
+                decimal? accumulatedAcquisitionCost = acquisitionCosts.Sum();
+
+                foreach (var lot in inventoryReceipts)
+                {
+                    decimal amountToRemoveFromLot = Math.Min((byte)quantityToRemove, (byte)lot.InventoryQuantity);
+                    lot.InventoryQuantity -= amountToRemoveFromLot;
+                    quantityToRemove -= amountToRemoveFromLot;
+
+                    if (quantityToRemove <= 0) break;
+                }
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return (null, accumulatedAcquisitionCost);
+                }
+                catch (Exception ex)
+                {
+                    return ("Erro ao manipular o banco de dados.", null);
+                }
+            }
+        }
+        public async Task<(decimal?, List<decimal?>, List<InventoryReceipt>)> GetTotalStockQuantity(int productId, decimal? quantity)
+        {
+            List<decimal?> supplyPrices = new List<decimal?>();
+            decimal? runningTotal = 0;
+
+            var inventoryReceipts = await _context.InventoryReceipt
+              .Where(ir => ir.ProductId == productId && ir.InventoryQuantity > 0)
+              .ToListAsync();
+
+            foreach (var receipt in inventoryReceipts)
+            {
+                decimal? amountToTake = Math.Min((byte)quantity.Value, (byte)receipt.InventoryQuantity);
+
+                runningTotal += amountToTake;
+                quantity -= amountToTake;
+                supplyPrices.Add(receipt.SupplyPrice * amountToTake);
+
+                if (runningTotal >= quantity.Value) break;
+            }
+
+            return (runningTotal, supplyPrices.TakeWhile((_, index) => index < runningTotal).ToList(), inventoryReceipts);
+        }
+
         public async Task UpdateAsync(SalesRecord sale)
         {
             _context.SalesRecord.Update(sale);

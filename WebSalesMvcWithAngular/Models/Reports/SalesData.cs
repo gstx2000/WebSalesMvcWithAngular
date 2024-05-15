@@ -2,7 +2,7 @@
 {
     public class SalesData
     {   
-        public double? Sum { get; set; } 
+        public decimal? Sum { get; set; } 
         public int? Count { get; set; }
         public int? PendingSales { get; set; }
     }

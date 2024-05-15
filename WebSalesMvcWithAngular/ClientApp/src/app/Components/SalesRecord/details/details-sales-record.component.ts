@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SalesRecordService } from '../../../Services/SalesRecordService';
 import { LoadingService } from '../../../Services/LoadingService';
@@ -14,7 +14,7 @@ import { SoldProduct } from '../../../Models/SoldProduct';
   templateUrl: './details-sales-record.component.html',
   styleUrls: ['./details-sales-record.component.css']
 })
-export class DetailsSalesRecordComponent implements OnInit {
+export class DetailsSalesRecordComponent {
   salesRecord: SalesRecord | undefined;
   salesRecordDataSource = new MatTableDataSource<SoldProduct>();
 
@@ -26,9 +26,7 @@ export class DetailsSalesRecordComponent implements OnInit {
     private toastr: ToastrService
 
 
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     const salesId = Number(this.activedroute.snapshot.params['id']);
     this.loadSale(salesId);
   }
@@ -53,10 +51,6 @@ export class DetailsSalesRecordComponent implements OnInit {
 
   getPaymentMethodName(value: number): string {
     return PaymentMethod[value] as string;
-  }
-
-  backToIndex() {
-    this.router.navigate(['/salesRecords']);
   }
 }
 

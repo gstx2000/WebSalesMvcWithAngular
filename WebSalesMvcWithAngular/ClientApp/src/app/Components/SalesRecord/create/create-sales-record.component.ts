@@ -218,11 +218,18 @@ export class CreateSalesRecordComponent implements OnInit, OnDestroy {
         this.router.navigate(['/salesRecords']);
       }
     } catch (error: any) {
-      this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
-      this.loadingService.hideLoading();
-    } finally {
+      if (error instanceof HttpErrorResponse) {
+        const errorBody = error.error;
+        if (errorBody) {
+          this.toastr.error(errorBody);
+        } else {
+          this.toastr.error('Ocorreu um erro, tente novamente.');
+        }
+      } else {
+        this.toastr.error('Ocorreu um erro, tente novamente.');
+      }
+      console.error('Erro ao realizar venda:', error);
       this.loadingService.hideLoading();
     }
   }
-
 }

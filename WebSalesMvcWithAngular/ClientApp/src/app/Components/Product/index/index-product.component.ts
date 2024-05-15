@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { ProductService } from '../../../Services/ProductService';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Category } from '../../../Models/Category';
@@ -21,7 +21,7 @@ import { ProductDTO } from '../../../DTOs/ProductDTO';
   templateUrl: './index-product.component.html',
   styleUrls: ['./index-product.component.css']
 })
-export class IndexProductComponent implements OnInit, OnDestroy {
+export class IndexProductComponent implements OnDestroy {
   private paginator!: MatPaginator;
   private sort!: MatSort;
 
@@ -64,12 +64,14 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     private toastr: ToastrService
   ) {
     this.productsDataSource = new MatTableDataSource<ProductDTO>;
-  }
 
-  ngOnInit(): void {
-    this.initsearchForm();
     this.setupSearchControl();
     this.categories$ = this.categoryService.getCategories();
+
+    this.searchForm = this.fb.group({
+      category: [null],
+      search: this.searchControl,
+    });
   }
 
   ngAfterViewInit() {
@@ -112,13 +114,6 @@ export class IndexProductComponent implements OnInit, OnDestroy {
     this.productsDataSource.sort = null;
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  initsearchForm(): void {
-    this.searchForm = this.fb.group({
-      category: [null],
-      search: this.searchControl,
-    });
   }
 
   private setupSearchControl(): void {

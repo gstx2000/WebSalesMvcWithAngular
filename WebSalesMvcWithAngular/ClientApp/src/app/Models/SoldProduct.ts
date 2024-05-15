@@ -8,4 +8,5 @@ export interface SoldProduct {
   quantity: number;
   name: string;
   price: number;
+  acquisitionCost?: number;
 }

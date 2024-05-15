@@ -197,13 +197,33 @@ namespace WebSalesMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] SalesRecord salesRecord)
         {
+            List<decimal?> acquisitionCosts = new List<decimal?>();
+            
             try
             {
                 if (salesRecord == null || salesRecord.SoldProducts == null || salesRecord.SoldProducts.Count == 0)
                 {
                     return BadRequest("Venda não fornecida ou produtos não especificados.");
                 }
+                try
+                {
+                    foreach (var soldProduct in salesRecord.SoldProducts)
+                    {
+                        var (message, acquisitionCost) = await _salesRecordService.RemoveStockQuantity(soldProduct.ProductId, soldProduct.Quantity);
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            return BadRequest(message);
+                        }
+                        acquisitionCosts.Add(acquisitionCost);
+                    }
+                } catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
 
+                decimal? accumulatedAcquisitionCost = acquisitionCosts.Sum();
+                var totalRevenue = salesRecord.SoldProducts.Sum(soldProduct => (soldProduct.Price * soldProduct.Quantity));
+                salesRecord.Profit = totalRevenue - accumulatedAcquisitionCost ?? 0;
                 salesRecord.SellerId = 1;
                 salesRecord.Id = 0;
                 salesRecord.Date = DateTime.Now;
@@ -214,7 +234,7 @@ namespace WebSalesMvc.Controllers
                     {
                         soldProduct.Id = 0;
                         soldProduct.SalesRecordId = salesRecord.Id;
-
+                        soldProduct.Margin = soldProduct.CalculateMargin();
                         _context.SoldProducts.Add(soldProduct);
                     }
                     await _salesRecordService.InsertAsync(salesRecord);

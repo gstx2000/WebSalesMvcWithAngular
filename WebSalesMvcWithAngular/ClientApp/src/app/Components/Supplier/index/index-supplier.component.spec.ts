@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SupplierIndexComponent } from './index-supplier.component';
+import { IndexSupplierComponent } from './index-supplier.component';
 
 describe('IndexSupplierComponent', () => {
-  let component: SupplierIndexComponent;
-  let fixture: ComponentFixture<SupplierIndexComponent>;
+  let component: IndexSupplierComponent;
+  let fixture: ComponentFixture<IndexSupplierComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SupplierIndexComponent]
+      declarations: [IndexSupplierComponent]
     });
-    fixture = TestBed.createComponent(SupplierIndexComponent);
+    fixture = TestBed.createComponent(IndexSupplierComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

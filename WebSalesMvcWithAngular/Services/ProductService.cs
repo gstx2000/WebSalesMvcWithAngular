@@ -37,7 +37,6 @@ public class ProductService: IProductService
     {
         return await _context.Product.CountAsync();
     }
-
     public async Task<Product> FindByIdAsync(int id)
     {
         return await _context.Product
@@ -63,15 +62,15 @@ public class ProductService: IProductService
         _context.Product.Remove(product);
         await _context.SaveChangesAsync();
     }
-
     public async Task<List<Product>> FindByNameAsync(string productName, int? categoryId = null)
     {
         var query = _context.Product
             .Where(p => EF.Functions.Like(p.Name, $"%{productName}%"));
 
         query = query.Include(p => p.Department) 
-                     .Include(p => p.Category) 
-                     .AsQueryable(); 
+                     .Include(p => p.Category)
+                     .Include(p => p.Suppliers)
+                     .ThenInclude(ps => ps.Supplier).AsQueryable(); 
 
         if (categoryId.HasValue)
         {
@@ -79,7 +78,6 @@ public class ProductService: IProductService
         }
         return await query.ToListAsync();
     }
-
     public async Task<List<Supplier>> GetSuppliers(int productId) {
       return await  _context.ProductSupplier
          .Where(ps => ps.ProductId == productId)
@@ -87,7 +85,39 @@ public class ProductService: IProductService
          .ToListAsync();
     }
 
-    public async Task AddSupplierAsync(Product product, Supplier supplier, double supplyPrice)
+    public async Task UpdateInventoryAsync(Product product, decimal receiptQuantity, int? supplierId = null)
+    {
+        _context.Update(product);
+        await _context.SaveChangesAsync();
+
+        var inventoryReceipt = new InventoryReceipt
+        {
+            ProductId = product.Id,
+            SupplierId = supplierId,
+            SupplyPrice = product.AcquisitionCost,
+            InventoryQuantity = receiptQuantity,
+            Date = DateTime.Now
+        };
+
+        var existingLot = await _context.InventoryReceipt
+     .Where(ir => ir.ProductId == inventoryReceipt.ProductId &&
+                    (ir.SupplierId == inventoryReceipt.SupplierId || ir.SupplierId == null) &&
+                    ir.SupplyPrice == inventoryReceipt.SupplyPrice)
+     .FirstOrDefaultAsync();
+
+        if (existingLot != null)
+        {
+            existingLot.InventoryQuantity  += inventoryReceipt.InventoryQuantity;
+            _context.Update(existingLot);
+            await _context.SaveChangesAsync();
+        }
+        else {
+            _context.InventoryReceipt.Add(inventoryReceipt);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task AddSupplierAsync(Product product, Supplier supplier, decimal supplyPrice)
     {
         var productSupplier = new ProductSupplier
         {
@@ -95,8 +125,21 @@ public class ProductService: IProductService
             Supplier = supplier,
             SupplyPrice = supplyPrice
         };
-
-        _context.ProductSupplier.Add(productSupplier);
-        await _context.SaveChangesAsync();
+        //Check for existing relationship
+        var existingProductSupplier = await _context.ProductSupplier
+        .Where(ir => ir.ProductId == product.Id &&
+                  (ir.SupplierId == supplier.SupplierId))
+        .FirstOrDefaultAsync();
+     
+        if (existingProductSupplier != null)
+        {
+            _context.Update(existingProductSupplier);
+            await _context.SaveChangesAsync();
+        }
+        else
+        {
+            _context.ProductSupplier.Add(productSupplier);
+            await _context.SaveChangesAsync();
+        }
     }
 }

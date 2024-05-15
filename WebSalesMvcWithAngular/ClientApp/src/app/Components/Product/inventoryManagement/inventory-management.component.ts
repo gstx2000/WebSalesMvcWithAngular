@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { ProductService } from '../../../Services/ProductService';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Category } from '../../../Models/Category';
@@ -15,6 +15,10 @@ import { ProductDTO } from '../../../DTOs/ProductDTO';
 import { SupplierType } from '../../../Models/enums/SupplierType';
 import { SupplierService } from '../../../Services/SupplierService/supplier.service';
 import { Supplier } from '../../../Models/Supplier';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { SupplierDTO } from '../../../DTOs/SupplierDTO';
 
 @Component({
   selector: 'app-inventory-management',
@@ -23,13 +27,18 @@ import { Supplier } from '../../../Models/Supplier';
 })
 export class InventoryManagementComponent implements OnDestroy {
 
+  private paginator!: MatPaginator;
+  private sort!: MatSort;
+  private destroy$ = new Subject<void>();
+
   searchControl: FormControl = new FormControl();
   searchForm!: FormGroup;
   categories$!: Observable<Category[]>;
   suppliers$!: Observable<Supplier[]>;
+  
+  supplyHistoryDataSource: MatTableDataSource<SupplierDTO>;
 
   isMessageVisible: boolean = false;
-  private destroy$ = new Subject<void>();
   products: ProductDTO[] = []; 
   selectedProduct!: ProductDTO;
   filteredProducts: ProductDTO[] = [];
@@ -41,6 +50,20 @@ export class InventoryManagementComponent implements OnDestroy {
     minimumInventoryQuantity: 'Quantidade mínima de estoque',
     supplierId: 'ID de fornecedor',
   };
+  @ViewChild(MatSort) set matSort(ms: MatSort) {
+    this.sort = ms;
+    this.setDataSourceAttributes();
+  }
+  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+    this.paginator = mp;
+    this.setDataSourceAttributes();
+  }
+  setDataSourceAttributes() {
+    if (this.supplyHistoryDataSource && this.paginator && this.sort) {
+      this.supplyHistoryDataSource.paginator = this.paginator;
+      this.supplyHistoryDataSource.sort = this.sort;
+    }
+  }
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
@@ -52,9 +75,11 @@ export class InventoryManagementComponent implements OnDestroy {
     private supplierService: SupplierService
 
   ) {
+    this.setDataSourceAttributes();
     this.setupSearchControl();
     this.categories$ = this.categoryService.getCategories();
     this.suppliers$ = this.supplierService.getSuppliers();
+    this.supplyHistoryDataSource = new MatTableDataSource<SupplierDTO>;
 
     this.searchForm = this.fb.group({
       category: [null],
@@ -67,11 +92,6 @@ export class InventoryManagementComponent implements OnDestroy {
       minimumInventoryQuantity: 0,
       supplierId: 0
     });
-  }
-  
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   resetFilter(): void {
@@ -144,9 +164,19 @@ export class InventoryManagementComponent implements OnDestroy {
     this.productForm.patchValue({
       acquisitionCost: this.selectedProduct?.acquisitionCost,
       minimumInventoryQuantity: this.selectedProduct?.minimumInventoryQuantity 
-      })
-
+    })
+    this.supplyHistoryDataSource.data = [];
+    if (this.selectedProduct && this.selectedProduct.suppliers) {
+      this.supplyHistoryDataSource = new MatTableDataSource<SupplierDTO>(this.selectedProduct.suppliers);
+      this.setDataSourceAttributes();
+    }
     this.searchControl?.setValue('');
+  }
+
+  ngOnDestroy() {
+    this.supplyHistoryDataSource.sort = null;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getUnitMeasValues(): number[] {

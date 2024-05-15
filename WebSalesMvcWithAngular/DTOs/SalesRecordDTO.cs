@@ -9,7 +9,7 @@ namespace WebSalesMvcWithAngular.DTOs
         public int? Id { get; set; }
         public DateTime? Date { get; set; }
         public string? Seller { get; set; }
-        public double? Amount { get; set; }
+        public decimal? Amount { get; set; }
         public SaleStatus? Status { get; set; } 
         public PaymentMethod? PaymentMethod { get; set; } 
         public int? SellerId { get; set; }

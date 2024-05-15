@@ -1,4 +1,5 @@
 ﻿using WebSalesMvc.Models;
+using WebSalesMvcWithAngular.Models;
 
 namespace WebSalesMvcWithAngular.Services.Interfaces
 {
@@ -14,11 +15,10 @@ namespace WebSalesMvcWithAngular.Services.Interfaces
         Task UpdateAsync(SalesRecord sale);
         Task DeleteAsync(int id);
 
-        Task<(double Sum, int Count, int PendingSales)> GetWeekReportAsync();
+        Task<(decimal Sum, int Count, int PendingSales)> GetWeekReportAsync();
         Task<SalesRecord> FindByIdAsync(int? id);
         Task<(List<SalesRecord> Results, int TotalCount)> FindAlltoInvoiceAsync(int pageNumber = 1, int pageSize = 10);
-
-
-
+        Task<(string, decimal?)> RemoveStockQuantity(int productId, decimal quantityToRemove);
+        Task<(decimal?, List<decimal?>, List<InventoryReceipt>)> GetTotalStockQuantity(int productId, decimal? quantity);
     }
 }

@@ -14,6 +14,8 @@ namespace WebSalesMvcWithAngular.Services.Interfaces
         Task DeleteAsync(int id);
         Task<List<Product>> FindByNameAsync(string productName, int? categoryId = null);
         Task<List<Supplier>> GetSuppliers(int productId);
-        Task AddSupplierAsync(Product product, Supplier supplier, double supplyPrice);
+        Task AddSupplierAsync(Product product, Supplier supplier, decimal supplyPrice);
+
+        Task UpdateInventoryAsync(Product product, decimal receiptQuantity, int? supplierId = null);
     }
 }

@@ -1,3 +1,5 @@
+import { SupplierDTO } from "./SupplierDTO";
+
 export interface ProductDTO {
   id?: number;
   name?: string;
@@ -16,6 +18,7 @@ export interface ProductDTO {
   totalInventoryCost?: number;
   profit?: number;
   margin?: number;
-  supplierId?: number;
+  suppliers?: SupplierDTO[];
+  supplyPrice?: number;
 }
 

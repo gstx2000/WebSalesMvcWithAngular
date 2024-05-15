@@ -22,6 +22,7 @@ namespace WebSalesMvc.Data
         public DbSet<SoldProduct> SoldProducts { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<ProductSupplier> ProductSupplier { get; set; }
+        public DbSet<InventoryReceipt> InventoryReceipt { get; set; }
         public DbSet<Adress> Adress { get; set; } = default!;
         public DbSet<Supplier> Supplier { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,6 +30,10 @@ namespace WebSalesMvc.Data
             modelBuilder.Entity<SalesRecord>()
                 .Property(s => s.Date)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            modelBuilder.Entity<ProductSupplier>()
+              .Property(s => s.Date)
+              .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             modelBuilder.Entity<ProductSupplier>()
         .HasKey(ps => new { ps.ProductId, ps.SupplierId }); // Define composite primary key for junction table

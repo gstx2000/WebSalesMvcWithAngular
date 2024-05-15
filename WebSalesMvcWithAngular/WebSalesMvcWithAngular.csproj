@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\DTOs\CategoryDTO.ts" />
+    <None Remove="ClientApp\src\app\DTOs\SupplierDTO.ts" />
     <None Remove="ClientApp\src\app\Models\Adress.ts" />
     <None Remove="ClientApp\src\app\Models\Alert.ts" />
     <None Remove="ClientApp\src\app\Models\AlertSettings.ts" />
@@ -63,6 +64,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\DTOs\CategoryDTO.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\DTOs\SupplierDTO.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\Adress.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\Alert\Alert.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\Alert\AlertSettings.ts" />

@@ -72,8 +72,8 @@ namespace WebSalesMvcWithAngular.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<double?>("AcquisitionCost")
-                        .HasColumnType("double");
+                    b.Property<decimal?>("AcquisitionCost")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("BarCode")
                         .HasColumnType("longtext");
@@ -90,24 +90,24 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
 
-                    b.Property<double?>("InventoryCost")
-                        .HasColumnType("double");
+                    b.Property<decimal?>("InventoryCost")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<double?>("InventoryQuantity")
-                        .HasColumnType("double");
+                    b.Property<decimal?>("InventoryQuantity")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("InventoryUnitMeas")
                         .HasColumnType("int");
 
-                    b.Property<double?>("MinimumInventoryQuantity")
-                        .HasColumnType("double");
+                    b.Property<decimal?>("MinimumInventoryQuantity")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -124,8 +124,8 @@ namespace WebSalesMvcWithAngular.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("double");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("CustomerName")
                         .HasColumnType("longtext");
@@ -137,6 +137,9 @@ namespace WebSalesMvcWithAngular.Migrations
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("Profit")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("SellerId")
                         .HasColumnType("int");
@@ -265,6 +268,36 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.ToTable("Customer");
                 });
 
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.InventoryReceipt", b =>
+                {
+                    b.Property<int>("LotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal?>("InventoryQuantity")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("SupplyPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("LotId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("InventoryReceipt");
+                });
+
             modelBuilder.Entity("WebSalesMvcWithAngular.Models.ProductSupplier", b =>
                 {
                     b.Property<int?>("ProductId")
@@ -273,8 +306,13 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
-                    b.Property<double?>("SupplyPrice")
-                        .HasColumnType("double");
+                    b.Property<DateTime?>("Date")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<decimal?>("SupplyPrice")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("ProductId", "SupplierId");
 
@@ -289,11 +327,20 @@ namespace WebSalesMvcWithAngular.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("AcquisitionCost")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal?>("Margin")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int?>("SalesRecordId")
                         .HasColumnType("int");
@@ -409,6 +456,21 @@ namespace WebSalesMvcWithAngular.Migrations
                         .HasForeignKey("SupplierId");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.InventoryReceipt", b =>
+                {
+                    b.HasOne("WebSalesMvc.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("WebSalesMvcWithAngular.Models.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId");
+
+                    b.Navigation("Product");
 
                     b.Navigation("Supplier");
                 });
