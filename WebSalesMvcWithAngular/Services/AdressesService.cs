@@ -14,12 +14,12 @@ namespace WebSalesMvcWithAngular.Services
         {
             _context = context;
         }
-        public async Task<List<Adress>> FindAllAsync()
+        public async Task<List<Address>> FindAllAsync()
         {
             return await _context.Adress
                         .ToListAsync();
         }
-        public async Task<List<Adress>> FindAllPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<List<Address>> FindAllPaginatedAsync(int pageNumber, int pageSize)
         {
             if (pageNumber <= 0 || pageSize <= 0)
                 throw new ArgumentException("Page number and page size must be greater than 0.");
@@ -34,17 +34,17 @@ namespace WebSalesMvcWithAngular.Services
         {
             return await _context.Adress.CountAsync();
         }
-        public async Task<Adress> FindByIdAsync(int adressId)
+        public async Task<Address> FindByIdAsync(int adressId)
         {
             return await _context.Adress
            .FirstOrDefaultAsync(m => m.AdressId == adressId);
         }
-        public async Task InsertAsync(Adress adress)
+        public async Task InsertAsync(Address adress)
         {
             _context.Add(adress);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateAsync(Adress adress)
+        public async Task UpdateAsync(Address adress)
         {
             _context.Update(adress);
             await _context.SaveChangesAsync();
@@ -55,7 +55,7 @@ namespace WebSalesMvcWithAngular.Services
             _context.Adress.Remove(adress);
             await _context.SaveChangesAsync();
         }
-        public async Task<List<Adress>> FindByStreetNameAsync(string streetName)
+        public async Task<List<Address>> FindByStreetNameAsync(string streetName)
         {
             var query = _context.Adress
                 .Where(p => EF.Functions.Like(p.Logradouro, $"%{streetName}%"));

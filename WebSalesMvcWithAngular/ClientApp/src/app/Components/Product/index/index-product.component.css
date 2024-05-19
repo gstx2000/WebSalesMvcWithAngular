@@ -2,14 +2,18 @@
   margin-top: 10px;
 }
 
-.category {
-    margin-right: 10px;
+:host ::ng-deep.mat-mdc-text-field-wrapper.mdc-text-field.ng-tns-c1205077789-4.mdc-text-field--outlined.mdc-text-field--no-label {
+  width: 350px !important;
 }
 
+.category {
+  margin-right: 10px;
+}
 
 .searchForm {
   margin-top: 20px;
-  justify-content: space-between;
+  flex-grow: 1; 
+  display: flex;
 }
 .mat-cell, .mat-header-cell {
   display: flex;
@@ -24,8 +28,10 @@
 
 .custom-mat-table .mat-header-cell,
 .custom-mat-table .mat-cell {
-    text-align: center;
+  text-align: center;
 }
+
+
 
 .custom-mat-table {
   margin-top: 10px;
@@ -52,3 +58,51 @@
     background-color: #ccc;
     cursor: pointer;
   }
+
+.card {
+  display: flex;
+  flex-direction: row; /* Align children horizontally */
+  justify-content: space-between; /* Distribute space evenly between items */
+  align-items: center;
+  padding: 15px;
+  margin: 20px;
+  box-shadow: 0 6px 8px 0 rgba(0,0,0,0.2);
+}
+
+.circle-button {
+  display: inline-block;
+  width: 60px; /* Adjust size as needed */
+  height: 60px; /* Adjust size as needed */
+  border-radius: 50%; /* Makes it circular */
+  background-color: #007bff; /* Example color */
+  color: white; /* Text color */
+  font-size: 20px; /* Size of the "+" symbol */
+  line-height: 60px; /* Centers the text vertically */
+  cursor: pointer; /* Changes cursor on hover */
+  font-size: 40px;
+  font-weight: 300;
+  margin-left: auto; /* Pushes the button to the right */
+  outline: none;
+  box-shadow: 0 6px 8px 0 rgba(0,0,0,0.2);
+}
+
+.circle-button:hover {
+    opacity: 0.8; /* Slightly darken on hover */
+}
+
+
+.edit-btn {
+  color: #1976d2;
+  border: none;
+  margin-right: 8px;
+  margin-left: 8px;
+  width: 63px; /* Adjust size as needed */
+  height:42px; /* Adjust size as needed */
+  border-radius: 50%; /* Makes it circular */
+  justify-content: center;
+}
+
+.edit-btn :hover {
+    opacity: 0.8;
+    cursor: pointer;
+}

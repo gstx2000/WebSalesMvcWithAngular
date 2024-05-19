@@ -1,6 +1,7 @@
 <div>
   <form method="post" asp-controller="ProductsController" asp-action="Create" asp-antiforgery="true" [formGroup]="productForm" (ngSubmit)="onSubmit()">
-
+    <h2>Cadastro de produto</h2>
+    <br />
     <mat-form-field appearance="outline">
       <mat-label for="name">Nome</mat-label>
       <input matInput type="text" id="name" formControlName="name" required>

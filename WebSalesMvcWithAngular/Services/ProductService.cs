@@ -1,35 +1,45 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
+using WebSalesMvcWithAngular.Controllers.ProductsController.Requests;
+using WebSalesMvcWithAngular.Controllers.ProductsController.Responses;
+
+using WebSalesMvcWithAngular.DTOs;
 using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Interfaces;
 public class ProductService: IProductService
 {
     private readonly WebSalesMvcContext _context;
+    private readonly IMapper _mapper;
 
-    public ProductService(WebSalesMvcContext context)
+    public ProductService(WebSalesMvcContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
-    public async Task<List<Product>> FindAllAsync()
+public async Task<List<Product>> FindAllAsync()
     {
         return await _context.Product
                         .Include(x => x.Category)
                         .Include(x => x.Department)
                         .ToListAsync();
     }
-    public async Task<List<Product>> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
+    public async Task<(IEnumerable<IndexProductResponse>, int productCount)> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
     {
         if (pageNumber <= 0 || pageSize <= 0)
             throw new ArgumentException("Page number and page size must be greater than 0.");
 
-        return await _context.Product
-                              .Include(x => x.Category)
-                              .Include(x => x.Department)
-                              .OrderBy(x => x.Id)
-                              .Skip((pageNumber - 1) * pageSize)
-                              .Take(pageSize)
-                              .ToListAsync();
+        var productCount = await CountAllAsync();
+        var productResponse = await _context.Product
+       .OrderBy(p => p.Id)
+       .Skip((pageNumber - 1) * pageSize)
+       .Take(pageSize)
+       .ProjectTo<IndexProductResponse>(_mapper.ConfigurationProvider)
+       .ToListAsync();
+
+        return (productResponse, productCount);
     }
 
     //This is used for counting the number of records for the paginator in FRONTEND.

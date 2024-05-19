@@ -1,39 +1,41 @@
 
-<button mat-raised-button [routerLink]="['/products/create']" class="btn btn-default">Cadastro de produto</button>
 <button mat-raised-button [routerLink]="['/products/inventory-management']" class="btn btn-default">Gerenciamento de estoque</button>
 <br />
 
-<form class="searchForm" [formGroup]="searchForm">
+<mat-card class="card">
+  <form class="searchForm" [formGroup]="searchForm">
 
-  <mat-form-field class="category" appearance="outline">
-    <mat-label for="categories$">Categoria</mat-label>
-    <mat-select formControlName="category">
-      <mat-option *ngFor="let category of categories$ | async" [value]="category.id">{{ category.name }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field class="category" appearance="outline">
+      <mat-label for="categories$">Categoria</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let category of categories$ | async" [value]="category.id">{{ category.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field appearance="outline" class="search-input">
-    <div class="search">
-      <input matInput
-             appearance="outline"
-             [matAutocomplete]="auto"
-             type="text"
-             [formControl]="searchControl"
-             placeholder="Buscar produto por nome">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let product of filteredProducts" [value]="product.name">
-          {{ product.name }}
-        </mat-option>
-      </mat-autocomplete>
-    </div>
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="search-input">
+      <div class="search">
+        <input matInput
+               appearance="outline"
+               [matAutocomplete]="auto"
+               type="text"
+               [formControl]="searchControl"
+               placeholder="Buscar produto por nome">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let product of filteredProducts" [value]="product.name">
+            {{ product.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+    </mat-form-field>
+    <button mat-raised-button style="margin-top:4px;" (click)="resetFilter()" class="btn btn-default">Redefinir</button>
+  </form>
+  <button  [routerLink]="['/products/create']" title="Cadastro de produto" class="circle-button">+</button>
+</mat-card>
 
-  <button mat-raised-button (click)="resetFilter()" class="btn btn-default">Redefinir</button>
-
-</form>
 <div *ngIf="isMessageVisible">
   <app-alert></app-alert>
 </div>
+
 <mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="productsDataSource" matSort>
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
@@ -61,12 +63,12 @@
   </ng-container>
 
 
-  <ng-container matColumnDef="actions">
+  <ng-container matColumnDef="actions" class="actions">
     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
     <mat-cell *matCellDef="let item" fxLayout="row" fxLayoutAlign="space-between">
       <button mat-raised-button [routerLink]="['/products/details', item.id]" class="btn btn-default">Detalhes</button>
-      <button mat-raised-button [routerLink]="['/products/edit', item.id]" class="btn btn-default">Editar</button>
-      <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
+      <button title="Editar produto"  class="edit-btn" [routerLink]="['/products/edit', item.id]"> <mat-icon>edit</mat-icon> </button>
+      <button title="Deletar produto" mat-mini-fab color="warn" (click)="openDeleteDialog(item)" >
         <mat-icon>delete</mat-icon>
       </button>
     </mat-cell>

@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using WebSalesMvc.Data;
 using WebSalesMvc.Models;
 using WebSalesMvcWithAngular.Models;
 using WebSalesMvcWithAngular.Services.Interfaces;
+using WebSalesMvcWithAngular.Controllers.SuppliersController.Responses;
+using AutoMapper;
 
 namespace WebSalesMvcWithAngular.Services
 {
@@ -10,10 +13,13 @@ namespace WebSalesMvcWithAngular.Services
     {
         private readonly WebSalesMvcContext _context;
         private readonly ILogger<SupplierService> _logger;
-        public SupplierService(WebSalesMvcContext context, ILogger<SupplierService> logger)
+        private readonly IMapper _mapper;
+
+        public SupplierService(WebSalesMvcContext context, ILogger<SupplierService> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<List<Supplier>> FindAllAsync()
@@ -21,16 +27,23 @@ namespace WebSalesMvcWithAngular.Services
             return await _context.Supplier
                         .ToListAsync();
         }
-        public async Task<List<Supplier>> FindAllPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<IndexSupplierResponse>, int productCount)> FindAllPaginatedAsync(int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber <= 0 || pageSize <= 0)
                 throw new ArgumentException("Page number and page size must be greater than 0.");
 
-            return await _context.Supplier
-                                  .OrderBy(x => x.SupplierId)
-                                  .Skip((pageNumber - 1) * pageSize)
-                                  .Take(pageSize)
-                                  .ToListAsync();
+            var supplierCount = await CountAllAsync();
+            var productResponses = await _context.Supplier
+           .OrderBy(p => p.SupplierId)
+           .Skip((pageNumber - 1) * pageSize)
+           .Take(pageSize)
+           .ProjectTo<IndexSupplierResponse>(_mapper.ConfigurationProvider)
+           .ToListAsync();
+            
+            foreach (var productResponse in productResponses) {
+                productResponse.ProductCount = await GetProductCount((int)productResponse.SupplierId);
+            }
+            return (productResponses, supplierCount);
         }
         public async Task<int> CountAllAsync()
         {
@@ -43,10 +56,8 @@ namespace WebSalesMvcWithAngular.Services
         }
         public async Task InsertAsync(Supplier supplier)
         {
-            _logger.LogInformation("Attempting to insert supplier: {Supplier}", supplier);
             _context.Supplier.Add(supplier);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Inserted supplier: {Supplier}", supplier);
         }
         public async Task UpdateAsync(Supplier supplier)
         {
@@ -67,6 +78,15 @@ namespace WebSalesMvcWithAngular.Services
                .Select(ps => ps.Product)
                .ToListAsync();
         }
+
+        public async Task<int> GetProductCount(int supplierId)
+        {
+            return await _context.ProductSupplier
+               .Where(ps => ps.SupplierId == supplierId)
+               .Select(ps => ps.ProductId) 
+               .CountAsync();
+        }
+
         public async Task<List<Supplier>> FindByNameAsync(string supplierName)
         {
             var query = _context.Supplier

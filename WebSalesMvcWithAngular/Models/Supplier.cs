@@ -14,7 +14,7 @@ namespace WebSalesMvcWithAngular.Models
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public List<ProductSupplier>? Products { get; set; }
-        public List<Adress>? Adresses { get; set; }
+        public List<Address>? Addresses { get; set; } 
         public double? ShippingValue { get; set; }
         public string? Website { get; set; }
         public string? ContactPerson { get; set; }

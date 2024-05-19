@@ -10,8 +10,8 @@ namespace WebSalesMvcWithAngular.DTOs
         public string? CNPJ { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
-        public List<ProductSupplier>? Products { get; set; }
-        public List<Adress>? Adresses { get; set; }
+        public List<ProductDTO> Products { get; set; } = new List<ProductDTO>();
+        public List<Address>? Addresses { get; set; }
         public decimal? ShippingValue { get; set; }
         public string? Website { get; set; }
         public string? ContactPerson { get; set; }

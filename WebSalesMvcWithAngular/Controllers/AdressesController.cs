@@ -22,7 +22,7 @@ namespace WebSalesMvcWithAngular.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Adress>>> GetAdresses()
+        public async Task<ActionResult<IEnumerable<Address>>> GetAdresses()
         {
             try
             {
@@ -45,7 +45,7 @@ namespace WebSalesMvcWithAngular.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Adress>> GetAdress(int id)
+        public async Task<ActionResult<Address>> GetAdress(int id)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace WebSalesMvcWithAngular.Controllers
         [HttpPatch("{id}")]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> PatchAdress(int? id, Adress adress)
+        public async Task<IActionResult> PatchAdress(int? id, Address adress)
         {
             if (id != adress.AdressId)
             {
@@ -106,7 +106,7 @@ namespace WebSalesMvcWithAngular.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult<Adress>> PostAdress(Adress adress)
+        public async Task<ActionResult<Address>> PostAdress(Address adress)
         {
             try
             {

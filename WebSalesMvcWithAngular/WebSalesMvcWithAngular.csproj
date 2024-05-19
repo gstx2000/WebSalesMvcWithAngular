@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.14" />
@@ -35,6 +36,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\Components\Product\Requests\IndexProductRequest.ts" />
+    <None Remove="ClientApp\src\app\Components\Product\Responses\IndexProductResponse.ts" />
+    <None Remove="ClientApp\src\app\Components\Supplier\Responses\IndexSupplierResponse.ts" />
     <None Remove="ClientApp\src\app\DTOs\CategoryDTO.ts" />
     <None Remove="ClientApp\src\app\DTOs\SupplierDTO.ts" />
     <None Remove="ClientApp\src\app\Models\Adress.ts" />
@@ -63,6 +67,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\Components\Product\Requests\IndexProductRequest.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Components\Product\Responses\IndexProductResponse.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="ClientApp\src\app\Components\Supplier\Responses\IndexSupplierResponse.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\app\DTOs\CategoryDTO.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\DTOs\SupplierDTO.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\Adress.ts" />

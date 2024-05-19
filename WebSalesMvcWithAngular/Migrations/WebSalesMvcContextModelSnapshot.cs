@@ -99,6 +99,9 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Property<int>("InventoryUnitMeas")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("Margin")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<decimal?>("MinimumInventoryQuantity")
                         .HasColumnType("decimal(65,30)");
 

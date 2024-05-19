@@ -1,20 +1,27 @@
 <button mat-raised-button [routerLink]="['/suppliers/create']" class="btn btn-default">Criar novo</button>
 
-<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="suppliersDataSource">
+<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="suppliersDataSource" matSort>
 
   <ng-container matColumnDef="supplierId">
-    <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
     <mat-cell *matCellDef="let item">{{ item.supplierId }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
     <mat-cell *matCellDef="let item">{{ item.name }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="supplierType">
     <mat-header-cell *matHeaderCellDef>Tipo</mat-header-cell>
     <mat-cell *matCellDef="let item">{{ getSupplierTypeName(item.supplierType) }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="productCount">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Produtos</mat-header-cell>
+    <mat-cell *matCellDef="let item">
+      {{ item.productCount ? item.productCount : 0 }}
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="actions">
@@ -28,6 +35,10 @@
     </mat-cell>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="['supplierId', 'name', 'supplierType', 'actions']"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: ['supplierId', 'name', 'supplierType', 'actions'];"></mat-row>
+  <mat-header-row *matHeaderRowDef="['supplierId', 'name', 'supplierType', 'productCount', 'actions']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['supplierId', 'name', 'supplierType', 'productCount', 'actions'];"></mat-row>
 </mat-table>
+<mat-paginator [pageSizeOptions]="[5, 10, 20]"
+               showFirstLastButtons
+               [length]="totalItems">
+</mat-paginator>

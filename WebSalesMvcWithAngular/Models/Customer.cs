@@ -13,7 +13,7 @@ namespace WebSalesMvcWithAngular.Models
         public required string  FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
-        public List<Adress>? Adresses { get; set; }
+        public List<Address>? Adresses { get; set; }
 
     }
 }

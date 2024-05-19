@@ -8,6 +8,9 @@ import { PagedResult } from '../Models/PagedResult';
 import { ProductDTO } from '../DTOs/ProductDTO';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { IndexProductRequest } from '../Components/Product/Requests/IndexProductRequest';
+import { IndexProductResponse } from '../Components/Product/Responses/IndexProductResponse';
+
 
 @Injectable({
   providedIn: 'root',
@@ -25,11 +28,11 @@ export class ProductService {
         catchError((error: any) => {
           console.error('Erro HTTP:', error);
           return throwError(error);
-        })
+3        })
       );
   }
 
-  getProductsPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<ProductDTO>> {
+  getProductsPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<IndexProductRequest>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
@@ -39,9 +42,9 @@ export class ProductService {
           console.error('Erro HTTP:', error);
           return throwError(error);
         }),
-        shareReplay(1) 
       );
   }
+
   async getProductById(id: number): Promise<Observable<Product>> {
     return this.http.get<Product>(`${environment.apiUrl}/${this.url}/get-product/${id}`)
       .pipe(

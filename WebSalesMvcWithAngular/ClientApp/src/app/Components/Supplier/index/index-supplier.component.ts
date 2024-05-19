@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { Supplier } from '../../../Models/Supplier';
 import { SupplierService } from '../../../Services/SupplierService/supplier.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { SupplierType } from '../../../Models/enums/SupplierType';
+import { IndexSupplierResponse } from '../Responses/IndexSupplierResponse';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { Subject, catchError, map, of, startWith, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-index-supplier',
@@ -13,39 +16,82 @@ import { SupplierType } from '../../../Models/enums/SupplierType';
   styleUrls: ['./index-supplier.component.css']
 })
 export class IndexSupplierComponent {
-  suppliers: Supplier[] = [];
-  suppliersDataSource = new MatTableDataSource<Supplier>();
+  suppliers: IndexSupplierResponse[] = [];
+  suppliersDataSource = new MatTableDataSource<IndexSupplierResponse>();
+  private paginator!: MatPaginator;
+  private sort!: MatSort;
+  private destroy$ = new Subject<void>();
+
+  currentPage = 1;
+  pageSize = 10;
+  totalItems = 0;
+  totalPages = 0;
+
+  @ViewChild(MatSort) set matSort(ms: MatSort) {
+    this.sort = ms;
+    this.setDataSourceAttributes();
+  }
+  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+    this.paginator = mp;
+    this.setDataSourceAttributes();
+  }
+  setDataSourceAttributes() {
+    if (this.suppliersDataSource && this.paginator && this.sort) {
+      this.suppliersDataSource.paginator = this.paginator;
+      this.suppliersDataSource.sort = this.sort;
+    }
+  }
   constructor(private supplierService: SupplierService,
     private loadingService: LoadingService,
     private dialog: MatDialog,
     private toastr: ToastrService
   ) {
-    this.loadSuppliers();
-  }
+    }
 
-  loadSuppliers(): void {
-    this.loadingService.showLoading();
+  ngAfterViewInit() {
 
-    this.supplierService.getSuppliers().subscribe(
-      (result: Supplier[]) => {
-        if (Array.isArray(result)) {
-          this.suppliers = result;
-          this.suppliersDataSource = new MatTableDataSource(result);
+    this.suppliersDataSource.paginator = this.paginator;
+    this.paginator.page
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.loadingService.showLoading();
+          return this.supplierService.getSuppliersPaginated(
+            this.paginator.pageIndex + 1,
+            this.paginator.pageSize
+          ).pipe(
+            catchError((error) => {
+              this.loadingService.hideLoading();
+              return of(null);
+            }),
+            takeUntil(this.destroy$)
+          );
+        }),
+        map((Data) => {
+          if (Data == null) return [];
+          this.totalItems = Data.totalItems;
           this.loadingService.hideLoading();
-        }
-      },
-      (error) => {
-        console.error('Erro ao carregar fornecedores:', error);
+          return Data.items;
+        })
+      )
+      .subscribe((empData) => {
+        this.suppliers = empData;
+        this.suppliersDataSource = new MatTableDataSource(this.suppliers);
+        this.suppliersDataSource.sort = this.sort;
         this.loadingService.hideLoading();
-      },
-      () => {
+      }, null, () => {
         this.loadingService.hideLoading();
-      }
-    );
+      });
   }
 
   getSupplierTypeName(value: number): string {
     return SupplierType[value] as string;
+  }
+
+  ngOnDestroy() {
+    this.suppliersDataSource.sort = null;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 

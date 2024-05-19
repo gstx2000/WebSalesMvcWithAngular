@@ -27,7 +27,6 @@ namespace WebSalesMvcWithAngular.DTOs
         public decimal? TotalInventoryValue { get; set; }
         public decimal? TotalInventoryCost { get; set; }
         public decimal? CMV { get; set; }
-        public decimal? Profit { get; set; }
         public decimal? Margin { get; set; }
         public int? SupplierId { get; set; }
         public List<SupplierDTO>? Suppliers { get; set; }

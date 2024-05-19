@@ -121,7 +121,7 @@ namespace WebSalesMvc.Controllers
                     totalPages = totalPages
                 };
 
-                if (result.items.Count == 0)
+                if (!result.items.Any())
                 {
                     return NoContent();
                 }
@@ -171,7 +171,7 @@ namespace WebSalesMvc.Controllers
                     totalPages = totalPages
                 };
 
-                if (result.items.Count == 0)
+                if (!result.items.Any())
                 {
                     return NoContent();
                 }

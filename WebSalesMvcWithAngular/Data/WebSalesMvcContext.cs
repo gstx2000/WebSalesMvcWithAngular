@@ -23,7 +23,7 @@ namespace WebSalesMvc.Data
         public DbSet<Customer> Customer { get; set; }
         public DbSet<ProductSupplier> ProductSupplier { get; set; }
         public DbSet<InventoryReceipt> InventoryReceipt { get; set; }
-        public DbSet<Adress> Adress { get; set; } = default!;
+        public DbSet<Address> Adress { get; set; } = default!;
         public DbSet<Supplier> Supplier { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,12 +49,12 @@ namespace WebSalesMvc.Data
                 .WithOne(ps => ps.Supplier)
                 .HasForeignKey(ps => ps.SupplierId);
 
-            modelBuilder.Entity<Adress>()
+            modelBuilder.Entity<Address>()
              .HasOne(a => a.Supplier)
-             .WithMany(s => s.Adresses)
+             .WithMany(s => s.Addresses)
              .HasForeignKey(a => a.SupplierId);
 
-            modelBuilder.Entity<Adress>()
+            modelBuilder.Entity<Address>()
                .HasOne(a => a.Customer)
                .WithMany(c => c.Adresses)
                .HasForeignKey(a => a.CustomerId);

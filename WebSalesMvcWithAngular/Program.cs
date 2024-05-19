@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using WebSalesMvcWithAngular.Services;
 using WebSalesMvcWithAngular.Configurations;
 using WebSalesMvcWithAngular.Configurations.Middlewares;
+using AutoMapper;
+using WebSalesMvcWithAngular.Mappings;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,8 @@ builder.Services.AddScoped<SellerService>();
 builder.Services.AddScoped<ISalesRecordService, SalesRecordService>();
 builder.Services.AddScoped<PasswordRecoveryService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
@@ -169,6 +173,13 @@ var localizationOptions = new RequestLocalizationOptions
     .PersistKeysToFileSystem((new DirectoryInfo(@"C:\Users\gst20\OneDrive\Área de Trabalho\SalesWebAngular\WebSalesMvcWithAngular\WebSalesMvcWithAngular/keys")));*/
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+    mapper.ConfigurationProvider.AssertConfigurationIsValid();
+}
+
 app.UseCors("AllowAllOrigins");
 app.UseRouting();
 app.UseAuthentication();

@@ -1,9 +1,11 @@
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../AuthService';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Supplier } from '../../Models/Supplier';
 import { environment } from '../../../environments/environment';
+import { IndexSupplierResponse } from '../../Components/Supplier/Responses/IndexSupplierResponse';
+import { PagedResult } from '../../Models/PagedResult';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,19 @@ export class SupplierService {
 
   getSuppliers(): Observable<Supplier[]> {
     return this.http.get<Supplier[]>(`${environment.apiUrl}/${this.url}/get-suppliers`);
+  }
+
+  getSuppliersPaginated(page: number = 1, pageSize: number = 10): Observable<PagedResult<IndexSupplierResponse>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+    return this.http.get<PagedResult<IndexSupplierResponse>>(`${environment.apiUrl}/${this.url}/get-suppliers-paginated`, { params })
+      .pipe(
+        catchError((error: any) => {
+          console.error('Erro HTTP:', error);
+          return throwError(error);
+        }),
+      );
   }
 
   async getSupplierById(id: number): Promise<Observable<Supplier>> {

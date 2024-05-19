@@ -52,6 +52,9 @@ namespace WebSalesMvc.Models
 
         [Display(Name = "Quantidade mínima de estoque")]
         public decimal? MinimumInventoryQuantity { get; set; }
+        
+        [Display(Name = "Margem")]
+        public decimal? Margin { get; set; }
 
         [Display(Name = "Código de barras")]
         public string? BarCode { get; set; }

@@ -15,4 +15,5 @@ export interface Supplier {
   shippingValue?: number;
   adresses?: Adress[];
   products?: ProductDTO[];
+  productCount?: number;
 }

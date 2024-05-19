@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { MatDialog } from '@angular/material/dialog';
