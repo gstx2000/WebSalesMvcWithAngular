@@ -55,6 +55,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 import { ShippingComponent } from './Components/Shipping/shipping.component';
 import { ViaCepService } from './Services/ViaCep/via-cep.service';
@@ -150,6 +154,9 @@ import { DetailsSupplierComponent } from './Components/Supplier/details/details-
     MatSortModule,
     MatPaginatorModule,
     MatMenuModule,
+    MatButtonToggleModule,
+    MatCheckboxModule,
+    MatTooltipModule,
     ToastrModule.forRoot(),
     SharedModule,
   ],

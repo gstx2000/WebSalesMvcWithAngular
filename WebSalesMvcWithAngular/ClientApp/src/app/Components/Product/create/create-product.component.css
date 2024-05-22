@@ -1,0 +1,70 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.image {
+  margin-left: auto;
+  text-align: center;
+}
+
+.img {
+  border-radius: 15px 50px 30px 5px;
+  text-align: center;
+}
+
+
+.card {
+  box-shadow: 7px 7px 8px rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  max-width: 100%; /* Ensures the image does not overflow the card */
+  height: auto; /* Maintains aspect ratio */
+  display: block; /* Removes bottom margin */
+  margin: 0 auto; /* Centers the image horizontally */
+  margin-bottom: auto; /* Pushes the span to the bottom */
+  text-align: center;
+}
+
+.card span {
+    text-align: center;
+}
+.image-container {
+  position: relative;
+}
+.image-container span {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.mat-card-content {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 7px 7px 8px rgba(0, 0, 0, 0.8);
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-left: 5px;
+
+}
+
+.btn {
+  margin-right: 10px; /* Adjust as needed */
+}
+
+
+.button-container {
+  display: flex;
+}

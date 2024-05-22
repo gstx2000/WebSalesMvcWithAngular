@@ -135,16 +135,30 @@ namespace WebSalesMvcWithAngular.Controllers.ProductsController
         }
 
         [HttpPost]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("post-product")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody] ProductDTO product)
+        public async Task<IActionResult> Create([FromForm] ProductDTO product, [FromForm] IFormFile? imageFile)
         {
             try
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var filePath = Path.Combine("wwwroot/images", imageFile.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+                    product.ImageUrl = $"/images/{imageFile.FileName}";
+                }
+
                 if (product == null)
                 {
-                    return BadRequest("Produto não fornecido" +
-                        ",.");
+                    return BadRequest("Produto não fornecido pela requisição.");
                 }
 
                 var department = await _departmentService.FindByIdAsync((int)product.DepartmentId);
@@ -160,6 +174,7 @@ namespace WebSalesMvcWithAngular.Controllers.ProductsController
                     DepartmentId = (int)product.DepartmentId,
                     InventoryUnitMeas = (Models.Enums.InventoryUnitMeas)product.InventoryUnitMeas,
                     ImageUrl = product.ImageUrl,
+                    SubCategoryId = product.SubCategoryId
                 };
 
 
@@ -220,6 +235,8 @@ namespace WebSalesMvcWithAngular.Controllers.ProductsController
                         productToUpdate.CategoryId = productDto.CategoryId ?? productToUpdate.CategoryId;
                         productToUpdate.ImageUrl = productDto.ImageUrl ?? productToUpdate.ImageUrl;
                         productToUpdate.InventoryUnitMeas = productDto.InventoryUnitMeas ?? productToUpdate.InventoryUnitMeas;
+                        productToUpdate.SubCategoryId = productDto.SubCategoryId ?? productToUpdate.SubCategoryId;
+
 
                         if (productDto.CategoryId.HasValue)
                         {

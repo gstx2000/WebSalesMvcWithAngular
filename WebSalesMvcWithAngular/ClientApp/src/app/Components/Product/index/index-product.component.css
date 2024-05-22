@@ -90,19 +90,17 @@
     opacity: 0.8; /* Slightly darken on hover */
 }
 
-
-.edit-btn {
-  color: #1976d2;
-  border: none;
-  margin-right: 8px;
-  margin-left: 8px;
-  width: 63px; /* Adjust size as needed */
-  height:42px; /* Adjust size as needed */
-  border-radius: 50%; /* Makes it circular */
-  justify-content: center;
+.edit-minifab {
+    background-color:cornflowerblue
 }
 
-.edit-btn :hover {
-    opacity: 0.8;
-    cursor: pointer;
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.btn,
+.edit-minifab,
+.delete-btn { 
+  margin-right: 8px;
 }

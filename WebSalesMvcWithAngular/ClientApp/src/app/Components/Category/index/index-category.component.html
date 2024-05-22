@@ -1,6 +1,15 @@
-<button mat-raised-button [routerLink]="['/categories/create']" class="btn btn-default">Criar novo</button>
+<mat-card class="card">
+  <p>
+    <mat-button-toggle-group #filterGroup="matButtonToggleGroup" (change)="filterCategories()" aria-label="Filter">
+      <mat-button-toggle value="categories">Categorias</mat-button-toggle>
+      <mat-button-toggle value="all">Todas</mat-button-toggle>
+      <mat-button-toggle value="subcategories">Subcategorias</mat-button-toggle>
+    </mat-button-toggle-group>
+  </p>
+  <button matTooltip="Cadastro de categoria" [routerLink]="['/categories/create']" title="Cadastro de categoria" class="circle-button">+</button>
+</mat-card>
 
-<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="categoriesDataSource">
+<mat-table class="custom-mat-table mat-elevation-z8" [dataSource]="categoriesDataSource" matSort>
 
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
@@ -8,7 +17,7 @@
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef> Categoria </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Categoria </mat-header-cell>
     <mat-cell *matCellDef="let item"> {{ item.name }} </mat-cell>
   </ng-container>
 
@@ -18,17 +27,20 @@
   </ng-container>
 
   <ng-container matColumnDef="products">
-    <mat-header-cell *matHeaderCellDef>Produtos</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Produtos </mat-header-cell>
     <mat-cell *matCellDef="let item">
-      {{ item.productCount ? item.productCount : 0 }}
+      {{ item.productCount ?? 0 }}
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-    <mat-cell *matCellDef="let item">
+    <mat-cell *matCellDef="let item" fxLayout="row" class="action-buttons">
       <button mat-raised-button [routerLink]="['/categories/details', item.id]" class="btn btn-default">Detalhes</button>
-      <button mat-raised-button [routerLink]="['/categories/edit', item.id]" class="btn btn-default">Editar</button>
+      <button [routerLink]="['/categories/edit', item.id]" class="edit-minifab" title="Editar informações"
+              mat-mini-fab>
+        <mat-icon>edit</mat-icon>
+      </button>
       <button mat-mini-fab color="warn" (click)="openDeleteDialog(item)" class="btn btn-default">
         <mat-icon>delete</mat-icon>
       </button>
@@ -40,3 +52,11 @@
   <mat-row *matRowDef="let row; columns: ['id', 'name', 'department', 'products', 'actions']"></mat-row>
 
 </mat-table>
+<mat-paginator [pageSizeOptions]="[5, 10, 20]"
+               showFirstLastButtons
+               [length]="totalItems"
+               [pageSize]="pageSize"
+               [pageIndex]="pageIndex"
+               (page)="onPageChange($event)">
+</mat-paginator>
+

@@ -58,6 +58,19 @@ namespace WebSalesMvc.Data
                .HasOne(a => a.Customer)
                .WithMany(c => c.Adresses)
                .HasForeignKey(a => a.CustomerId);
+
+            modelBuilder.Entity<Category>()
+                .HasMany(c => c.SubCategories)
+                .WithOne(s => s.ParentCategory)
+                .HasForeignKey(s => s.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Product>()
+               .Ignore(p => p.Subcategory); 
+            modelBuilder.Entity<Category>()
+                .HasMany(c => c.Products)
+                .WithOne(p => p.Subcategory)
+                .HasForeignKey(p => p.SubCategoryId);
         }
     }
 }

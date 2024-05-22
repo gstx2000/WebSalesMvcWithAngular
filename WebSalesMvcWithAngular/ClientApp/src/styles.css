@@ -51,7 +51,6 @@ body {
 .btn.btn-default:hover {
   background-color: #000000;
   color: white;
-  border: none;
   cursor: pointer;
   transition: color 0.5s;
   box-shadow: 7px 7px 8px rgba(0, 0, 0, 0.8);
@@ -60,4 +59,8 @@ body {
 
 .no-scroll {
   overflow: hidden;
+}
+
+.edit-minifabs {
+  background-color: cornflowerblue
 }

@@ -5,7 +5,6 @@ using WebSalesMvcWithAngular.Models.Enums;
 namespace WebSalesMvc.Models
 {
     [Help("")]
-
     public class Product
     {
         [Key]
@@ -23,6 +22,11 @@ namespace WebSalesMvc.Models
 
         [Display(Name = "Categoria")]
         public Category? Category { get; set; }
+        public int? SubCategoryId { get; set; }
+
+        [ForeignKey("SubCategoryId")]
+        [Display(Name = "Subcategoria")]
+        public virtual Category? Subcategory { get; set; }
 
         [Display(Name = "Preço")]
         public decimal Price { get; set; }
@@ -32,10 +36,19 @@ namespace WebSalesMvc.Models
 
         [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
+
+        [Display(Name = "Fornecedores")]
         public List<ProductSupplier> Suppliers { get; set; }
 
         [Display(Name = "Imagem")]
         public string? ImageUrl { get; set; }
+
+        [Display(Name = "Número Mercosul")]
+        public string? NCM { get; set; }
+
+        [Display(Name = "Código de barras")]
+        public string? BarCode { get; set; }
+
         [Display(Name = "Unidade de medida")]
         public InventoryUnitMeas InventoryUnitMeas { get; set; } = InventoryUnitMeas.Unidades;
         //THIS IS USED TO CALCULATE THE CMV, IT SHOULD HAVE ALL THE COSTS INCLUDED LIKE:
@@ -55,9 +68,6 @@ namespace WebSalesMvc.Models
         
         [Display(Name = "Margem")]
         public decimal? Margin { get; set; }
-
-        [Display(Name = "Código de barras")]
-        public string? BarCode { get; set; }
 
         [Display(Name = "Valor total de estoque")]
         public decimal? TotalInventoryValue

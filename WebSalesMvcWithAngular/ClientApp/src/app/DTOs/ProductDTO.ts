@@ -20,5 +20,7 @@ export interface ProductDTO {
   margin?: number;
   suppliers?: SupplierDTO[];
   supplyPrice?: number;
+  subCategoryName?: string;
+  subCategoryId?: number;
 }
 

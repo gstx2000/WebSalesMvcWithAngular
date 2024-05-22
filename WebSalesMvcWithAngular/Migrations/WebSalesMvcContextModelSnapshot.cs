@@ -32,13 +32,21 @@ namespace WebSalesMvcWithAngular.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsSubCategory")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Category");
                 });
@@ -105,6 +113,9 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Property<decimal?>("MinimumInventoryQuantity")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<string>("NCM")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -112,11 +123,16 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<int?>("SubCategoryId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("Product");
                 });
@@ -193,7 +209,7 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.ToTable("Seller");
                 });
 
-            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Adress", b =>
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Address", b =>
                 {
                     b.Property<int?>("AdressId")
                         .ValueGeneratedOnAdd()
@@ -404,13 +420,20 @@ namespace WebSalesMvcWithAngular.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WebSalesMvc.Models.Category", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Department");
+
+                    b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("WebSalesMvc.Models.Product", b =>
                 {
                     b.HasOne("WebSalesMvc.Models.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -421,9 +444,15 @@ namespace WebSalesMvcWithAngular.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WebSalesMvc.Models.Category", "Subcategory")
+                        .WithMany("Products")
+                        .HasForeignKey("SubCategoryId");
+
                     b.Navigation("Category");
 
                     b.Navigation("Department");
+
+                    b.Navigation("Subcategory");
                 });
 
             modelBuilder.Entity("WebSalesMvc.Models.SalesRecord", b =>
@@ -448,14 +477,14 @@ namespace WebSalesMvcWithAngular.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Adress", b =>
+            modelBuilder.Entity("WebSalesMvcWithAngular.Models.Address", b =>
                 {
                     b.HasOne("WebSalesMvcWithAngular.Models.Customer", "Customer")
                         .WithMany("Adresses")
                         .HasForeignKey("CustomerId");
 
                     b.HasOne("WebSalesMvcWithAngular.Models.Supplier", "Supplier")
-                        .WithMany("Adresses")
+                        .WithMany("Addresses")
                         .HasForeignKey("SupplierId");
 
                     b.Navigation("Customer");
@@ -515,6 +544,8 @@ namespace WebSalesMvcWithAngular.Migrations
             modelBuilder.Entity("WebSalesMvc.Models.Category", b =>
                 {
                     b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("WebSalesMvc.Models.Department", b =>
@@ -544,7 +575,7 @@ namespace WebSalesMvcWithAngular.Migrations
 
             modelBuilder.Entity("WebSalesMvcWithAngular.Models.Supplier", b =>
                 {
-                    b.Navigation("Adresses");
+                    b.Navigation("Addresses");
 
                     b.Navigation("Products");
                 });

@@ -33,11 +33,11 @@ export class AuthService {
     });
   }
 
-  public async getOptions(): Promise<any> {
+  public async getOptions(contentType: string | null = 'application/json'): Promise<any> {
     const { token } = await this.setAntiforgeryCookie();
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
       'X-XSRF-TOKEN': token,
+      ...(contentType && { 'Content-Type': contentType }),
     });
 
     return {

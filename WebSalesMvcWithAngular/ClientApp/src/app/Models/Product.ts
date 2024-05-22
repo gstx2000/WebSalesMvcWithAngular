@@ -6,6 +6,8 @@ export interface Product {
   price: number;
   description: string;
   category?: Category;
+  subCategory?: Category;
+  subCategoryId?: number;
   categoryId: number;
   department?: Department;
   departmentId: number;

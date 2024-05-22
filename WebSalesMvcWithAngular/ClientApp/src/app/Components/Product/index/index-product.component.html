@@ -29,7 +29,7 @@
     </mat-form-field>
     <button mat-raised-button style="margin-top:4px;" (click)="resetFilter()" class="btn btn-default">Redefinir</button>
   </form>
-  <button  [routerLink]="['/products/create']" title="Cadastro de produto" class="circle-button">+</button>
+  <button  matTooltip="Cadastro de produto"  [routerLink]="['/products/create']" title="Cadastro de produto" class="circle-button">+</button>
 </mat-card>
 
 <div *ngIf="isMessageVisible">
@@ -65,10 +65,13 @@
 
   <ng-container matColumnDef="actions" class="actions">
     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-    <mat-cell *matCellDef="let item" fxLayout="row" fxLayoutAlign="space-between">
+    <mat-cell *matCellDef="let item" fxLayout="row" class="action-buttons" sfxLayoutAlign="space-between">
       <button mat-raised-button [routerLink]="['/products/details', item.id]" class="btn btn-default">Detalhes</button>
-      <button title="Editar produto"  class="edit-btn" [routerLink]="['/products/edit', item.id]"> <mat-icon>edit</mat-icon> </button>
-      <button title="Deletar produto" mat-mini-fab color="warn" (click)="openDeleteDialog(item)" >
+      <button [routerLink]="['/products/edit', item.id]" class="edit-minifab" title="Editar informações"
+              mat-mini-fab>
+          <mat-icon>edit</mat-icon>
+      </button>
+      <button title="Deletar produto" mat-mini-fab color="warn" (click)="openDeleteDialog(item)">
         <mat-icon>delete</mat-icon>
       </button>
     </mat-cell>
@@ -82,3 +85,5 @@
                showFirstLastButtons
                [length]="totalItems">
 </mat-paginator>
+
+

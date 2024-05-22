@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Product } from '../../../Models/Product';
 import { ProductService } from '../../../Services/ProductService';
 import { DepartmentService } from '../../../Services/DepartmentService';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { CategoryService } from '../../../Services/CategoryService';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ToastrService } from 'ngx-toastr';
@@ -25,7 +25,12 @@ export class CreateProductComponent implements OnInit {
   product: Product;
   departments$: Observable<Department[]> | undefined;
   categories$: Observable<CategoryDTO[]> | undefined;
+  subcategories$: Observable<CategoryDTO[]> | undefined;
   InventoryUnitMeas!: InventoryUnitMeas;
+  selectedFile: File | string = '';
+  selectedFileName: string = '';
+  filePreview: string | ArrayBuffer | null = null;
+
 
   private fieldLabels: { [key: string]: string } = {
     price: 'Preço',
@@ -35,6 +40,7 @@ export class CreateProductComponent implements OnInit {
     departmentId: 'ID Departamento',
     imageUrl: 'URL de imagem',
     inventoryUnitMeas: 'Unidade de medida'
+
   };
   constructor(
     private productService: ProductService,
@@ -45,8 +51,6 @@ export class CreateProductComponent implements OnInit {
     private loadingService: LoadingService,
     private toastr: ToastrService,
     private formMessage: FormControlErrorMessageService
-
-
   ) {
     this.product = {
       price: 0,
@@ -64,6 +68,12 @@ export class CreateProductComponent implements OnInit {
     this.initProductForm();
     this.departments$ = this.departmentService.getDepartments();
     this.categories$ = this.categoryService.getCategoriesDTO();
+    this.subcategories$ = this.categories$.pipe(
+      map(categories => categories.filter(category => category.isSubCategory == true))
+    );
+    this.categories$ = this.categories$.pipe(
+      map(categories => categories.filter(category => category.isSubCategory == false))
+    );
   }
 
   initProductForm(): void {
@@ -71,21 +81,53 @@ export class CreateProductComponent implements OnInit {
       price: [0, [Validators.required, Validators.min(1)]],
       name: ['', Validators.required],
       description: '',
-      categoryId: [0],
-      departmentId: [0],
+      categoryId: [null, Validators.required],
+      subCategoryId: [null], 
+      departmentId: [null, Validators.required],
       imageUrl: '',
-      inventoryUnitMeas: 0
+      inventoryUnitMeas: 0,
+      subcategoryId: [null],
     });
   }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    this.selectedFile = file;
+    this.selectedFileName = file ? file.name : '';
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedFile = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  triggerFileInput() {
+    document.getElementById('imageFile')?.click();
+  }
+
 
   async onSubmit(): Promise<void> {
     this.loadingService.showLoading();
     try {
-      console.log(this.productForm.value)
       if (this.productForm.valid) {
-        const formData: ProductDTO = this.productForm.value;
+        const formData = new FormData();
+
+        Object.keys(this.productForm.value).forEach(key => {
+          if (this.productForm.value[key] !== null && this.productForm.value[key] !== undefined) {
+            formData.append(key, this.productForm.value[key]);
+          }
+        });
+
+        if (this.selectedFile) {
+          formData.append('imageFile', this.selectedFile);
+        }
+
         const createdProduct = await (await this.productService.createProduct(formData)).toPromise();
-        this.toastr.success(`Produto ${formData.name} criado com sucesso.`);
+
+        this.toastr.success(`Produto ${this.productForm.value.name} criado com sucesso.`);
         this.router.navigate(['/products']);
       } else {
         this.loadingService.hideLoading();
@@ -99,13 +141,10 @@ export class CreateProductComponent implements OnInit {
             }
           }
         });
-      } 
+      }
     } catch (error: any) {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao criar:', error);
-      this.loadingService.hideLoading();
-    }
-    () => {
       this.loadingService.hideLoading();
     }
   }

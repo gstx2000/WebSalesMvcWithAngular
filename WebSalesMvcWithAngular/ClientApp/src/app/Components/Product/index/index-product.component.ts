@@ -15,6 +15,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { ToastrService } from 'ngx-toastr';
 import { ProductDTO } from '../../../DTOs/ProductDTO';
+import { CategoryDTO } from '../../../DTOs/CategoryDTO';
 
 @Component({
   selector: 'app-products',
@@ -29,7 +30,7 @@ export class IndexProductComponent implements OnDestroy {
 
   searchControl: FormControl = new FormControl();
   searchForm!: FormGroup;
-  categories$!: Observable<Category[]>;
+  categories$!: Observable<CategoryDTO[]>;
   private destroy$ = new Subject<void>();
   isMessageVisible: boolean = false;
   filteredProducts: ProductDTO[] = [];
@@ -66,7 +67,7 @@ export class IndexProductComponent implements OnDestroy {
     this.productsDataSource = new MatTableDataSource<ProductDTO>;
 
     this.setupSearchControl();
-    this.categories$ = this.categoryService.getCategories();
+    this.categories$ = this.categoryService.getCategoriesDTO();
 
     this.searchForm = this.fb.group({
       category: [null],

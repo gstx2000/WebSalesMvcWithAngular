@@ -8,4 +8,5 @@ export interface Category {
   departmentId: number;
   products?: Product[];
   productCount?: number;
+  isSubCategory: boolean;
 }

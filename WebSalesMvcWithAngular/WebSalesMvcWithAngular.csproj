@@ -120,6 +120,7 @@
     <Folder Include="ClientApp\src\app\Services\AdressService\" />
     <Folder Include="ClientApp\src\app\Services\FormControlErrorMessage\" />
     <Folder Include="ClientApp\src\app\Services\SupplierService\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

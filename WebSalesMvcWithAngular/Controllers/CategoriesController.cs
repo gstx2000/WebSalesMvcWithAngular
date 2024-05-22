@@ -19,7 +19,6 @@ namespace WebSalesMvc.Controllers
         private readonly WebSalesMvcContext _context;
         private readonly ICategoryService _categoryService;
         private readonly IDepartmentService _departmentService;
-
         public CategoriesController(WebSalesMvcContext context, ICategoryService categoryService, IDepartmentService departmentService)
         {
             _context = context;
@@ -148,7 +147,7 @@ namespace WebSalesMvc.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Erro interno da aplicação");
+                return StatusCode(500, "Erro interno da aplicação.");
             }
         }
 
@@ -207,7 +206,7 @@ namespace WebSalesMvc.Controllers
             try
             {
                 await _categoryService.DeleteAsync(id);
-
+               
                 return NoContent();
             }
             catch (NotFoundException)

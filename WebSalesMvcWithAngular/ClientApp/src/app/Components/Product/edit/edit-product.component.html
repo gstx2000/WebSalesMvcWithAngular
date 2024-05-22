@@ -31,23 +31,36 @@
     </mat-form-field>
     <br />
 
-    <mat-form-field appearance="outline" >
-      <mat-label for="department$">Departamento</mat-label>
-      <mat-select id="departments$" formControlName="departmentId">
-        <mat-option *ngFor="let department of departments$ | async" [value]=department.id>{{ department.name }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <br />
 
     <mat-form-field appearance="outline">
       <mat-label for="categories$">Categoria</mat-label>
       <mat-select id="categories$" formControlName="categoryId">
-        <mat-option *ngFor="let category of categories$ | async" [value]=category.id>{{ category.name }}</mat-option>
+        <mat-option *ngFor="let category of categories$ | async" [value]=category.id>{{ category.name }} </mat-option>
       </mat-select>
       <br />
     </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="subcategories$">Subcategoria</mat-label>
+      <mat-select id="subcategories$" formControlName="subcategoryId">
+        <mat-option *ngFor="let subcategory of subcategories$ | async" [value]="subcategory.id">{{ subcategory.name }}</mat-option>
+      </mat-select>
+      <br />
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field appearance="outline" class="input">
+      <mat-label for="um">Unidade de estoque</mat-label>
+      <mat-select id="um" formControlName="inventoryUnitMeas">
+        <mat-option *ngFor="let um of getUnitMeasValues()" [value]="um">
+          {{ getUnitMeasName(um) }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <br />
     <button mat-raised-button type="submit">Editar</button>
-    <button mat-raised-button class="btn btn-default" [routerLink]="['/products']" >Cancelar</button>
+    <button mat-raised-button class="btn btn-default" [routerLink]="['/products']">Cancelar</button>
   </form>
 </div>

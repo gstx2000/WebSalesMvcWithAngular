@@ -18,6 +18,8 @@ namespace WebSalesMvcWithAngular.DTOs
         public string? DepartmentName { get; set; }
         public int? DepartmentId { get; set; }
         public int? CategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
+        public string? SubCategoryName { get; set; }
         public string? ImageUrl { get; set; }
         public InventoryUnitMeas? InventoryUnitMeas { get; set; }
         public decimal? InventoryCost { get; set; }
@@ -29,6 +31,7 @@ namespace WebSalesMvcWithAngular.DTOs
         public decimal? CMV { get; set; }
         public decimal? Margin { get; set; }
         public int? SupplierId { get; set; }
+        public string? NCM { get; set; }
         public List<SupplierDTO>? Suppliers { get; set; }
     }
 }

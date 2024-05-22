@@ -13,6 +13,12 @@
           <li class="nav-item">
             <button mat-button [matMenuTriggerFor]="salesMenu">Vendas</button>
             <mat-menu #salesMenu="matMenu">
+              <button mat-menu-item [routerLink]="['/salesRecords/create']">
+                Registrar venda
+                <mat-icon class="icon">
+                  add
+                </mat-icon>
+              </button>
               <button mat-menu-item [routerLink]="['/salesRecords/toInvoice']">Vendas pendentes</button>
               <button mat-menu-item [routerLink]="['/salesRecords']">Todas as vendas</button>
             </mat-menu>
@@ -20,12 +26,27 @@
           <li class="nav-item">
             <button mat-button [matMenuTriggerFor]="productsMenu">Produtos</button>
             <mat-menu #productsMenu="matMenu">
+              <button mat-menu-item [routerLink]="['/products/create']">
+                Adicionar produto
+                <mat-icon class="icon">
+                  add
+                </mat-icon>
+              </button>
               <button mat-menu-item [routerLink]="['/products']">Produtos</button>
               <button mat-menu-item [routerLink]="['/products/inventory-management']">Gerenciamento de estoque</button>
             </mat-menu>
           </li>
           <li class="nav-item" [routerLinkActive]="['active']">
-            <a class="nav-link" [routerLink]="['/categories']">Categorias</a>
+            <button mat-button [matMenuTriggerFor]="categoriesMenu">Categories</button>
+            <mat-menu #categoriesMenu="matMenu">
+              <button mat-menu-item [routerLink]="['/categories/create']">
+                Adicionar Categoria
+                <mat-icon class="icon">
+                  add
+                </mat-icon>
+              </button>
+              <button mat-menu-item [routerLink]="['/categories']">Categorias</button>
+            </mat-menu>
           </li>
           <li class="nav-item" [routerLinkActive]="['active']">
             <a class="nav-link" [routerLink]="['/departments']">Lojas</a>

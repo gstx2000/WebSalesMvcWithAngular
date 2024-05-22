@@ -3,4 +3,6 @@ export interface CategoryDTO {
   name: string;
   departmentName: string;
   productCount: number;
+  isSubCategory: boolean;
+  subCategoryCount: number;
 }

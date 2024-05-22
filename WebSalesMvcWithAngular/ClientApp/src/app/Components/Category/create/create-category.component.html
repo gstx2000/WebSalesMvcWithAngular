@@ -2,29 +2,47 @@
   <form method="post" asp-controller="CategoriesController" asp-action="Create" asp-antiforgery="true" [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
 
     <mat-form-field appearance="outline">
-      <label for="name">Nome</label>
+      <mat-label>Nome</mat-label>
       <input matInput type="text" id="name" formControlName="name" required>
     </mat-form-field>
 
     <br />
     <mat-form-field appearance="outline">
-      <label for="description">Descrição</label>
+      <mat-label>Descrição</mat-label>
       <input matInput type="text" id="description" formControlName="description">
     </mat-form-field>
 
     <br />
 
     <mat-form-field appearance="outline">
-      <mat-label for="department$">Departamento</mat-label>
+      <mat-label>Departamento</mat-label>
       <mat-select id="departments$" formControlName="departmentId">
-        <mat-option *ngFor="let department of departments$ | async" [value]=department.id>{{ department.name }}</mat-option>
+        <mat-option *ngFor="let department of departments$ | async" [value]="department.id">{{ department.name }}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <br />
 
-      <button type="submit" class="btn btn-default">Cadastrar</button>
-      <button class="btn btn-default" [routerLink]="['/categories']">Cancelar</button>
+    <!-- Separate mat-checkbox from mat-form-field -->
+    <mat-label>É uma subcategoria?</mat-label>
+    <mat-checkbox formControlName="isSubcategory"></mat-checkbox>
+
+    <br />
+
+    <ng-container *ngIf="(categoryForm.get('isSubcategory')?.value || false)">
+      <mat-form-field appearance="outline">
+        <mat-label>Categoria pai</mat-label>
+        <mat-select id="categories$" formControlName="parentCategoryId">
+          <mat-option *ngFor="let category of categories$ | async" [value]="category.id">{{ category.name }}</mat-option>
+        </mat-select>
+        <br />
+      </mat-form-field>
+    </ng-container>
+
+    <br />
+
+    <button type="submit" class="btn btn-default">Cadastrar</button>
+    <button class="btn btn-default" [routerLink]="['/categories']">Cancelar</button>
 
   </form>
 </div>

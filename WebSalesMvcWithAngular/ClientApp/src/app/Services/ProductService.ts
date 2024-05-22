@@ -1,4 +1,4 @@
-import { HttpClient, HttpEvent, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, shareReplay, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -55,22 +55,29 @@ export class ProductService {
       );
   }
 
-  async createProduct(product: ProductDTO): Promise<Observable<HttpEvent<Product>>> {
+  async createProduct(formData: FormData): Promise<Observable<HttpEvent<Product>>> {
     try {
+      const options = await this.auth.getOptions(null); // Pass null to avoid setting Content-Type
 
-      const options = await this.auth.getOptions();
-
-      return this.http.post<Product>(`${environment.apiUrl}/${this.url}/post-product`, product, options)
-        .pipe(
-          catchError((error: any) => {
-            console.error('Erro HTTP:', error);
-            return throwError(error);
-          })
-        );
+      return this.http.post<Product>(
+        `${environment.apiUrl}/${this.url}/post-product`,
+        formData,
+        {
+          ...options,
+          reportProgress: true, // Enable progress tracking for file upload
+          observe: 'events',    // Receive HttpEvents for progress tracking
+        }
+      ).pipe(
+        catchError((error: any) => {
+          console.error('HTTP Error:', error);
+          return throwError(error);
+        })
+      );
     } catch (error) {
       return throwError(error);
     }
   }
+
 
   async updateProduct(id: number, product: ProductDTO): Promise<Observable<HttpEvent<ProductDTO>>> {
     try {

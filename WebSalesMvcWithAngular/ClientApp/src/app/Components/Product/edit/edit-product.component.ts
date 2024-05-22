@@ -5,13 +5,15 @@ import { Department } from '../../../Models/Department';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { ProductService } from '../../../Services/ProductService';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Category } from '../../../Models/Category';
 import { CategoryService } from '../../../Services/CategoryService';
 import { Product } from '../../../Models/Product';
 import { LoadingService } from '../../../Services/LoadingService';
 import { ToastrService } from 'ngx-toastr';
 import { FormControlErrorMessageService } from '../../../Services/FormControlErrorMessage/form-control-error-message.service';
+import { CategoryDTO } from '../../../DTOs/CategoryDTO';
+import { InventoryUnitMeas } from '../../../Models/enums/InventoryUnitMeas';
 
 
 @Component({
@@ -22,7 +24,9 @@ import { FormControlErrorMessageService } from '../../../Services/FormControlErr
 export class EditProductComponent {
   departments$: Observable<Department[]> | undefined;
   productForm!: FormGroup;
-  categories$: Observable<Category[]> | undefined;
+  categories$: Observable<CategoryDTO[]> | undefined;
+  subcategories$: Observable<CategoryDTO[]> | undefined;
+
 
   private fieldLabels: { [key: string]: string } = {
     price: 'Preço',
@@ -49,7 +53,9 @@ export class EditProductComponent {
     this.initializeForm();
     const productId = Number(this.activedroute.snapshot.params['id']);
     this.departments$ = this.departmentService.getDepartments();
-    this.categories$ = this.categoryService.getCategories();
+    this.categories$ = this.categoryService.getCategoriesDTO();
+    this.subcategories$ = this.categories$.pipe(
+      map(categories => categories.filter(category => category.isSubCategory == true)));
 
     if (productId) {
       this.fetchProduct(productId);
@@ -59,12 +65,15 @@ export class EditProductComponent {
   initializeForm(): void {
     this.productForm = this.fb.group({
       id: 0,
+      price: [0, [Validators.required, Validators.min(1)]],
       name: ['', Validators.required],
-      price: [1, Validators.min(0.1)],
       description: '',
-      categoryId: 0,
-      departmentId: 0,
-      imageUrl: ''
+      categoryId: [null, Validators.required],
+      subCategoryId: [null],
+      departmentId: [null, Validators.required],
+      imageUrl: '',
+      inventoryUnitMeas: 0,
+      subcategoryId: [null]
     });
   }
 
@@ -81,7 +90,9 @@ export class EditProductComponent {
           description: fetchedProduct.description,
           categoryId: fetchedProduct.categoryId,
           departmentId: fetchedProduct.departmentId,
-          imageUrl: fetchedProduct.imageUrl
+          imageUrl: fetchedProduct.imageUrl,
+          subcategoryId: fetchedProduct.subCategoryId
+
       });
 
       this.productForm.get('id')!.disable();
@@ -126,5 +137,14 @@ export class EditProductComponent {
       this.toastr.error(error.message || 'Erro interno da aplicação, tente novamente.');
       console.error('Erro ao atualizar produto:', error);
     }
+  }
+
+
+  getUnitMeasValues(): number[] {
+    return Object.values(InventoryUnitMeas).filter(value => typeof value === 'number') as number[];
+  }
+
+  getUnitMeasName(value: number): string {
+    return InventoryUnitMeas[value] as string;
   }
 }

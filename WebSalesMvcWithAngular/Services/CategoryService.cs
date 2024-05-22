@@ -27,23 +27,52 @@ namespace WebSalesMvc.Services
 
         public async Task<List<CategoryDTO>> FindAllDTOAsync()
         {
-            var categoriesWithProductCounts = await _context.Category
-              .Select(c => new CategoryDTO
-              {
-                  Id = c.Id,
-                  Name = c.Name,
-                  DepartmentName = c.Department.Name,
-                  ProductCount = c.Products.Count()
-              })
-              .ToListAsync();
+            var categories = await _context.Category
+                .Include(c => c.Products)
+                .Include(c => c.SubCategories)
+                    .ThenInclude(sc => sc.Products)
+                .ToListAsync();
 
-            return categoriesWithProductCounts;
+            var categoryDTOs = categories.Select(c => new CategoryDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                DepartmentName = c.Department?.Name,
+                ProductCount = GetCategoryProductCount(c),
+                IsSubCategory = c.IsSubCategory
+            }).ToList();
+
+            return categoryDTOs;
         }
-        public async Task InsertAsync(Category obj)
+
+        private int GetCategoryProductCount(Category category)
         {
-            _context.Add(obj);
+            int count = category.Products.Count;
+            count += GetSubCategoryProductCount(category);
+            return count;
+        }
+
+        private int GetSubCategoryProductCount(Category category)
+        {
+            int count = 0;
+            if (category.SubCategories != null)
+            {
+                foreach (var subCategory in category.SubCategories)
+                {
+                    if (subCategory.Products != null)
+                    {
+                        count += subCategory.Products.Count;
+                    }
+                    count += GetSubCategoryProductCount(subCategory);                }
+            }
+            return count;
+        }
+        public async Task InsertAsync(Category category)
+        {
+            _context.Add(category);
             await _context.SaveChangesAsync();
         }
+
         public async Task<Category> FindByIdAsync(int id)
         {
             return await _context.Category

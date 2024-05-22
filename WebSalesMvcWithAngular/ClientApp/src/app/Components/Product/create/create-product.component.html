@@ -1,5 +1,5 @@
-<div>
-  <form method="post" asp-controller="ProductsController" asp-action="Create" asp-antiforgery="true" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+<div class="container">
+  <form method="post" enctype="multipart/form-data" asp-controller="ProductsController" asp-action="Create" asp-antiforgery="true" [formGroup]="productForm" (ngSubmit)="onSubmit()">
     <h2>Cadastro de produto</h2>
     <br />
     <mat-form-field appearance="outline">
@@ -43,7 +43,15 @@
     <mat-form-field appearance="outline">
       <mat-label for="categories$">Categoria</mat-label>
       <mat-select id="categories$" formControlName="categoryId">
-        <mat-option *ngFor="let category of categories$ | async" [value]=category.id>{{ category.name }}</mat-option>
+        <mat-option *ngFor="let category of categories$ | async" [value]=category.id>{{ category.name }} </mat-option>
+      </mat-select>
+      <br />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="subcategories$">Subcategoria</mat-label>
+      <mat-select id="subcategories$" formControlName="subcategoryId">
+        <mat-option *ngFor="let subcategory of subcategories$ | async" [value]="subcategory.id">{{ subcategory.name }}</mat-option>
       </mat-select>
       <br />
     </mat-form-field>
@@ -61,7 +69,30 @@
 
     <br />
 
-    <button type="submit" class="btn btn-default">Cadastrar</button>
-    <button class="btn btn-default" [routerLink]="['/products']">Cancelar</button>
+    <input type="file" id="imageFile" (change)="onFileSelected($event)" style="display: none;">
+    <button class="btn btn-default" type="button" (click)="triggerFileInput()">
+      Escolher Imagem
+      <mat-icon class="icon">
+        arrow_circle_down
+      </mat-icon>
+    </button>
+
+    <br />
+
+    <div class="button-container">
+      <button type="submit" class="btn btn-default">Cadastrar</button>
+      <button class="btn btn-default" [routerLink]="['/products']">Cancelar</button>
+    </div>
   </form>
+
+  <div class="image" *ngIf="selectedFile">
+    <mat-card class="card">
+      <h3>Imagem selecionada:</h3>
+      <div class="image-container">
+        <img [src]="selectedFile" alt="Imagem do produto" />
+        <span *ngIf="selectedFileName">{{ selectedFileName }}</span>
+      </div>
+    </mat-card>
+  </div>
+
 </div>
